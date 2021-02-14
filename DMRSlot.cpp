@@ -454,7 +454,7 @@ bool CDMRSlot::writeModem(unsigned char *data, unsigned int len)
 					return false;
 				}
 			}
-
+			
 			// Regenerate the CSBK data
 			csbk.get(data + 2U);
 
@@ -1117,7 +1117,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 		writeFile(data);
 #endif
 
-		LogMessage("DMR Slot %u,  voice header from %s to %s%s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str());
+		LogMessage("DMR Slot %u, received network voice header from %s to %s%s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str());
 	} else if (dataType == DT_VOICE_PI_HEADER) {
 		if (m_netState != RS_NET_AUDIO) {
 			CDMRLC* lc = new CDMRLC(dmrData.getFLCO(), dmrData.getSrcId(), dmrData.getDstId());
@@ -1372,7 +1372,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			m_netState = RS_NET_AUDIO;
 
 			setShortLC(m_slotNo, dstId, m_netLC->getFLCO(), ACTIVITY_VOICE);
-
+	
 			std::string src = m_lookup->find(srcId);
 			std::string dst = m_lookup->find(dstId);
 			class CUserDBentry cn;
@@ -1917,7 +1917,7 @@ void CDMRSlot::init(unsigned int colorCode, bool embeddedLCOnly, bool dumpTAData
 	m_rssiMapper     = rssiMapper;
 
 	m_jitterTime     = jitter;
-
+	
 	float jitter_tmp = float(jitter) / 360.0F;
 	m_jitterSlots    = (unsigned int) (std::ceil(jitter_tmp) * 6.0F);
 

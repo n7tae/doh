@@ -118,10 +118,10 @@ bool CNextion::open()
 
 	sendCommand("bkcmd=0");
 	sendCommandAction(0U);
-
+	
 	m_fl_txFrequency = double(m_txFrequency) / 1000000.0F;
 	m_fl_rxFrequency = double(m_rxFrequency) / 1000000.0F;
-
+	
 	setIdle();
 
 	return true;
@@ -153,11 +153,11 @@ void CNextion::setIdleInt()
 		::sprintf(command, "t30.txt=\"%3.6f\"",m_fl_rxFrequency);  // RX freq
 		sendCommand(command);
 		sendCommandAction(20U);
-
+		
 		::sprintf(command, "t32.txt=\"%3.6f\"",m_fl_txFrequency);  // TX freq
 		sendCommand(command);
 		sendCommandAction(21U);
-
+	
 		// CPU temperature
 		FILE* fp = ::fopen("/sys/class/thermal/thermal_zone0/temp", "rt");
 		if (fp != NULL) {
@@ -170,7 +170,7 @@ void CNextion::setIdleInt()
 				if (m_displayTempInF) {
 					val = (1.8 * val) + 32.0;
 					::sprintf(command, "t20.txt=\"%2.1f %cF\"", val, 176);
-				} else {
+				} else {	
 					::sprintf(command, "t20.txt=\"%2.1f %cC\"", val, 176);
 				}
 				sendCommand(command);
@@ -180,7 +180,7 @@ void CNextion::setIdleInt()
 	} else {
 		sendCommandAction(17U);
 	}
-
+	
 	sendCommand("t1.txt=\"MMDVM IDLE\"");
 	sendCommandAction(11U);
 
@@ -258,6 +258,107 @@ void CNextion::setQuitInt()
 	m_clockDisplayTimer.stop();
 
 	m_mode = MODE_QUIT;
+}
+
+void CNextion::setFMInt()
+{
+	sendCommand("page MMDVM");
+	sendCommandAction(1U);
+
+	char command[20];
+	if (m_brightness > 0) {
+		::sprintf(command, "dim=%u", m_brightness);
+		sendCommand(command);
+	}
+
+	sendCommand("t0.txt=\"FM\"");
+	sendCommandAction(15U);
+
+	m_clockDisplayTimer.stop();
+
+	m_mode = MODE_FM;
+}
+
+void CNextion::writeDStarInt(const char* my1, const char* my2, const char* your, const char* type, const char* reflector)
+{
+	assert(my1 != NULL);
+	assert(my2 != NULL);
+	assert(your != NULL);
+	assert(type != NULL);
+	assert(reflector != NULL);
+
+	if (m_mode != MODE_DSTAR) {
+		sendCommand("page DStar");
+		sendCommandAction(2U);
+	}
+
+	char text[50U];
+	if (m_brightness>0) {
+		::sprintf(text, "dim=%u", m_brightness);
+		sendCommand(text);
+	}
+
+	::sprintf(text, "t0.txt=\"%s %.8s/%4.4s\"", type, my1, my2);
+	sendCommand(text);
+	sendCommandAction(42U);
+
+	::sprintf(text, "t1.txt=\"%.8s\"", your);
+	sendCommand(text);
+	sendCommandAction(45U);
+
+	if (::strcmp(reflector, "        ") != 0) {
+		::sprintf(text, "t2.txt=\"via %.8s\"", reflector);
+		sendCommand(text);
+		sendCommandAction(46U);
+	}
+
+	m_clockDisplayTimer.stop();
+
+	m_mode = MODE_DSTAR;
+	m_rssiAccum1 = 0U;
+	m_berAccum1  = 0.0F;
+	m_rssiCount1 = 0U;
+	m_berCount1  = 0U;
+}
+
+void CNextion::writeDStarRSSIInt(unsigned char rssi)
+{
+	m_rssiAccum1 += rssi;
+	m_rssiCount1++;
+
+	if (m_rssiCount1 == DSTAR_RSSI_COUNT) {
+		char text[25U];
+		::sprintf(text, "t3.txt=\"-%udBm\"", m_rssiAccum1 / DSTAR_RSSI_COUNT);
+		sendCommand(text);
+		sendCommandAction(47U);
+		m_rssiAccum1 = 0U;
+		m_rssiCount1 = 0U;
+	}
+}
+
+void CNextion::writeDStarBERInt(float ber)
+{
+	m_berAccum1 += ber;
+	m_berCount1++;
+
+	if (m_berCount1 == DSTAR_BER_COUNT) {
+		char text[25U];
+		::sprintf(text, "t4.txt=\"%.1f%%\"", m_berAccum1 / float(DSTAR_BER_COUNT));
+		sendCommand(text);
+		sendCommandAction(48U);
+		m_berAccum1 = 0.0F;
+		m_berCount1 = 0U;
+	}
+}
+
+void CNextion::clearDStarInt()
+{
+	sendCommand("t0.txt=\"Listening\"");
+	sendCommandAction(41U);
+	sendCommand("t1.txt=\"\"");
+	sendCommand("t2.txt=\"\"");
+	sendCommand("t3.txt=\"\"");
+	sendCommand("t4.txt=\"\"");
 }
 
 void CNextion::writeDMRInt(unsigned int slotNo, const std::string& src, bool group, const std::string& dst, const char* type)
@@ -350,7 +451,7 @@ void CNextion::writeDMRRSSIInt(unsigned int slotNo, unsigned char rssi)
 	if (slotNo == 1U) {
 		m_rssiAccum1 += rssi;
 		m_rssiCount1++;
-
+    
 		if (m_rssiCount1 == DMR_RSSI_COUNT) {
 			char text[25U];
 			::sprintf(text, "t4.txt=\"-%udBm\"", m_rssiAccum1 / DMR_RSSI_COUNT);
@@ -463,7 +564,7 @@ void CNextion::writeDMRBERInt(unsigned int slotNo, float ber)
 
 void CNextion::clearDMRInt(unsigned int slotNo)
 {
-
+	
 	if (slotNo == 1U) {
 		sendCommand("t0.txt=\"1 Listening\"");
 		sendCommandAction(61U);
@@ -493,6 +594,265 @@ void CNextion::clearDMRInt(unsigned int slotNo)
 		sendCommand("t5.txt=\"\"");
 		sendCommand("t7.txt=\"\"");
 	}
+}
+
+void CNextion::writeFusionInt(const char* source, const char* dest, unsigned char dgid, const char* type, const char* origin)
+{
+	assert(source != NULL);
+	assert(dest != NULL);
+	assert(type != NULL);
+	assert(origin != NULL);
+
+	if (m_mode != MODE_YSF) {
+		sendCommand("page YSF");
+		sendCommandAction(4U);
+	}
+
+
+	char text[30U];
+	if (m_brightness>0) {
+		::sprintf(text, "dim=%u", m_brightness);
+		sendCommand(text);
+	}
+
+	::sprintf(text, "t0.txt=\"%s %.10s\"", type, source);
+	sendCommand(text);
+	sendCommandAction(82U);
+
+	::sprintf(text, "t1.txt=\"DG-ID %u\"", dgid);
+	sendCommand(text);
+	sendCommandAction(83U);
+
+	if (::strcmp(origin, "          ") != 0) {
+		::sprintf(text, "t2.txt=\"at %.10s\"", origin);
+		sendCommand(text);
+		sendCommandAction(84U);
+	}
+
+	m_clockDisplayTimer.stop();
+
+	m_mode = MODE_YSF;
+	m_rssiAccum1 = 0U;
+	m_berAccum1  = 0.0F;
+	m_rssiCount1 = 0U;
+	m_berCount1  = 0U;
+}
+
+void CNextion::writeFusionRSSIInt(unsigned char rssi)
+{
+	m_rssiAccum1 += rssi;
+	m_rssiCount1++;
+
+	if (m_rssiCount1 == YSF_RSSI_COUNT) {
+		char text[25U];
+		::sprintf(text, "t3.txt=\"-%udBm\"", m_rssiAccum1 / YSF_RSSI_COUNT);
+		sendCommand(text);
+		sendCommandAction(85U);
+		m_rssiAccum1 = 0U;
+		m_rssiCount1 = 0U;
+	}
+}
+
+void CNextion::writeFusionBERInt(float ber)
+{
+	m_berAccum1 += ber;
+	m_berCount1++;
+
+	if (m_berCount1 == YSF_BER_COUNT) {
+		char text[25U];
+		::sprintf(text, "t4.txt=\"%.1f%%\"", m_berAccum1 / float(YSF_BER_COUNT));
+		sendCommand(text);
+		sendCommandAction(86U);
+		m_berAccum1 = 0.0F;
+		m_berCount1 = 0U;
+	}
+}
+
+void CNextion::clearFusionInt()
+{
+	sendCommand("t0.txt=\"Listening\"");
+	sendCommandAction(81U);
+	sendCommand("t1.txt=\"\"");
+	sendCommand("t2.txt=\"\"");
+	sendCommand("t3.txt=\"\"");
+	sendCommand("t4.txt=\"\"");
+}
+
+void CNextion::writeP25Int(const char* source, bool group, unsigned int dest, const char* type)
+{
+	assert(source != NULL);
+	assert(type != NULL);
+
+	if (m_mode != MODE_P25) {
+		sendCommand("page P25");
+		sendCommandAction(5U);
+	}
+
+	char text[30U];
+	if (m_brightness>0) {
+		::sprintf(text, "dim=%u", m_brightness);
+		sendCommand(text);
+	}
+
+	::sprintf(text, "t0.txt=\"%s %.10s\"", type, source);
+	sendCommand(text);
+	sendCommandAction(102U);
+
+	::sprintf(text, "t1.txt=\"%s%u\"", group ? "TG" : "", dest);
+	sendCommand(text);
+	sendCommandAction(103U);
+
+	m_clockDisplayTimer.stop();
+
+	m_mode = MODE_P25;
+	m_rssiAccum1 = 0U;
+	m_berAccum1  = 0.0F;
+	m_rssiCount1 = 0U;
+	m_berCount1  = 0U;
+}
+
+void CNextion::writeP25RSSIInt(unsigned char rssi)
+{
+	m_rssiAccum1 += rssi;
+	m_rssiCount1++;
+
+	if (m_rssiCount1 == P25_RSSI_COUNT) {
+		char text[25U];
+		::sprintf(text, "t2.txt=\"-%udBm\"", m_rssiAccum1 / P25_RSSI_COUNT);
+		sendCommand(text);
+		sendCommandAction(104U);
+		m_rssiAccum1 = 0U;
+		m_rssiCount1 = 0U;
+	}
+}
+
+void CNextion::writeP25BERInt(float ber)
+{
+	m_berAccum1 += ber;
+	m_berCount1++;
+
+	if (m_berCount1 == P25_BER_COUNT) {
+		char text[25U];
+		::sprintf(text, "t3.txt=\"%.1f%%\"", m_berAccum1 / float(P25_BER_COUNT));
+		sendCommand(text);
+		sendCommandAction(105U);
+		m_berAccum1 = 0.0F;
+		m_berCount1 = 0U;
+	}
+}
+
+void CNextion::clearP25Int()
+{
+	sendCommand("t0.txt=\"Listening\"");
+	sendCommandAction(101U);
+	sendCommand("t1.txt=\"\"");
+	sendCommand("t2.txt=\"\"");
+	sendCommand("t3.txt=\"\"");
+}
+
+void CNextion::writeNXDNInt(const char* source, bool group, unsigned int dest, const char* type)
+{
+	assert(source != NULL);
+	assert(type != NULL);
+
+	if (m_mode != MODE_NXDN) {
+		sendCommand("page NXDN");
+		sendCommandAction(6U);
+	}
+
+	char text[30U];
+	if (m_brightness>0) {
+		::sprintf(text, "dim=%u", m_brightness);
+		sendCommand(text);
+	}
+
+	::sprintf(text, "t0.txt=\"%s %.10s\"", type, source);
+	sendCommand(text);
+	sendCommandAction(122U);
+
+	::sprintf(text, "t1.txt=\"%s%u\"", group ? "TG" : "", dest);
+	sendCommand(text);
+	sendCommandAction(123U);
+
+	m_clockDisplayTimer.stop();
+
+	m_mode = MODE_NXDN;
+	m_rssiAccum1 = 0U;
+	m_berAccum1  = 0.0F;
+	m_rssiCount1 = 0U;
+	m_berCount1  = 0U;
+}
+
+void CNextion::writeNXDNRSSIInt(unsigned char rssi)
+{
+	m_rssiAccum1 += rssi;
+	m_rssiCount1++;
+
+	if (m_rssiCount1 == NXDN_RSSI_COUNT) {
+		char text[25U];
+		::sprintf(text, "t2.txt=\"-%udBm\"", m_rssiAccum1 / NXDN_RSSI_COUNT);
+		sendCommand(text);
+		sendCommandAction(124U);
+		m_rssiAccum1 = 0U;
+		m_rssiCount1 = 0U;
+	}
+}
+
+void CNextion::writeNXDNBERInt(float ber)
+{
+	m_berAccum1 += ber;
+	m_berCount1++;
+
+	if (m_berCount1 == NXDN_BER_COUNT) {
+		char text[25U];
+		::sprintf(text, "t3.txt=\"%.1f%%\"", m_berAccum1 / float(NXDN_BER_COUNT));
+		sendCommand(text);
+		sendCommandAction(125U);
+		m_berAccum1 = 0.0F;
+		m_berCount1 = 0U;
+	}
+}
+
+void CNextion::clearNXDNInt()
+{
+	sendCommand("t0.txt=\"Listening\"");
+	sendCommandAction(121U);
+	sendCommand("t1.txt=\"\"");
+	sendCommand("t2.txt=\"\"");
+	sendCommand("t3.txt=\"\"");
+}
+
+void CNextion::writePOCSAGInt(uint32_t ric, const std::string& message)
+{
+	if (m_mode != MODE_POCSAG) {
+		sendCommand("page POCSAG");
+		sendCommandAction(7U);
+	}
+
+	char text[200U];
+	if (m_brightness>0) {
+		::sprintf(text, "dim=%u", m_brightness);
+		sendCommand(text);
+	}
+
+	::sprintf(text, "t0.txt=\"RIC: %u\"", ric);
+	sendCommand(text);
+	sendCommandAction(132U);
+
+	::sprintf(text, "t1.txt=\"%s\"", message.c_str());
+	sendCommand(text);
+	sendCommandAction(133U);
+
+	m_clockDisplayTimer.stop();
+
+	m_mode = MODE_POCSAG;
+}
+
+void CNextion::clearPOCSAGInt()
+{
+	sendCommand("t0.txt=\"Waiting\"");
+	sendCommandAction(134U);
+	sendCommand("t1.txt=\"\"");
 }
 
 void CNextion::writeCWInt()

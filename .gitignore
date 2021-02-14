@@ -26,5 +26,8 @@
 *.a
 *.lib
 
+# Config file
+DOH.cfg
+
 # Executables
 doh

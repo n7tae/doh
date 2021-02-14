@@ -24,6 +24,10 @@
 
 #include <string>
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#endif
+
 enum SERIAL_SPEED {
 	SERIAL_1200   = 1200,
 	SERIAL_2400   = 2400,
@@ -49,13 +53,25 @@ public:
 
 	virtual void close();
 
+#if defined(__APPLE__)
+	virtual int setNonblock(bool nonblock);
+#endif
+
 protected:
 	std::string    m_device;
 	SERIAL_SPEED   m_speed;
 	bool           m_assertRTS;
+#if defined(_WIN32) || defined(_WIN64)
+	HANDLE         m_handle;
+#else
 	int            m_fd;
+#endif
 
+#if defined(_WIN32) || defined(_WIN64)
+	int readNonblock(unsigned char* buffer, unsigned int length);
+#else
 	bool canWrite();
+#endif
 };
 
 #endif

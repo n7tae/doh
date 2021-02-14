@@ -18,8 +18,13 @@
 
 #include "Log.h"
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <Windows.h>
+#else
 #include <sys/time.h>
 #include <unistd.h>
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
@@ -44,7 +49,7 @@ static char LEVELS[] = " DMIWEF";
 static bool logOpenRotate()
 {
 	bool status = false;
-
+	
 	if (m_fileLevel == 0U)
 		return true;
 
@@ -62,15 +67,21 @@ static bool logOpenRotate()
 	}
 
 	char filename[200U];
+#if defined(_WIN32) || defined(_WIN64)
+	::sprintf(filename, "%s\\%s-%04d-%02d-%02d.log", m_filePath.c_str(), m_fileRoot.c_str(), tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+#else
 	::sprintf(filename, "%s/%s-%04d-%02d-%02d.log", m_filePath.c_str(), m_fileRoot.c_str(), tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+#endif
 
 	if ((m_fpLog = ::fopen(filename, "a+t")) != NULL) {
 		status = true;
 
+#if !defined(_WIN32) && !defined(_WIN64)
 		if (m_daemon)
 			dup2(fileno(m_fpLog), fileno(stderr));
+#endif
 	}
-
+	
 	m_tm = *tm;
 
 	return status;
@@ -87,13 +98,19 @@ static bool logOpenNoRotate()
 		return true;
 
 	char filename[200U];
+#if defined(_WIN32) || defined(_WIN64)
+	::sprintf(filename, "%s\\%s.log", m_filePath.c_str(), m_fileRoot.c_str());
+#else
 	::sprintf(filename, "%s/%s.log", m_filePath.c_str(), m_fileRoot.c_str());
+#endif
 
 	if ((m_fpLog = ::fopen(filename, "a+t")) != NULL) {
 		status = true;
 
+#if !defined(_WIN32) && !defined(_WIN64)
 		if (m_daemon)
 			dup2(fileno(m_fpLog), fileno(stderr));
+#endif
 	}
 
 	return status;
@@ -133,12 +150,19 @@ void Log(unsigned int level, const char* fmt, ...)
 	assert(fmt != NULL);
 
 	char buffer[501U];
+#if defined(_WIN32) || defined(_WIN64)
+	SYSTEMTIME st;
+	::GetSystemTime(&st);
+
+	::sprintf(buffer, "%c: %04u-%02u-%02u %02u:%02u:%02u.%03u ", LEVELS[level], st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+#else
 	struct timeval now;
 	::gettimeofday(&now, NULL);
 
 	struct tm* tm = ::gmtime(&now.tv_sec);
 
 	::sprintf(buffer, "%c: %04d-%02d-%02d %02d:%02d:%02d.%03ld ", LEVELS[level], tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, now.tv_usec / 1000L);
+#endif
 
 	va_list vl;
 	va_start(vl, fmt);

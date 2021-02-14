@@ -61,6 +61,7 @@
 #include <clocale>
 #include <ctime>
 
+#if !defined(_WIN32) && !defined(_WIN64)
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -70,6 +71,9 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdarg.h>
+#else
+#include <ws2tcpip.h>
+#endif
 
 #define BUFFER_MAX_LEN 128
 
@@ -306,7 +310,7 @@ void CLCDproc::writeDStarRSSIInt(unsigned char rssi)
 	if (m_rssiCount1 == 0U) {
 		socketPrintf(m_socketfd, "widget_set DStar Line4 1 4 %u 4 h 3 \"-%3udBm\"", m_cols - 1, rssi);
 	}
-
+ 
 	m_rssiCount1++;
  	if (m_rssiCount1 >= DSTAR_RSSI_COUNT)
  		m_rssiCount1 = 0U;
@@ -369,30 +373,30 @@ void CLCDproc::writeDMRInt(unsigned int slotNo, const std::string& src, bool gro
 	}
 	socketPrintf(m_socketfd, "output 16"); // Set LED1 color red
 	m_dmr = true;
-	m_rssiCount1 = 0U;
-  m_rssiCount2 = 0U;
-}
-
-void CLCDproc::writeDMRRSSIInt(unsigned int slotNo, unsigned char rssi)
-{
-	if (m_rows > 2) {
+	m_rssiCount1 = 0U; 
+  m_rssiCount2 = 0U; 
+} 
+ 
+void CLCDproc::writeDMRRSSIInt(unsigned int slotNo, unsigned char rssi) 
+{ 
+	if (m_rows > 2) {	
 	  if (slotNo == 1U) {
 		  if (m_rssiCount1 == 0U)
-				socketPrintf(m_socketfd, "widget_set DMR Slot1RSSI %u %u -%3udBm", 1, 4, rssi);
+				socketPrintf(m_socketfd, "widget_set DMR Slot1RSSI %u %u -%3udBm", 1, 4, rssi); 
 
-			m_rssiCount1++;
+			m_rssiCount1++; 
 
 			if (m_rssiCount1 >= DMR_RSSI_COUNT)
-				m_rssiCount1 = 0U;
-		} else {
+				m_rssiCount1 = 0U; 
+		} else { 
 			if (m_rssiCount2 == 0U)
-				socketPrintf(m_socketfd, "widget_set DMR Slot2RSSI %u %u -%3udBm", (m_cols / 2) + 1, 4, rssi);
+				socketPrintf(m_socketfd, "widget_set DMR Slot2RSSI %u %u -%3udBm", (m_cols / 2) + 1, 4, rssi); 
 
-			m_rssiCount2++;
+			m_rssiCount2++; 
 
 			if (m_rssiCount2 >= DMR_RSSI_COUNT)
-				m_rssiCount2 = 0U;
-		}
+				m_rssiCount2 = 0U; 
+		} 
 	}
 }
 
@@ -446,7 +450,7 @@ void CLCDproc::writeFusionRSSIInt(unsigned char rssi)
 {
 	if (m_rssiCount1 == 0U)
 		socketPrintf(m_socketfd, "widget_set YSF Line4 1 4 %u 4 h 3 \"-%3udBm\"", m_cols - 1, rssi);
-
+ 
 	m_rssiCount1++;
 	if (m_rssiCount1 >= YSF_RSSI_COUNT)
 		m_rssiCount1 = 0U;
@@ -491,7 +495,7 @@ void CLCDproc::writeP25RSSIInt(unsigned char rssi)
 	if (m_rssiCount1 == 0U) {
 		socketPrintf(m_socketfd, "widget_set P25 Line4 1 4 %u 4 h 3 \"-%3udBm\"", m_cols - 1, rssi);
 	}
-
+ 
 	m_rssiCount1++;
  	if (m_rssiCount1 >= P25_RSSI_COUNT)
  		m_rssiCount1 = 0U;
@@ -724,7 +728,7 @@ int CLCDproc::socketPrintf(int fd, const char *format, ...)
 	if (size > BUFFER_MAX_LEN)
 		LogWarning("LCDproc, socketPrintf: vsnprintf truncated message");
 
-	FD_ZERO(&m_writefds);   // empty writefds
+	FD_ZERO(&m_writefds);   // empty writefds 
 	FD_SET(m_socketfd, &m_writefds);
 
 	m_timeout.tv_sec = 0;
