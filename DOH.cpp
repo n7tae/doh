@@ -31,18 +31,27 @@
 
 #include <cstdlib>
 
+#define VERSION "210115"
+
+#if !defined(_WIN32) && !defined(_WIN64)
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <pwd.h>
+#endif
 
-#define VERSION "210115"
+#if defined(_WIN32) || defined(_WIN64)
+const char* DEFAULT_INI_FILE = "MMDVM.ini";
+#else
+const char* DEFAULT_INI_FILE = "/etc/MMDVM.ini";
+#endif
 
 static bool m_killed = false;
 static int  m_signal = 0;
 static bool m_reload = false;
 
+#if !defined(_WIN32) && !defined(_WIN64)
 static void sigHandler1(int signum)
 {
 	m_killed = true;
@@ -53,6 +62,7 @@ static void sigHandler2(int signum)
 {
 	m_reload = true;
 }
+#endif
 
 const char* HEADER1 = "This software is for use on amateur radio networks only,";
 const char* HEADER2 = "it is to be used for educational purposes only. Its use on";
@@ -61,18 +71,19 @@ const char* HEADER4 = "Copyright(C) 2015-2020 by Jonathan Naylor, G4KLX and othe
 
 int main(int argc, char** argv)
 {
-	printf("DOH version %s\n", VERSION);
+	printf("MMDVMHost version %s\n", VERSION);
 	if (argc != 2)
 	{
-		fprintf(stderr, "Usage: %s /path/to/config/file\n", argv[0]);
+		fprintf(stderr, "Usage: %s /path/to/config/file\n", argv[1]);
 		return 1;
 	}
 
+#if !defined(_WIN32) && !defined(_WIN64)
 	::signal(SIGINT,  sigHandler1);
 	::signal(SIGTERM, sigHandler1);
 	::signal(SIGHUP,  sigHandler1);
 	::signal(SIGUSR1, sigHandler2);
-
+#endif
 
 	int ret = 0;
 
@@ -124,11 +135,20 @@ CMMDVMHost::CMMDVMHost(const std::string& confFile) :
 	m_cwIdTimer(1000U),
 	m_duplex(false),
 	m_timeout(180U),
+	m_dstarEnabled(false),
+	m_dmrEnabled(true),
+	m_ysfEnabled(false),
+	m_p25Enabled(false),
+	m_nxdnEnabled(false),
+	m_pocsagEnabled(false),
+	m_fmEnabled(false),
 	m_cwIdTime(0U),
 	m_dmrLookup(NULL),
 	m_callsign(),
 	m_id(0U),
 	m_cwCallsign(),
+	m_lockFileEnabled(false),
+	m_lockFileName(),
 	m_fixedMode(false)
 {
 	CUDPSocket::startup();
@@ -144,14 +164,19 @@ int CMMDVMHost::run()
 	bool ret = m_conf.read();
 	if (!ret)
 	{
-		fprintf(stderr, "DOH: cannot read the .ini file\n");
+		::fprintf(stderr, "MMDVMHost: cannot read the .ini file\n");
 		return 1;
 	}
 
+
+#if !defined(_WIN32) && !defined(_WIN64)
 	ret = ::LogInitialise(false, m_conf.getLogFilePath(), m_conf.getLogFileRoot(), m_conf.getLogFileLevel(), m_conf.getLogDisplayLevel(), m_conf.getLogFileRotate());
+#else
+	ret = ::LogInitialise(false, m_conf.getLogFilePath(), m_conf.getLogFileRoot(), m_conf.getLogFileLevel(), m_conf.getLogDisplayLevel(), m_conf.getLogFileRotate());
+#endif
 	if (!ret)
 	{
-		::fprintf(stderr, "DOH: unable to open the log file\n");
+		::fprintf(stderr, "MMDVMHost: unable to open the log file\n");
 		return 1;
 	}
 
@@ -171,9 +196,12 @@ int CMMDVMHost::run()
 
 	m_display = CDisplay::createDisplay(m_conf, NULL, m_modem);
 
-	ret = createDMRNetwork();
-	if (!ret)
-		return 1;
+	if (m_dmrEnabled)
+	{
+		ret = createDMRNetwork();
+		if (!ret)
+			return 1;
+	}
 
 	if (m_conf.getCWIdEnabled())
 	{
@@ -202,7 +230,7 @@ int CMMDVMHost::run()
 	}
 
 	// For DMR and P25 we try to map IDs to callsigns
-	if (true)
+	if (m_dmrEnabled || m_p25Enabled)
 	{
 		std::string lookupFile  = m_conf.getDMRIdLookupFile();
 		unsigned int reloadTime = m_conf.getDMRIdLookupTime();
@@ -223,7 +251,7 @@ int CMMDVMHost::run()
 	CTimer dmrBeaconIntervalTimer(1000U);
 	CTimer dmrBeaconDurationTimer(1000U);
 
-	if (true)
+	if (m_dmrEnabled)
 	{
 		unsigned int id             = m_conf.getDMRId();
 		unsigned int colorCode      = m_conf.getDMRColorCode();
@@ -327,7 +355,13 @@ int CMMDVMHost::run()
 
 	while (!m_killed)
 	{
-		setMode(MODE_IDLE);
+		bool lockout1 = m_modem->hasLockout();
+		bool lockout2 = false;
+
+		if ((lockout1 || lockout2) && m_mode != MODE_LOCKOUT)
+			setMode(MODE_LOCKOUT);
+		else if ((!lockout1 && !lockout2) && m_mode == MODE_LOCKOUT)
+			setMode(MODE_IDLE);
 
 		bool error = m_modem->hasError();
 		if (error && m_mode != MODE_ERROR)
@@ -344,6 +378,8 @@ int CMMDVMHost::run()
 		unsigned char data[MODEM_DATA_LEN];
 		unsigned int len;
 		bool ret;
+
+		len = m_modem->readDStarData(data);
 
 		len = m_modem->readDMRData1(data);
 		if (m_dmr != NULL && len > 0U)
@@ -449,6 +485,20 @@ int CMMDVMHost::run()
 			}
 		}
 
+		len = m_modem->readYSFData(data);
+
+		len = m_modem->readP25Data(data);
+
+		len = m_modem->readNXDNData(data);
+
+		len = m_modem->readTransparentData(data);
+
+		if (!m_fixedMode)
+		{
+			if (m_modeTimer.isRunning() && m_modeTimer.hasExpired())
+				setMode(MODE_IDLE);
+		}
+
 		if (m_dmr != NULL)
 		{
 			ret = m_modem->hasDMRSpace1();
@@ -510,6 +560,8 @@ int CMMDVMHost::run()
 			}
 		}
 
+		remoteControl();
+
 		unsigned int ms = stopWatch.elapsed();
 		stopWatch.start();
 
@@ -527,10 +579,8 @@ int CMMDVMHost::run()
 
 			m_reload = false;
 		}
-
 		if (m_dmr != NULL)
 			m_dmr->clock();
-
 		if (m_dmrNetwork != NULL)
 			m_dmrNetwork->clock(ms);
 
@@ -596,6 +646,9 @@ int CMMDVMHost::run()
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();
 		}
+
+		if (ms < 5U)
+			CThread::sleep(5U);
 	}
 
 	setMode(MODE_QUIT);
@@ -685,7 +738,7 @@ bool CMMDVMHost::createModem()
 
 	m_modem = CModem::createModem(port, m_duplex, rxInvert, txInvert, pttInvert, txDelay, dmrDelay, useCOSAsLockout, trace, debug);
 	m_modem->setSerialParams(protocol, address);
-	m_modem->setModeParams(false, true, false, false, false, false, false);
+	m_modem->setModeParams(m_dstarEnabled, m_dmrEnabled, m_ysfEnabled, m_p25Enabled, m_nxdnEnabled, m_pocsagEnabled, m_fmEnabled);
 	m_modem->setLevels(rxLevel, cwIdTXLevel, dstarTXLevel, dmrTXLevel, ysfTXLevel, p25TXLevel, nxdnTXLevel, pocsagTXLevel, fmTXLevel);
 	m_modem->setRFParams(rxFrequency, rxOffset, txFrequency, txOffset, txDCOffset, rxDCOffset, rfLevel, pocsagFrequency);
 	m_modem->setDMRParams(colorCode);
@@ -701,6 +754,11 @@ bool CMMDVMHost::createModem()
 		return false;
 	}
 
+	return true;
+}
+
+bool CMMDVMHost::createDStarNetwork()
+{
 	return true;
 }
 
@@ -793,8 +851,35 @@ bool CMMDVMHost::createDMRNetwork()
 	return true;
 }
 
+bool CMMDVMHost::createYSFNetwork()
+{
+	return true;
+}
+
+bool CMMDVMHost::createP25Network()
+{
+	return true;
+}
+
+bool CMMDVMHost::createNXDNNetwork()
+{
+	return true;
+}
+
+bool CMMDVMHost::createPOCSAGNetwork()
+{
+	return true;
+}
+
 void CMMDVMHost::readParams()
 {
+	m_dstarEnabled  = false;
+	m_dmrEnabled    = true;
+	m_ysfEnabled    = false;
+	m_p25Enabled    = false;
+	m_nxdnEnabled   = false;
+	m_pocsagEnabled = false;
+	m_fmEnabled     = false;
 	m_duplex        = m_conf.getDuplex();
 	m_callsign      = m_conf.getCallsign();
 	m_id            = m_conf.getId();
@@ -805,7 +890,13 @@ void CMMDVMHost::readParams()
 	LogInfo("    Id: %u", m_id);
 	LogInfo("    Duplex: %s", m_duplex ? "yes" : "no");
 	LogInfo("    Timeout: %us", m_timeout);
-	LogInfo("    DMR: enabled");
+	LogInfo("    D-Star: %s", m_dstarEnabled ? "enabled" : "disabled");
+	LogInfo("    DMR: %s", m_dmrEnabled ? "enabled" : "disabled");
+	LogInfo("    YSF: %s", m_ysfEnabled ? "enabled" : "disabled");
+	LogInfo("    P25: %s", m_p25Enabled ? "enabled" : "disabled");
+	LogInfo("    NXDN: %s", m_nxdnEnabled ? "enabled" : "disabled");
+	LogInfo("    POCSAG: %s", m_pocsagEnabled ? "enabled" : "disabled");
+	LogInfo("    FM: %s", m_fmEnabled ? "enabled" : "disabled");
 }
 
 void CMMDVMHost::setMode(unsigned char mode)
@@ -815,6 +906,18 @@ void CMMDVMHost::setMode(unsigned char mode)
 
 	switch (mode)
 	{
+	case MODE_DSTAR:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		m_modem->setMode(MODE_DSTAR);
+		m_mode = MODE_DSTAR;
+		m_modeTimer.start();
+		m_cwIdTimer.stop();
+		createLockFile("D-Star");
+		break;
+
 	case MODE_DMR:
 		if (m_dmrNetwork != NULL)
 			m_dmrNetwork->enable(true);
@@ -829,6 +932,108 @@ void CMMDVMHost::setMode(unsigned char mode)
 		m_mode = MODE_DMR;
 		m_modeTimer.start();
 		m_cwIdTimer.stop();
+		createLockFile("DMR");
+		break;
+
+	case MODE_YSF:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		m_modem->setMode(MODE_YSF);
+		m_mode = MODE_YSF;
+		m_modeTimer.start();
+		m_cwIdTimer.stop();
+		createLockFile("System Fusion");
+		break;
+
+	case MODE_P25:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		m_modem->setMode(MODE_P25);
+		m_mode = MODE_P25;
+		m_modeTimer.start();
+		m_cwIdTimer.stop();
+		createLockFile("P25");
+		break;
+
+	case MODE_NXDN:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		m_modem->setMode(MODE_NXDN);
+		m_mode = MODE_NXDN;
+		m_modeTimer.start();
+		m_cwIdTimer.stop();
+		createLockFile("NXDN");
+		break;
+
+	case MODE_POCSAG:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		m_modem->setMode(MODE_POCSAG);
+		m_mode = MODE_POCSAG;
+		m_modeTimer.start();
+		m_cwIdTimer.stop();
+		createLockFile("POCSAG");
+		break;
+
+	case MODE_FM:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
+		{
+			m_modem->writeDMRStart(false);
+			m_dmrTXTimer.stop();
+		}
+		m_display->setFM();
+		m_mode = MODE_FM;
+		m_modeTimer.stop();
+		m_cwIdTimer.stop();
+		createLockFile("FM");
+		break;
+
+	case MODE_LOCKOUT:
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
+		{
+			m_modem->writeDMRStart(false);
+			m_dmrTXTimer.stop();
+		}
+		m_modem->setMode(MODE_IDLE);
+		m_display->setLockout();
+		m_mode = MODE_LOCKOUT;
+		m_modeTimer.stop();
+		m_cwIdTimer.stop();
+		removeLockFile();
+		break;
+
+	case MODE_ERROR:
+		LogMessage("Mode set to Error");
+		if (m_dmrNetwork != NULL)
+			m_dmrNetwork->enable(false);
+		if (m_dmr != NULL)
+			m_dmr->enable(false);
+		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
+		{
+			m_modem->writeDMRStart(false);
+			m_dmrTXTimer.stop();
+		}
+		m_display->setError("MODEM");
+		m_mode = MODE_ERROR;
+		m_modeTimer.stop();
+		m_cwIdTimer.stop();
+		removeLockFile();
 		break;
 
 	default:
@@ -858,6 +1063,47 @@ void CMMDVMHost::setMode(unsigned char mode)
 			m_display->setQuit();
 		m_mode = MODE_IDLE;
 		m_modeTimer.stop();
+		removeLockFile();
 		break;
 	}
+}
+
+void  CMMDVMHost::createLockFile(const char* mode) const
+{
+	if (m_lockFileEnabled)
+	{
+		FILE* fp = ::fopen(m_lockFileName.c_str(), "wt");
+		if (fp != NULL)
+		{
+			::fprintf(fp, "%s\n", mode);
+			::fclose(fp);
+		}
+	}
+}
+
+void  CMMDVMHost::removeLockFile() const
+{
+	if (m_lockFileEnabled)
+		::remove(m_lockFileName.c_str());
+}
+
+void CMMDVMHost::remoteControl()
+{
+}
+
+void CMMDVMHost::processModeCommand(unsigned char mode, unsigned int timeout)
+{
+	m_fixedMode = false;
+	m_modeTimer.setTimeout(timeout);
+
+	setMode(mode);
+}
+
+void CMMDVMHost::processEnableCommand(bool& mode, bool enabled)
+{
+	LogDebug("Setting mode current=%s new=%s",mode ? "true" : "false",enabled ? "true" : "false");
+	mode=enabled;
+	m_modem->setModeParams(m_dstarEnabled, m_dmrEnabled, m_ysfEnabled, m_p25Enabled, m_nxdnEnabled, m_pocsagEnabled, m_fmEnabled);
+	if (!m_modem->writeConfig())
+		LogError("Cannot write Config to MMDVM");
 }

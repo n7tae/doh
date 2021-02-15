@@ -61,18 +61,39 @@ private:
 	CTimer          m_cwIdTimer;
 	bool            m_duplex;
 	unsigned int    m_timeout;
+	bool            m_dstarEnabled;
+	bool            m_dmrEnabled;
+	bool            m_ysfEnabled;
+	bool            m_p25Enabled;
+	bool            m_nxdnEnabled;
+	bool            m_pocsagEnabled;
+	bool            m_fmEnabled;
 	unsigned int    m_cwIdTime;
 	CDMRLookup*     m_dmrLookup;
 	std::string     m_callsign;
 	unsigned int    m_id;
 	std::string     m_cwCallsign;
+	bool            m_lockFileEnabled;
+	std::string     m_lockFileName;
 	bool            m_fixedMode;
 
 	void readParams();
 	bool createModem();
+	bool createDStarNetwork();
 	bool createDMRNetwork();
+	bool createYSFNetwork();
+	bool createP25Network();
+	bool createNXDNNetwork();
+	bool createPOCSAGNetwork();
+
+	void remoteControl();
+	void processModeCommand(unsigned char mode, unsigned int timeout);
+	void processEnableCommand(bool& mode, bool enabled);
 
 	void setMode(unsigned char mode);
+
+	void createLockFile(const char* mode) const;
+	void removeLockFile() const;
 };
 
 #endif
