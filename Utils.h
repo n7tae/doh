@@ -16,7 +16,8 @@
 
 #include <string>
 
-class CUtils {
+class CUtils
+{
 public:
 	static void dump(const std::string& title, const unsigned char* data, unsigned int length);
 	static void dump(int level, const std::string& title, const unsigned char* data, unsigned int length);

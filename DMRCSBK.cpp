@@ -26,15 +26,15 @@
 #include <cassert>
 
 CDMRCSBK::CDMRCSBK() :
-m_data(NULL),
-m_CSBKO(CSBKO_NONE),
-m_FID(0x00U),
-m_GI(false),
-m_bsId(0U),
-m_srcId(0U),
-m_dstId(0U),
-m_dataContent(false),
-m_CBF(0U)
+	m_data(NULL),
+	m_CSBKO(CSBKO_NONE),
+	m_FID(0x00U),
+	m_GI(false),
+	m_bsId(0U),
+	m_srcId(0U),
+	m_dstId(0U),
+	m_dataContent(false),
+	m_CBF(0U)
 {
 	m_data = new unsigned char[12U];
 }
@@ -65,11 +65,12 @@ bool CDMRCSBK::put(const unsigned char* bytes)
 	m_CSBKO = CSBKO(m_data[0U] & 0x3FU);
 	m_FID   = m_data[1U];
 
-	switch (m_CSBKO) {
+	switch (m_CSBKO)
+	{
 	case CSBKO_BSDWNACT:
 		m_GI    = false;
 		m_bsId  = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
-		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U]; 
+		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
 		m_dataContent = false;
 		m_CBF   = 0U;
 		CUtils::dump(1U, "Downlink Activate CSBK", m_data, 12U);
@@ -183,7 +184,8 @@ bool CDMRCSBK::getOVCM() const
 void CDMRCSBK::setOVCM(bool ovcm)
 {
 	// Set OVCM only in CSBKs having the service options information
-	if ((m_CSBKO == CSBKO_UUVREQ) || (m_CSBKO == CSBKO_UUANSRSP)) {
+	if ((m_CSBKO == CSBKO_UUVREQ) || (m_CSBKO == CSBKO_UUANSRSP))
+	{
 		if (ovcm)
 			m_data[2U] |= 0x04U;
 	}

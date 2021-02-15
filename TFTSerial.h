@@ -28,19 +28,19 @@
 class CTFTSerial : public CDisplay
 {
 public:
-  CTFTSerial(const std::string& callsign, unsigned int dmrid, ISerialPort* serial, unsigned int brightness);
-  virtual ~CTFTSerial();
+	CTFTSerial(const std::string& callsign, unsigned int dmrid, ISerialPort* serial, unsigned int brightness);
+	virtual ~CTFTSerial();
 
-  virtual bool open();
+	virtual bool open();
 
-  virtual void close();
+	virtual void close();
 
 protected:
 	virtual void setIdleInt();
 	virtual void setErrorInt(const char* text);
 	virtual void setLockoutInt();
 	virtual void setQuitInt();
-    virtual void setFMInt();
+	virtual void setFMInt();
 
 	virtual void writeDStarInt(const char* my1, const char* my2, const char* your, const char* type, const char* reflector);
 	virtual void clearDStarInt();
@@ -64,26 +64,26 @@ protected:
 	virtual void clearCWInt();
 
 private:
-   std::string   m_callsign;
-   unsigned int  m_dmrid;
-   ISerialPort*  m_serial;
-   unsigned int  m_brightness;
-   unsigned char m_mode;
+	std::string   m_callsign;
+	unsigned int  m_dmrid;
+	ISerialPort*  m_serial;
+	unsigned int  m_brightness;
+	unsigned char m_mode;
 
-  void clearScreen();
-  void setBackground(unsigned char colour);
-  void setForeground(unsigned char colour);
-  void setRotation(unsigned char rotation);
-  void setFontSize(unsigned char size);
-  void gotoBegOfLine();
-  void gotoPosText(unsigned char x, unsigned char y);
-  void gotoPosPixel(unsigned char x, unsigned char y);
-  void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2);
-  void drawBox(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, bool filled);
-  void drawCircle(unsigned char x, unsigned char y, unsigned char radius, bool filled);
-  void displayBitmap(unsigned char x, unsigned char y, const char* filename);
-  void setBrightness(unsigned char brightness);
-  void displayText(const char* text);
+	void clearScreen();
+	void setBackground(unsigned char colour);
+	void setForeground(unsigned char colour);
+	void setRotation(unsigned char rotation);
+	void setFontSize(unsigned char size);
+	void gotoBegOfLine();
+	void gotoPosText(unsigned char x, unsigned char y);
+	void gotoPosPixel(unsigned char x, unsigned char y);
+	void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2);
+	void drawBox(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, bool filled);
+	void drawCircle(unsigned char x, unsigned char y, unsigned char radius, bool filled);
+	void displayBitmap(unsigned char x, unsigned char y, const char* filename);
+	void setBrightness(unsigned char brightness);
+	void displayText(const char* text);
 };
 
 #endif

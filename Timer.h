@@ -19,7 +19,8 @@
 #ifndef	Timer_H
 #define	Timer_H
 
-class CTimer {
+class CTimer
+{
 public:
 	CTimer(unsigned int ticksPerSec, unsigned int secs = 0U, unsigned int msecs = 0U);
 	~CTimer();

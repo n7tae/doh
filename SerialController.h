@@ -28,7 +28,8 @@
 #include <windows.h>
 #endif
 
-enum SERIAL_SPEED {
+enum SERIAL_SPEED
+{
 	SERIAL_1200   = 1200,
 	SERIAL_2400   = 2400,
 	SERIAL_4800   = 4800,
@@ -40,7 +41,8 @@ enum SERIAL_SPEED {
 	SERIAL_230400 = 230400
 };
 
-class CSerialController : public ISerialPort {
+class CSerialController : public ISerialPort
+{
 public:
 	CSerialController(const std::string& device, SERIAL_SPEED speed, bool assertRTS = false);
 	virtual ~CSerialController();

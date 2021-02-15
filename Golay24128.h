@@ -19,7 +19,8 @@
 #ifndef Golay24128_H
 #define Golay24128_H
 
-class CGolay24128 {
+class CGolay24128
+{
 public:
 	static unsigned int encode23127(unsigned int data);
 	static unsigned int encode24128(unsigned int data);

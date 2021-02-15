@@ -19,7 +19,8 @@
 #if !defined(AMBEFEC_H)
 #define	AMBEFEC_H
 
-class CAMBEFEC {
+class CAMBEFEC
+{
 public:
 	CAMBEFEC();
 	~CAMBEFEC();

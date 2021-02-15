@@ -21,9 +21,9 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 CStopWatch::CStopWatch() :
-m_frequencyS(),
-m_frequencyMS(),
-m_start()
+	m_frequencyS(),
+	m_frequencyMS(),
+	m_start()
 {
 	::QueryPerformanceFrequency(&m_frequencyS);
 
@@ -66,7 +66,7 @@ unsigned int CStopWatch::elapsed()
 #include <ctime>
 
 CStopWatch::CStopWatch() :
-m_startMS(0ULL)
+	m_startMS(0ULL)
 {
 }
 

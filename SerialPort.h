@@ -19,7 +19,8 @@
 #ifndef SerialPort_H
 #define SerialPort_H
 
-class ISerialPort {
+class ISerialPort
+{
 public:
 	virtual ~ISerialPort() = 0;
 

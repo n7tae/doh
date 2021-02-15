@@ -16,7 +16,8 @@
 
 #include "DMRDefines.h"
 
-class CDMRData {
+class CDMRData
+{
 public:
 	CDMRData(const CDMRData& data);
 	CDMRData();

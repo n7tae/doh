@@ -22,9 +22,9 @@ static bool networkInfoInitialized = false;
 static unsigned char passCounter = 0;
 
 CCASTInfo::CCASTInfo(CModem* modem) :
-CDisplay(),
-m_modem(modem),
-m_ipaddress()
+	CDisplay(),
+	m_modem(modem),
+	m_ipaddress()
 {
 }
 
@@ -39,27 +39,28 @@ bool CCASTInfo::open()
 
 void CCASTInfo::setIdleInt()
 {
-    unsigned char info[100U];
-    CNetworkInfo* m_network;
+	unsigned char info[100U];
+	CNetworkInfo* m_network;
 
-    passCounter ++;
-    if (passCounter > 253U)
-        networkInfoInitialized = false;
+	passCounter ++;
+	if (passCounter > 253U)
+		networkInfoInitialized = false;
 
-    if (! networkInfoInitialized) {
-        //LogMessage("Initialize CNetworkInfo");
-        info[0]=0;
-        m_network = new CNetworkInfo;
-        m_network->getNetworkInterface(info);
-        m_ipaddress = (char*)info;
-        delete m_network;
+	if (! networkInfoInitialized)
+	{
+		//LogMessage("Initialize CNetworkInfo");
+		info[0]=0;
+		m_network = new CNetworkInfo;
+		m_network->getNetworkInterface(info);
+		m_ipaddress = (char*)info;
+		delete m_network;
 
-        if (m_modem != NULL)
-            m_modem->writeIPInfo(m_ipaddress);
+		if (m_modem != NULL)
+			m_modem->writeIPInfo(m_ipaddress);
 
-        networkInfoInitialized = true;
-        passCounter = 0;
-    }
+		networkInfoInitialized = true;
+		passCounter = 0;
+	}
 
 
 }
@@ -82,8 +83,8 @@ void CCASTInfo::setFMInt()
 
 void CCASTInfo::writeDStarInt(const char* my1, const char* my2, const char* your, const char* type, const char* reflector)
 {
-   if (m_modem != NULL)
-        m_modem->writeDStarInfo(my1, my2, your, type, reflector);
+	if (m_modem != NULL)
+		m_modem->writeDStarInfo(my1, my2, your, type, reflector);
 }
 
 void CCASTInfo::clearDStarInt()
@@ -92,8 +93,8 @@ void CCASTInfo::clearDStarInt()
 
 void CCASTInfo::writeDMRInt(unsigned int slotNo, const std::string& src, bool group, const std::string& dst, const char* type)
 {
-   if (m_modem != NULL)
-        m_modem->writeDMRInfo(slotNo, src, group, dst, type);
+	if (m_modem != NULL)
+		m_modem->writeDMRInfo(slotNo, src, group, dst, type);
 }
 
 void CCASTInfo::clearDMRInt(unsigned int slotNo)
@@ -102,8 +103,8 @@ void CCASTInfo::clearDMRInt(unsigned int slotNo)
 
 void CCASTInfo::writeFusionInt(const char* source, const char* dest, unsigned char dgid, const char* type, const char* origin)
 {
-    if (m_modem != NULL)
-        m_modem->writeYSFInfo(source, dest, dgid, type, origin);
+	if (m_modem != NULL)
+		m_modem->writeYSFInfo(source, dest, dgid, type, origin);
 }
 
 void CCASTInfo::clearFusionInt()
@@ -112,8 +113,8 @@ void CCASTInfo::clearFusionInt()
 
 void CCASTInfo::writeP25Int(const char* source, bool group, unsigned int dest, const char* type)
 {
-    if (m_modem != NULL)
-        m_modem->writeP25Info(source, group, dest, type);
+	if (m_modem != NULL)
+		m_modem->writeP25Info(source, group, dest, type);
 }
 
 void CCASTInfo::clearP25Int()
@@ -122,8 +123,8 @@ void CCASTInfo::clearP25Int()
 
 void CCASTInfo::writeNXDNInt(const char* source, bool group, unsigned int dest, const char* type)
 {
-    if (m_modem != NULL)
-        m_modem->writeNXDNInfo(source, group, dest, type);
+	if (m_modem != NULL)
+		m_modem->writeNXDNInfo(source, group, dest, type);
 }
 
 void CCASTInfo::clearNXDNInt()
@@ -132,8 +133,8 @@ void CCASTInfo::clearNXDNInt()
 
 void CCASTInfo::writePOCSAGInt(uint32_t ric, const std::string& message)
 {
-    if (m_modem != NULL)
-        m_modem->writePOCSAGInfo(ric, message);
+	if (m_modem != NULL)
+		m_modem->writePOCSAGInfo(ric, message);
 }
 
 void CCASTInfo::clearPOCSAGInt()

@@ -26,12 +26,12 @@
 #include <cctype>
 
 CDMRLookup::CDMRLookup(const std::string& filename, unsigned int reloadTime) :
-CThread(),
-m_filename(filename),
-m_reloadTime(reloadTime),
-m_table(),
-m_stop(false),
-m_reload(false)
+	CThread(),
+	m_filename(filename),
+	m_reloadTime(reloadTime),
+	m_table(),
+	m_stop(false),
+	m_reload(false)
 {
 }
 
@@ -54,7 +54,7 @@ void CDMRLookup::reload()
 	if (m_reloadTime == 0U)
 		m_table.load(m_filename);
 	else
-		m_reload = true;	
+		m_reload = true;
 }
 
 void CDMRLookup::entry()
@@ -64,11 +64,13 @@ void CDMRLookup::entry()
 	CTimer timer(1U, 3600U * m_reloadTime);
 	timer.start();
 
-	while (!m_stop) {
+	while (!m_stop)
+	{
 		sleep(1000U);
 
 		timer.clock();
-		if (timer.hasExpired() || m_reload) {
+		if (timer.hasExpired() || m_reload)
+		{
 			m_table.load(m_filename);
 			timer.start();
 			m_reload = false;
@@ -80,7 +82,8 @@ void CDMRLookup::entry()
 
 void CDMRLookup::stop()
 {
-	if (m_reloadTime == 0U) {
+	if (m_reloadTime == 0U)
+	{
 		delete this;
 		return;
 	}
@@ -92,15 +95,19 @@ void CDMRLookup::stop()
 
 void CDMRLookup::findWithName(unsigned int id, class CUserDBentry *entry)
 {
-	if (id == 0xFFFFFFU) {
+	if (id == 0xFFFFFFU)
+	{
 		entry->clear();
 		entry->set(keyCALLSIGN, "ALL");
 		return;
 	}
 
-	if (m_table.lookup(id, entry)) {
+	if (m_table.lookup(id, entry))
+	{
 		LogDebug("FindWithName =%s %s", entry->get(keyCALLSIGN).c_str(), entry->get(keyFIRST_NAME).c_str());
-	} else {
+	}
+	else
+	{
 		entry->clear();
 
 		char text[10U];
@@ -119,9 +126,12 @@ std::string CDMRLookup::find(unsigned int id)
 		return std::string("ALL");
 
 	class CUserDBentry entry;
-	if (m_table.lookup(id, &entry)) {
+	if (m_table.lookup(id, &entry))
+	{
 		callsign = entry.get(keyCALLSIGN);
-	} else {
+	}
+	else
+	{
 		char text[10U];
 		::snprintf(text, sizeof(text), "%u", id);
 		callsign = std::string(text);

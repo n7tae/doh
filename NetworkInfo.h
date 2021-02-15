@@ -19,14 +19,15 @@
 #if !defined(NETWORKINFO_H)
 #define	NETWORKINFO_H
 
-class CNetworkInfo {
+class CNetworkInfo
+{
 public:
 	CNetworkInfo();
 	~CNetworkInfo();
 
 	void getNetworkInterface(unsigned char* info);
 
-private:	
+private:
 };
 
 #endif

@@ -23,8 +23,8 @@
 #include <cctype>
 
 CUserDB::CUserDB() :
-m_table(),
-m_mutex()
+	m_table(),
+	m_mutex()
 {
 }
 
@@ -38,14 +38,17 @@ bool CUserDB::lookup(unsigned int id, class CUserDBentry *entry)
 
 	m_mutex.lock();
 
-	try {
+	try
+	{
 		if (entry != NULL)
 			*entry = m_table.at(id);
 		else
 			(void)m_table.at(id);
 
 		rv = true;
-	} catch (...) {
+	}
+	catch (...)
+	{
 		rv = false;
 	}
 
@@ -57,7 +60,8 @@ bool CUserDB::lookup(unsigned int id, class CUserDBentry *entry)
 bool CUserDB::load(std::string const& filename)
 {
 	FILE* fp = ::fopen(filename.c_str(), "r");
-	if (fp == NULL) {
+	if (fp == NULL)
+	{
 		LogWarning("Cannot open ID lookup file - %s", filename.c_str());
 		return false;
 	}
@@ -69,7 +73,8 @@ bool CUserDB::load(std::string const& filename)
 
 	// set index for entries
 	char buffer[256U];
-	if (::fgets(buffer, sizeof(buffer), fp) == NULL) {
+	if (::fgets(buffer, sizeof(buffer), fp) == NULL)
+	{
 		LogWarning("ID lookup file has no entry - %s", filename.c_str());
 		m_mutex.unlock();
 		::fclose(fp);
@@ -78,13 +83,15 @@ bool CUserDB::load(std::string const& filename)
 
 	// no index - set default
 	std::unordered_map<std::string, int> index;
-	if (!makeindex(buffer, index)) {
+	if (!makeindex(buffer, index))
+	{
 		::strncpy(buffer, keyRADIO_ID "," keyCALLSIGN "," keyFIRST_NAME, sizeof(buffer));
 		makeindex(buffer, index);
 		::rewind(fp);
 	}
 
-	while (::fgets(buffer, sizeof(buffer), fp) != NULL) {
+	while (::fgets(buffer, sizeof(buffer), fp) != NULL)
+	{
 		if (buffer[0U] != '#')
 			parse(buffer, index);
 	}
@@ -108,18 +115,22 @@ bool CUserDB::makeindex(char* buf, std::unordered_map<std::string, int>& index)
 	index.clear();
 
 	for (i = 0, p1 = tokenize(buf, &p2); p1 != NULL;
-	     i++, p1 = tokenize(p2, &p2)) {
+			i++, p1 = tokenize(p2, &p2))
+	{
 
 		// create [column keyword] - [column number] table
 		if (CUserDBentry::isValidKey(p1))
 			index[p1] = i;
 	}
 
-	try {
+	try
+	{
 		(void)index.at(keyRADIO_ID);
 		(void)index.at(keyCALLSIGN);
 		return true;
-	} catch (...) {
+	}
+	catch (...)
+	{
 		return false;
 	}
 }
@@ -132,28 +143,35 @@ void CUserDB::parse(char* buf, std::unordered_map<std::string, int>& index)
 	unsigned int id;
 
 	for (i = 0, p1 = tokenize(buf, &p2); p1 != NULL;
-	     i++, p1 = tokenize(p2, &p2)) {
+			i++, p1 = tokenize(p2, &p2))
+	{
 
-		for (auto it = index.begin(); it != index.end(); it++) {
+		for (auto it = index.begin(); it != index.end(); it++)
+		{
 			// first: column keyword, second: column number
-			if (it->second == i) {
+			if (it->second == i)
+			{
 				ptr[it->first] = p1;
 				break;
 			}
 		}
 	}
 
-	try {
+	try
+	{
 		(void)ptr.at(keyRADIO_ID);
 		(void)ptr.at(keyCALLSIGN);
-	} catch (...) {
+	}
+	catch (...)
+	{
 		return;
 	}
 
 	id = (unsigned int)::atoi(ptr[keyRADIO_ID]);
 	toupper_string(ptr[keyCALLSIGN]);
 
-	for (auto it = ptr.begin(); it != ptr.end(); it++) {
+	for (auto it = ptr.begin(); it != ptr.end(); it++)
+	{
 		// no need to regist radio ID
 		if (it->first == keyRADIO_ID)
 			continue;
@@ -164,7 +182,8 @@ void CUserDB::parse(char* buf, std::unordered_map<std::string, int>& index)
 
 void CUserDB::toupper_string(char* str)
 {
-	while (*str != '\0') {  
+	while (*str != '\0')
+	{
 		*str = ::toupper(*str);
 		str++;
 	}
@@ -176,9 +195,12 @@ char* CUserDB::tokenize(char* str, char** next)
 		return NULL;
 
 	char* p = ::strpbrk(str, ",\t\r\n");
-	if (p == NULL) {
+	if (p == NULL)
+	{
 		*next = str + ::strlen(str);
-	} else {
+	}
+	else
+	{
 		*p = '\0';
 		*next = p + 1;
 	}

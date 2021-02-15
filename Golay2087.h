@@ -19,7 +19,8 @@
 #ifndef Golay2087_H
 #define Golay2087_H
 
-class CGolay2087 {
+class CGolay2087
+{
 public:
 	static void encode(unsigned char* data);
 

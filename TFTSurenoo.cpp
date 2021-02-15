@@ -38,7 +38,8 @@
 #define ROTATION_PORTRAIT	0
 #define ROTATION_LANDSCAPE	1
 
-enum LcdColour {
+enum LcdColour
+{
 	COLOUR_BLACK, COLOUR_RED, COLOUR_GREEN, COLOUR_BLUE,
 	COLOUR_YELLOW, COLOUR_CYAN, COLOUR_MAGENTA, COLOUR_GREY,
 	COLOUR_DARK_GREY, COLOUR_DARK_RED, COLOUR_DARK_GREEN, COLOUR_DARK_BLUE,
@@ -81,17 +82,17 @@ enum LcdColour {
 #define STR_YSF			"SystemFusion"
 
 CTFTSurenoo::CTFTSurenoo(const std::string& callsign, unsigned int dmrid, ISerialPort* serial, unsigned int brightness, bool duplex) :
-CDisplay(),
-m_callsign(callsign),
-m_dmrid(dmrid),
-m_serial(serial),
-m_brightness(brightness),
-m_mode(MODE_IDLE),
-m_duplex(duplex),
+	CDisplay(),
+	m_callsign(callsign),
+	m_dmrid(dmrid),
+	m_serial(serial),
+	m_brightness(brightness),
+	m_mode(MODE_IDLE),
+	m_duplex(duplex),
 //m_duplex(true),                      // uncomment to force duplex display for testing!
-m_refresh(false),
-m_refreshTimer(1000U, 0U, REFRESH_PERIOD),
-m_lineBuf(NULL)
+	m_refresh(false),
+	m_refreshTimer(1000U, 0U, REFRESH_PERIOD),
+	m_lineBuf(NULL)
 {
 	assert(serial != NULL);
 	assert(brightness >= 0U && brightness <= 255U);
@@ -104,14 +105,16 @@ CTFTSurenoo::~CTFTSurenoo()
 bool CTFTSurenoo::open()
 {
 	bool ret = m_serial->open();
-	if (!ret) {
+	if (!ret)
+	{
 		LogError("Cannot open the port for the TFT Serial");
 		delete m_serial;
 		return false;
 	}
 
 	m_lineBuf = new char[statusLineOffset(STATUS_LINES)];
-	if (m_lineBuf == NULL) {
+	if (m_lineBuf == NULL)
+	{
 		LogError("Cannot allocate line buffer");
 		m_serial->close();
 		delete m_serial;
@@ -218,15 +221,17 @@ void CTFTSurenoo::writeDMRInt(unsigned int slotNo, const std::string& src, bool 
 {
 	assert(type != NULL);
 
-	if (m_mode != MODE_DMR) {
+	if (m_mode != MODE_DMR)
+	{
 		setModeLine(STR_DMR);
-		if (m_duplex) {
+		if (m_duplex)
+		{
 			setStatusLine(statusLineNo(0), "Listening");
 			setStatusLine(statusLineNo(1), "TS1");
 			setStatusLine(statusLineNo(2), "Listening");
 			setStatusLine(statusLineNo(3), "TS2");
 		}
-	}		
+	}
 
 	int pos = m_duplex ? (slotNo - 1) : 0;
 	::snprintf(m_temp, sizeof(m_temp), "%s %s", type, src.c_str());
@@ -262,10 +267,13 @@ void CTFTSurenoo::clearDMRInt(unsigned int slotNo)
 	int pos = m_duplex ? (slotNo - 1) : 0;
 	setStatusLine(statusLineNo(pos * 2), "Listening");
 
-	if (m_duplex) {
+	if (m_duplex)
+	{
 		::snprintf(m_temp, sizeof(m_temp), "TS%d", slotNo);
 		setStatusLine(statusLineNo(pos * 2 + 1), m_temp);
-	} else {
+	}
+	else
+	{
 		for (int i = 1; i < STATUS_LINES; i++)
 			setStatusLine(statusLineNo(i), "");
 	}
@@ -392,9 +400,10 @@ void CTFTSurenoo::close()
 
 void CTFTSurenoo::clockInt(unsigned int ms)
 {
-	m_refreshTimer.clock(ms);	// renew timer status 
+	m_refreshTimer.clock(ms);	// renew timer status
 
-	if (m_refreshTimer.isRunning() && m_refreshTimer.hasExpired()) {
+	if (m_refreshTimer.isRunning() && m_refreshTimer.hasExpired())
+	{
 		refreshDisplay();
 		m_refreshTimer.start();	// reset timer, wait for next period
 	}
@@ -422,7 +431,7 @@ void CTFTSurenoo::setModeLine(const char *text)
 void CTFTSurenoo::setStatusLine(unsigned int line, const char *text)
 {
 	setLineBuffer(m_lineBuf + statusLineOffset(line), text, STATUS_CHARS);
-}  
+}
 
 void CTFTSurenoo::refreshDisplay(void)
 {
@@ -434,23 +443,24 @@ void CTFTSurenoo::refreshDisplay(void)
 
 	// clear display
 	::snprintf(m_temp, sizeof(m_temp), "BOXF(%d,%d,%d,%d,%d);",
-		   0, 0, X_WIDTH - 1, Y_WIDTH - 1, BG_COLOUR);
+			   0, 0, X_WIDTH - 1, Y_WIDTH - 1, BG_COLOUR);
 	m_serial->write((unsigned char*)m_temp, ::strlen(m_temp));
 
 	// mode line
 	::snprintf(m_temp, sizeof(m_temp), "DCV%d(%d,%d,'%s',%d);",
-		   MODE_FONT_SIZE, 0, 0, m_lineBuf, MODE_COLOUR);
+			   MODE_FONT_SIZE, 0, 0, m_lineBuf, MODE_COLOUR);
 	m_serial->write((unsigned char*)m_temp, (unsigned int)::strlen(m_temp));
 
 	// status line
-	for (int i = 0; i < STATUS_LINES; i++) {
+	for (int i = 0; i < STATUS_LINES; i++)
+	{
 		char *p = m_lineBuf + statusLineOffset(i);
 		if (!::strlen(p)) continue;
 
 		::snprintf(m_temp, sizeof(m_temp), "DCV%d(%d,%d,'%s',%d);",
-			   STATUS_FONT_SIZE, 0,
-			   STATUS_MARGIN + STATUS_FONT_SIZE * i, p,
-			   (!m_duplex && i >= INFO_LINES) ? EXT_COLOUR : INFO_COLOUR);
+				   STATUS_FONT_SIZE, 0,
+				   STATUS_MARGIN + STATUS_FONT_SIZE * i, p,
+				   (!m_duplex && i >= INFO_LINES) ? EXT_COLOUR : INFO_COLOUR);
 		m_serial->write((unsigned char*)m_temp, (unsigned int)::strlen(m_temp));
 	}
 

@@ -23,16 +23,17 @@
 #include <string>
 #include <map>
 
-class CRSSIInterpolator {
+class CRSSIInterpolator
+{
 public:
 	CRSSIInterpolator();
 	~CRSSIInterpolator();
 
 	bool load(const std::string& filename);
-	
+
 	int interpolate(uint16_t raw) const;
-	
-private:	
+
+private:
 	std::map<uint16_t, int> m_map;
 };
 

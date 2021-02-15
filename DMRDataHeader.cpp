@@ -32,15 +32,15 @@
 const unsigned char UDTF_NMEA = 0x05U;
 
 CDMRDataHeader::CDMRDataHeader() :
-m_data(NULL),
-m_GI(false),
-m_A(false),
-m_srcId(0U),
-m_dstId(0U),
-m_blocks(0U),
-m_F(false),
-m_S(false),
-m_Ns(0U)
+	m_data(NULL),
+	m_GI(false),
+	m_A(false),
+	m_srcId(0U),
+	m_dstId(0U),
+	m_blocks(0U),
+	m_F(false),
+	m_S(false),
+	m_Ns(0U)
 {
 	m_data = new unsigned char[12U];
 }
@@ -78,7 +78,8 @@ bool CDMRDataHeader::put(const unsigned char* bytes)
 	m_dstId = m_data[2U] << 16 | m_data[3U] << 8 | m_data[4U];
 	m_srcId = m_data[5U] << 16 | m_data[6U] << 8 | m_data[7U];
 
-	switch (dpf) {
+	switch (dpf)
+	{
 	case DPF_UNCONFIRMED_DATA:
 		CUtils::dump(1U, "DMR, Unconfirmed Data Header", m_data, 12U);
 		m_F = (m_data[8U] & 0x80U) == 0x80U;
@@ -159,7 +160,8 @@ unsigned int CDMRDataHeader::getBlocks() const
 
 CDMRDataHeader& CDMRDataHeader::operator=(const CDMRDataHeader& header)
 {
-	if (&header != this) {
+	if (&header != this)
+	{
 		::memcpy(m_data, header.m_data, 12U);
 		m_GI     = header.m_GI;
 		m_A      = header.m_A;

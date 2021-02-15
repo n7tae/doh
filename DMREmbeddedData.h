@@ -22,7 +22,8 @@
 #include "DMRDefines.h"
 #include "DMRLC.h"
 
-enum LC_STATE {
+enum LC_STATE
+{
 	LCS_NONE,
 	LCS_FIRST,
 	LCS_SECOND,

@@ -58,7 +58,7 @@ public:
 
 	virtual void close();
 
-private: 
+private:
 	std::string      m_addressStr;
 	sockaddr_storage m_addr;
 	unsigned int     m_addrLen;

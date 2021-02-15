@@ -25,14 +25,15 @@
 #include <cassert>
 #include <cstring>
 
-template<class T> class CRingBuffer {
+template<class T> class CRingBuffer
+{
 public:
 	CRingBuffer(unsigned int length, const char* name) :
-	m_length(length),
-	m_name(name),
-	m_buffer(NULL),
-	m_iPtr(0U),
-	m_oPtr(0U)
+		m_length(length),
+		m_name(name),
+		m_buffer(NULL),
+		m_iPtr(0U),
+		m_oPtr(0U)
 	{
 		assert(length > 0U);
 		assert(name != NULL);
@@ -49,13 +50,15 @@ public:
 
 	bool addData(const T* buffer, unsigned int nSamples)
 	{
-		if (nSamples >= freeSpace()) {
+		if (nSamples >= freeSpace())
+		{
 			LogError("%s buffer overflow, clearing the buffer. (%u >= %u)", m_name, nSamples, freeSpace());
 			clear();
 			return false;
 		}
 
-		for (unsigned int i = 0U; i < nSamples; i++) {
+		for (unsigned int i = 0U; i < nSamples; i++)
+		{
 			m_buffer[m_iPtr++] = buffer[i];
 
 			if (m_iPtr == m_length)
@@ -67,12 +70,14 @@ public:
 
 	bool getData(T* buffer, unsigned int nSamples)
 	{
-		if (dataSize() < nSamples) {
+		if (dataSize() < nSamples)
+		{
 			LogError("**** Underflow in %s ring buffer, %u < %u", m_name, dataSize(), nSamples);
 			return false;
 		}
 
-		for (unsigned int i = 0U; i < nSamples; i++) {
+		for (unsigned int i = 0U; i < nSamples; i++)
+		{
 			buffer[i] = m_buffer[m_oPtr++];
 
 			if (m_oPtr == m_length)
@@ -84,13 +89,15 @@ public:
 
 	bool peek(T* buffer, unsigned int nSamples)
 	{
-		if (dataSize() < nSamples) {
+		if (dataSize() < nSamples)
+		{
 			LogError("**** Underflow peek in %s ring buffer, %u < %u", m_name, dataSize(), nSamples);
 			return false;
 		}
 
 		unsigned int ptr = m_oPtr;
-		for (unsigned int i = 0U; i < nSamples; i++) {
+		for (unsigned int i = 0U; i < nSamples; i++)
+		{
 			buffer[i] = m_buffer[ptr++];
 
 			if (ptr == m_length)

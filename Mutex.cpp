@@ -21,7 +21,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 CMutex::CMutex() :
-m_handle()
+	m_handle()
 {
 	m_handle = ::CreateMutex(NULL, FALSE, NULL);
 }
@@ -44,7 +44,7 @@ void CMutex::unlock()
 #else
 
 CMutex::CMutex() :
-m_mutex(PTHREAD_MUTEX_INITIALIZER)
+	m_mutex(PTHREAD_MUTEX_INITIALIZER)
 {
 }
 

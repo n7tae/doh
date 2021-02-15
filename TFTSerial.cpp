@@ -45,12 +45,12 @@ const unsigned char FONT_LARGE  = 3U;
 // x = 0 to 127, y = 0 to 159 - Portrait
 
 CTFTSerial::CTFTSerial(const std::string& callsign, unsigned int dmrid, ISerialPort* serial, unsigned int brightness) :
-CDisplay(),
-m_callsign(callsign),
-m_dmrid(dmrid),
-m_serial(serial),
-m_brightness(brightness),
-m_mode(MODE_IDLE)
+	CDisplay(),
+	m_callsign(callsign),
+	m_dmrid(dmrid),
+	m_serial(serial),
+	m_brightness(brightness),
+	m_mode(MODE_IDLE)
 {
 	assert(serial != NULL);
 	assert(brightness >= 0U && brightness <= 100U);
@@ -63,7 +63,8 @@ CTFTSerial::~CTFTSerial()
 bool CTFTSerial::open()
 {
 	bool ret = m_serial->open();
-	if (!ret) {
+	if (!ret)
+	{
 		LogError("Cannot open the port for the TFT Serial");
 		delete m_serial;
 		return false;
@@ -185,7 +186,8 @@ void CTFTSerial::writeDStarInt(const char* my1, const char* my2, const char* you
 	assert(type != NULL);
 	assert(reflector != NULL);
 
-	if (m_mode != MODE_DSTAR) {
+	if (m_mode != MODE_DSTAR)
+	{
 		// Clear the screen
 		clearScreen();
 
@@ -205,11 +207,14 @@ void CTFTSerial::writeDStarInt(const char* my1, const char* my2, const char* you
 	gotoPosPixel(5U, 90U);
 	displayText(text);
 
-	if (::strcmp(reflector, "        ") != 0) {
+	if (::strcmp(reflector, "        ") != 0)
+	{
 		::sprintf(text, "via %.8s", reflector);
 		gotoPosPixel(5U, 110U);
 		displayText(text);
-	} else {
+	}
+	else
+	{
 		gotoPosPixel(5U, 110U);
 		displayText("            ");
 	}
@@ -233,7 +238,8 @@ void CTFTSerial::writeDMRInt(unsigned int slotNo, const std::string& src, bool g
 {
 	assert(type != NULL);
 
-	if (m_mode != MODE_DMR) {
+	if (m_mode != MODE_DMR)
+	{
 		// Clear the screen
 		clearScreen();
 
@@ -242,16 +248,20 @@ void CTFTSerial::writeDMRInt(unsigned int slotNo, const std::string& src, bool g
 		// Draw DMR insignia
 		displayBitmap(0U, 0U, "DMR_sm.bmp");
 
-		if (slotNo == 1U) {
+		if (slotNo == 1U)
+		{
 			gotoPosPixel(5U, 90U);
 			displayText("2 Listening");
-		} else {
+		}
+		else
+		{
 			gotoPosPixel(5U, 55U);
 			displayText("1 Listening");
 		}
 	}
 
-	if (slotNo == 1U) {
+	if (slotNo == 1U)
+	{
 		char text[30U];
 
 		::sprintf(text, "1 %s %s", type, src.c_str());
@@ -261,7 +271,9 @@ void CTFTSerial::writeDMRInt(unsigned int slotNo, const std::string& src, bool g
 		::sprintf(text, "%s%s", group ? "TG" : "", dst.c_str());
 		gotoPosPixel(65U, 72U);
 		displayText(text);
-	} else {
+	}
+	else
+	{
 		char text[30U];
 
 		::sprintf(text, "2 %s %s", type, src.c_str());
@@ -278,13 +290,16 @@ void CTFTSerial::writeDMRInt(unsigned int slotNo, const std::string& src, bool g
 
 void CTFTSerial::clearDMRInt(unsigned int slotNo)
 {
-	if (slotNo == 1U) {
+	if (slotNo == 1U)
+	{
 		gotoPosPixel(5U, 55U);
 		displayText("1 Listening ");
 
 		gotoPosPixel(65U, 72U);
 		displayText("       ");
-	} else {
+	}
+	else
+	{
 		gotoPosPixel(5U, 90U);
 		displayText("2 Listening ");
 
@@ -300,7 +315,8 @@ void CTFTSerial::writeFusionInt(const char* source, const char* dest, unsigned c
 	assert(type != NULL);
 	assert(origin != NULL);
 
-	if (m_mode != MODE_YSF) {
+	if (m_mode != MODE_YSF)
+	{
 		// Clear the screen
 		clearScreen();
 
@@ -321,11 +337,14 @@ void CTFTSerial::writeFusionInt(const char* source, const char* dest, unsigned c
 	gotoPosPixel(5U, 90U);
 	displayText(text);
 
-	if (::strcmp(origin, "          ") != 0) {
+	if (::strcmp(origin, "          ") != 0)
+	{
 		::sprintf(text, "at %.10s", origin);
 		gotoPosPixel(5U, 110U);
 		displayText(text);
-	} else {
+	}
+	else
+	{
 		gotoPosPixel(5U, 110U);
 		displayText("              ");
 	}
@@ -350,7 +369,8 @@ void CTFTSerial::writeP25Int(const char* source, bool group, unsigned int dest, 
 	assert(source != NULL);
 	assert(type != NULL);
 
-	if (m_mode != MODE_P25) {
+	if (m_mode != MODE_P25)
+	{
 		// Clear the screen
 		clearScreen();
 
@@ -391,7 +411,8 @@ void CTFTSerial::writeNXDNInt(const char* source, bool group, unsigned int dest,
 	assert(source != NULL);
 	assert(type != NULL);
 
-	if (m_mode != MODE_NXDN) {
+	if (m_mode != MODE_NXDN)
+	{
 		// Clear the screen
 		clearScreen();
 

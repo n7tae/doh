@@ -39,12 +39,14 @@
 #define UDP_SOCKET_MAX	1
 #endif
 
-enum IPMATCHTYPE {
+enum IPMATCHTYPE
+{
 	IMT_ADDRESS_AND_PORT,
 	IMT_ADDRESS_ONLY
 };
 
-class CUDPSocket {
+class CUDPSocket
+{
 public:
 	CUDPSocket(const std::string& address, unsigned int port = 0U);
 	CUDPSocket(unsigned int port = 0U);

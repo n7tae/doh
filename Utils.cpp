@@ -32,12 +32,14 @@ void CUtils::dump(int level, const std::string& title, const unsigned char* data
 
 	unsigned int offset = 0U;
 
-	while (length > 0U) {
+	while (length > 0U)
+	{
 		std::string output;
 
 		unsigned int bytes = (length > 16U) ? 16U : length;
 
-		for (unsigned i = 0U; i < bytes; i++) {
+		for (unsigned i = 0U; i < bytes; i++)
+		{
 			char temp[10U];
 			::sprintf(temp, "%02X ", data[offset + i]);
 			output += temp;
@@ -48,7 +50,8 @@ void CUtils::dump(int level, const std::string& title, const unsigned char* data
 
 		output += "   *";
 
-		for (unsigned i = 0U; i < bytes; i++) {
+		for (unsigned i = 0U; i < bytes; i++)
+		{
 			unsigned char c = data[offset + i];
 
 			if (::isprint(c))

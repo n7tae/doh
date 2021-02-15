@@ -28,28 +28,28 @@
 class CThread
 {
 public:
-  CThread();
-  virtual ~CThread();
+	CThread();
+	virtual ~CThread();
 
-  virtual bool run();
+	virtual bool run();
 
-  virtual void entry() = 0;
+	virtual void entry() = 0;
 
-  virtual void wait();
+	virtual void wait();
 
-  static void sleep(unsigned int ms);
+	static void sleep(unsigned int ms);
 
 private:
 #if defined(_WIN32) || defined(_WIN64)
-  HANDLE    m_handle;
+	HANDLE    m_handle;
 #else
-  pthread_t m_thread;
+	pthread_t m_thread;
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-  static DWORD __stdcall helper(LPVOID arg);
+	static DWORD __stdcall helper(LPVOID arg);
 #else
-  static void* helper(void* arg);
+	static void* helper(void* arg);
 #endif
 };
 

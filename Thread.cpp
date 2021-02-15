@@ -21,7 +21,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 CThread::CThread() :
-m_handle()
+	m_handle()
 {
 }
 
@@ -64,7 +64,7 @@ void CThread::sleep(unsigned int ms)
 #include <unistd.h>
 
 CThread::CThread() :
-m_thread()
+	m_thread()
 {
 }
 

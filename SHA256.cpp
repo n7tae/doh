@@ -46,10 +46,10 @@ static const unsigned char fillbuf[64] = { 0x80, 0 /* , 0, 0, ...  */ };
   must be called before using hash in the call to sha256_hash
 */
 CSHA256::CSHA256() :
-m_state(NULL),
-m_total(NULL),
-m_buflen(0U),
-m_buffer(NULL)
+	m_state(NULL),
+	m_total(NULL),
+	m_buflen(0U),
+	m_buffer(NULL)
 {
 	m_state  = new uint32_t[8U];
 	m_total  = new uint32_t[2U];
@@ -161,14 +161,16 @@ void CSHA256::processBytes(const unsigned char* buffer, unsigned int len)
 
 	/* When we already have some bits in our internal buffer concatenate
 	   both inputs first.  */
-	if (m_buflen != 0U) {
+	if (m_buflen != 0U)
+	{
 		unsigned int left_over = m_buflen;
 		unsigned int add = 128U - left_over > len ? len : 128U - left_over;
 
 		::memcpy(&((char*)m_buffer)[left_over], buffer, add);
 		m_buflen += add;
 
-		if (m_buflen > 64U) {
+		if (m_buflen > 64U)
+		{
 			processBlock((unsigned char*)m_buffer, m_buflen & ~63U);
 
 			m_buflen &= 63U;
@@ -182,7 +184,8 @@ void CSHA256::processBytes(const unsigned char* buffer, unsigned int len)
 	}
 
 	/* Process available complete blocks.  */
-	if (len >= 64U) {
+	if (len >= 64U)
+	{
 //#if !_STRING_ARCH_unaligned
 //# define alignof(type) offsetof (struct { char c; type x; }, x)
 //# define UNALIGNED_P(p) (((unsigned int) p) % alignof (uint32_t) != 0)
@@ -203,13 +206,15 @@ void CSHA256::processBytes(const unsigned char* buffer, unsigned int len)
 	}
 
 	/* Move remaining bytes in internal buffer.  */
-	if (len > 0U) {
+	if (len > 0U)
+	{
 		unsigned int left_over = m_buflen;
 
 		::memcpy(&((char*)m_buffer)[left_over], buffer, len);
 		left_over += len;
 
-		if (left_over >= 64U) {
+		if (left_over >= 64U)
+		{
 			processBlock((unsigned char*)m_buffer, 64U);
 			left_over -= 64U;
 			::memcpy(m_buffer, &m_buffer[16], left_over);
@@ -223,7 +228,8 @@ void CSHA256::processBytes(const unsigned char* buffer, unsigned int len)
 
 /* SHA256 round constants */
 #define K(I) roundConstants[I]
-static const uint32_t roundConstants[64] = {
+static const uint32_t roundConstants[64] =
+{
 	0x428a2f98UL, 0x71374491UL, 0xb5c0fbcfUL, 0xe9b5dba5UL,
 	0x3956c25bUL, 0x59f111f1UL, 0x923f82a4UL, 0xab1c5ed5UL,
 	0xd807aa98UL, 0x12835b01UL, 0x243185beUL, 0x550c7dc3UL,
@@ -274,24 +280,26 @@ void CSHA256::processBlock(const unsigned char* buffer, unsigned int len)
 	if (m_total[0] < len)
 		++m_total[1];
 
-	#define rol(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
-	#define S0(x) (rol(x,25)^rol(x,14)^(x>>3))
-	#define S1(x) (rol(x,15)^rol(x,13)^(x>>10))
-	#define SS0(x) (rol(x,30)^rol(x,19)^rol(x,10))
-	#define SS1(x) (rol(x,26)^rol(x,21)^rol(x,7))
+#define rol(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
+#define S0(x) (rol(x,25)^rol(x,14)^(x>>3))
+#define S1(x) (rol(x,15)^rol(x,13)^(x>>10))
+#define SS0(x) (rol(x,30)^rol(x,19)^rol(x,10))
+#define SS1(x) (rol(x,26)^rol(x,21)^rol(x,7))
 
-	#define M(I) (tm = S1(x[(I-2)&0x0f]) + x[(I-7)&0x0f] + S0(x[(I-15)&0x0f]) + x[I&0x0f], x[I&0x0f] = tm)
+#define M(I) (tm = S1(x[(I-2)&0x0f]) + x[(I-7)&0x0f] + S0(x[(I-15)&0x0f]) + x[I&0x0f], x[I&0x0f] = tm)
 
-	#define R(A,B,C,D,E,F,G,H,K,M)  do { t0 = SS0(A) + F2(A,B,C);			\
+#define R(A,B,C,D,E,F,G,H,K,M)  do { t0 = SS0(A) + F2(A,B,C);			\
 					     t1 = H + SS1(E) + F1(E,F,G) + K + M;	\
 					     D += t1;  H = t0 + t1;			\
 					} while(0)
 
-	while (words < endp) {
+	while (words < endp)
+	{
 		uint32_t tm;
 		uint32_t t0, t1;
 		/* FIXME: see sha1.c for a better implementation.  */
-		for (unsigned int t = 0U; t < 16U; t++) {
+		for (unsigned int t = 0U; t < 16U; t++)
+		{
 			x[t] = SWAP(*words);
 			words++;
 		}

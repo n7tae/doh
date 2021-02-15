@@ -22,7 +22,7 @@
 #include <cassert>
 
 CModemSerialPort::CModemSerialPort(CModem* modem) :
-m_modem(modem)
+	m_modem(modem)
 {
 	assert(modem != NULL);
 }

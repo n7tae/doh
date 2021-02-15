@@ -21,7 +21,8 @@
 
 #include "DMRDefines.h"
 
-enum CSBKO {
+enum CSBKO
+{
 	CSBKO_NONE           = 0x00,
 	CSBKO_UUVREQ         = 0x04,
 	CSBKO_UUANSRSP       = 0x05,

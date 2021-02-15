@@ -49,7 +49,7 @@ static char LEVELS[] = " DMIWEF";
 static bool logOpenRotate()
 {
 	bool status = false;
-	
+
 	if (m_fileLevel == 0U)
 		return true;
 
@@ -58,10 +58,13 @@ static bool logOpenRotate()
 
 	struct tm* tm = ::gmtime(&now);
 
-	if (tm->tm_mday == m_tm.tm_mday && tm->tm_mon == m_tm.tm_mon && tm->tm_year == m_tm.tm_year) {
+	if (tm->tm_mday == m_tm.tm_mday && tm->tm_mon == m_tm.tm_mon && tm->tm_year == m_tm.tm_year)
+	{
 		if (m_fpLog != NULL)
-		    return true;
-	} else {
+			return true;
+	}
+	else
+	{
 		if (m_fpLog != NULL)
 			::fclose(m_fpLog);
 	}
@@ -73,7 +76,8 @@ static bool logOpenRotate()
 	::sprintf(filename, "%s/%s-%04d-%02d-%02d.log", m_filePath.c_str(), m_fileRoot.c_str(), tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
 #endif
 
-	if ((m_fpLog = ::fopen(filename, "a+t")) != NULL) {
+	if ((m_fpLog = ::fopen(filename, "a+t")) != NULL)
+	{
 		status = true;
 
 #if !defined(_WIN32) && !defined(_WIN64)
@@ -81,7 +85,7 @@ static bool logOpenRotate()
 			dup2(fileno(m_fpLog), fileno(stderr));
 #endif
 	}
-	
+
 	m_tm = *tm;
 
 	return status;
@@ -104,7 +108,8 @@ static bool logOpenNoRotate()
 	::sprintf(filename, "%s/%s.log", m_filePath.c_str(), m_fileRoot.c_str());
 #endif
 
-	if ((m_fpLog = ::fopen(filename, "a+t")) != NULL) {
+	if ((m_fpLog = ::fopen(filename, "a+t")) != NULL)
+	{
 		status = true;
 
 #if !defined(_WIN32) && !defined(_WIN64)
@@ -171,7 +176,8 @@ void Log(unsigned int level, const char* fmt, ...)
 
 	va_end(vl);
 
-	if (level >= m_fileLevel && m_fileLevel != 0U) {
+	if (level >= m_fileLevel && m_fileLevel != 0U)
+	{
 		bool ret = ::LogOpen();
 		if (!ret)
 			return;
@@ -180,12 +186,14 @@ void Log(unsigned int level, const char* fmt, ...)
 		::fflush(m_fpLog);
 	}
 
-	if (level >= m_displayLevel && m_displayLevel != 0U) {
+	if (level >= m_displayLevel && m_displayLevel != 0U)
+	{
 		::fprintf(stdout, "%s\n", buffer);
 		::fflush(stdout);
 	}
 
-	if (level == 6U) {		// Fatal
+	if (level == 6U)  		// Fatal
+	{
 		::fclose(m_fpLog);
 		exit(1);
 	}

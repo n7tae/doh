@@ -28,7 +28,7 @@
 #include <cassert>
 
 CDMRFullLC::CDMRFullLC() :
-m_bptc()
+	m_bptc()
 {
 }
 
@@ -43,22 +43,23 @@ CDMRLC* CDMRFullLC::decode(const unsigned char* data, unsigned char type)
 	unsigned char lcData[12U];
 	m_bptc.decode(data, lcData);
 
-	switch (type) {
-		case DT_VOICE_LC_HEADER:
-			lcData[9U]  ^= VOICE_LC_HEADER_CRC_MASK[0U];
-			lcData[10U] ^= VOICE_LC_HEADER_CRC_MASK[1U];
-			lcData[11U] ^= VOICE_LC_HEADER_CRC_MASK[2U];
-			break;
+	switch (type)
+	{
+	case DT_VOICE_LC_HEADER:
+		lcData[9U]  ^= VOICE_LC_HEADER_CRC_MASK[0U];
+		lcData[10U] ^= VOICE_LC_HEADER_CRC_MASK[1U];
+		lcData[11U] ^= VOICE_LC_HEADER_CRC_MASK[2U];
+		break;
 
-		case DT_TERMINATOR_WITH_LC:
-			lcData[9U]  ^= TERMINATOR_WITH_LC_CRC_MASK[0U];
-			lcData[10U] ^= TERMINATOR_WITH_LC_CRC_MASK[1U];
-			lcData[11U] ^= TERMINATOR_WITH_LC_CRC_MASK[2U];
-			break;
+	case DT_TERMINATOR_WITH_LC:
+		lcData[9U]  ^= TERMINATOR_WITH_LC_CRC_MASK[0U];
+		lcData[10U] ^= TERMINATOR_WITH_LC_CRC_MASK[1U];
+		lcData[11U] ^= TERMINATOR_WITH_LC_CRC_MASK[2U];
+		break;
 
-		default:
-			::LogError("Unsupported LC type - %d", int(type));
-			return NULL;
+	default:
+		::LogError("Unsupported LC type - %d", int(type));
+		return NULL;
 	}
 
 	if (!CRS129::check(lcData))
@@ -77,22 +78,23 @@ void CDMRFullLC::encode(const CDMRLC& lc, unsigned char* data, unsigned char typ
 	unsigned char parity[4U];
 	CRS129::encode(lcData, 9U, parity);
 
-	switch (type) {
-		case DT_VOICE_LC_HEADER:
-			lcData[9U]  = parity[2U] ^ VOICE_LC_HEADER_CRC_MASK[0U];
-			lcData[10U] = parity[1U] ^ VOICE_LC_HEADER_CRC_MASK[1U];
-			lcData[11U] = parity[0U] ^ VOICE_LC_HEADER_CRC_MASK[2U];
-			break;
+	switch (type)
+	{
+	case DT_VOICE_LC_HEADER:
+		lcData[9U]  = parity[2U] ^ VOICE_LC_HEADER_CRC_MASK[0U];
+		lcData[10U] = parity[1U] ^ VOICE_LC_HEADER_CRC_MASK[1U];
+		lcData[11U] = parity[0U] ^ VOICE_LC_HEADER_CRC_MASK[2U];
+		break;
 
-		case DT_TERMINATOR_WITH_LC:
-			lcData[9U]  = parity[2U] ^ TERMINATOR_WITH_LC_CRC_MASK[0U];
-			lcData[10U] = parity[1U] ^ TERMINATOR_WITH_LC_CRC_MASK[1U];
-			lcData[11U] = parity[0U] ^ TERMINATOR_WITH_LC_CRC_MASK[2U];
-			break;
+	case DT_TERMINATOR_WITH_LC:
+		lcData[9U]  = parity[2U] ^ TERMINATOR_WITH_LC_CRC_MASK[0U];
+		lcData[10U] = parity[1U] ^ TERMINATOR_WITH_LC_CRC_MASK[1U];
+		lcData[11U] = parity[0U] ^ TERMINATOR_WITH_LC_CRC_MASK[2U];
+		break;
 
-		default:
-			::LogError("Unsupported LC type - %d", int(type));
-			return;
+	default:
+		::LogError("Unsupported LC type - %d", int(type));
+		return;
 	}
 
 	m_bptc.encode(lcData, data);

@@ -33,30 +33,30 @@ const unsigned int HOMEBREW_DATA_PACKET_LENGTH = 55U;
 
 
 CDMRGatewayNetwork::CDMRGatewayNetwork(const std::string& address, unsigned int port, unsigned int local, unsigned int id, bool duplex, const char* version, bool slot1, bool slot2, HW_TYPE hwType, bool debug) :
-m_addressStr(address),
-m_addr(),
-m_addrLen(0U),
-m_port(port),
-m_id(NULL),
-m_duplex(duplex),
-m_version(version),
-m_debug(debug),
-m_socket(local),
-m_enabled(false),
-m_slot1(slot1),
-m_slot2(slot2),
-m_hwType(hwType),
-m_buffer(NULL),
-m_streamId(NULL),
-m_rxData(1000U, "DMR Network"),
-m_beacon(false),
-m_random(),
-m_callsign(),
-m_rxFrequency(0U),
-m_txFrequency(0U),
-m_power(0U),
-m_colorCode(0U),
-m_pingTimer(1000U, 10U)
+	m_addressStr(address),
+	m_addr(),
+	m_addrLen(0U),
+	m_port(port),
+	m_id(NULL),
+	m_duplex(duplex),
+	m_version(version),
+	m_debug(debug),
+	m_socket(local),
+	m_enabled(false),
+	m_slot1(slot1),
+	m_slot2(slot2),
+	m_hwType(hwType),
+	m_buffer(NULL),
+	m_streamId(NULL),
+	m_rxData(1000U, "DMR Network"),
+	m_beacon(false),
+	m_random(),
+	m_callsign(),
+	m_rxFrequency(0U),
+	m_txFrequency(0U),
+	m_power(0U),
+	m_colorCode(0U),
+	m_pingTimer(1000U, 10U)
 {
 	assert(!address.empty());
 	assert(port > 0U);
@@ -105,7 +105,8 @@ void CDMRGatewayNetwork::setOptions(const std::string& options)
 
 bool CDMRGatewayNetwork::open()
 {
-	if (m_addrLen == 0U) {
+	if (m_addrLen == 0U)
+	{
 		LogError("Unable to resolve the address of the DMR Network");
 		return false;
 	}
@@ -169,16 +170,21 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 	bool dataSync = (m_buffer[15U] & 0x20U) == 0x20U;
 	bool voiceSync = (m_buffer[15U] & 0x10U) == 0x10U;
 
-	if (dataSync) {
+	if (dataSync)
+	{
 		unsigned char dataType = m_buffer[15U] & 0x0FU;
 		data.setData(m_buffer + 20U);
 		data.setDataType(dataType);
 		data.setN(0U);
-	} else if (voiceSync) {
+	}
+	else if (voiceSync)
+	{
 		data.setData(m_buffer + 20U);
 		data.setDataType(DT_VOICE_SYNC);
 		data.setN(0U);
-	} else {
+	}
+	else
+	{
 		unsigned char n = m_buffer[15U] & 0x0FU;
 		data.setData(m_buffer + 20U);
 		data.setDataType(DT_VOICE);
@@ -227,11 +233,16 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 
 	std::uniform_int_distribution<uint32_t> dist(0x00000001, 0xfffffffe);
 	unsigned char dataType = data.getDataType();
-	if (dataType == DT_VOICE_SYNC) {
+	if (dataType == DT_VOICE_SYNC)
+	{
 		buffer[15U] |= 0x10U;
-	} else if (dataType == DT_VOICE) {
+	}
+	else if (dataType == DT_VOICE)
+	{
 		buffer[15U] |= data.getN();
-	} else {
+	}
+	else
+	{
 		if (dataType == DT_VOICE_LC_HEADER)
 			m_streamId[slotIndex] = dist(m_random);
 
@@ -298,7 +309,8 @@ void CDMRGatewayNetwork::close()
 void CDMRGatewayNetwork::clock(unsigned int ms)
 {
 	m_pingTimer.clock(ms);
-	if (m_pingTimer.isRunning() && m_pingTimer.hasExpired()) {
+	if (m_pingTimer.isRunning() && m_pingTimer.hasExpired())
+	{
 		writeConfig();
 		m_pingTimer.start();
 	}
@@ -309,7 +321,8 @@ void CDMRGatewayNetwork::clock(unsigned int ms)
 	if (length <= 0)
 		return;
 
-	if (!CUDPSocket::match(m_addr, address)) {
+	if (!CUDPSocket::match(m_addr, address))
+	{
 		LogMessage("DMR, packet received from an invalid source");
 		return;
 	}
@@ -317,17 +330,25 @@ void CDMRGatewayNetwork::clock(unsigned int ms)
 	if (m_debug)
 		CUtils::dump(1U, "DMR Network Received", m_buffer, length);
 
-	if (::memcmp(m_buffer, "DMRD", 4U) == 0) {
-		if (m_enabled) {
+	if (::memcmp(m_buffer, "DMRD", 4U) == 0)
+	{
+		if (m_enabled)
+		{
 			unsigned char len = length;
 			m_rxData.addData(&len, 1U);
 			m_rxData.addData(m_buffer, len);
 		}
-	} else if (::memcmp(m_buffer, "DMRP", 4U) == 0) {
+	}
+	else if (::memcmp(m_buffer, "DMRP", 4U) == 0)
+	{
 		;
-	} else if (::memcmp(m_buffer, "DMRB", 4U) == 0) {
+	}
+	else if (::memcmp(m_buffer, "DMRB", 4U) == 0)
+	{
 		m_beacon = true;
-	} else {
+	}
+	else
+	{
 		CUtils::dump("DMR, unknown packet from the DMR Network", m_buffer, length);
 	}
 }
@@ -336,7 +357,8 @@ bool CDMRGatewayNetwork::writeConfig()
 {
 	const char* software;
 	char slots = '0';
-	if (m_duplex) {
+	if (m_duplex)
+	{
 		if (m_slot1 && m_slot2)
 			slots = '3';
 		else if (m_slot1 && !m_slot2)
@@ -344,7 +366,8 @@ bool CDMRGatewayNetwork::writeConfig()
 		else if (!m_slot1 && m_slot2)
 			slots = '2';
 
-		switch (m_hwType) {
+		switch (m_hwType)
+		{
 		case HWT_MMDVM:
 			software = "MMDVM";
 			break;
@@ -361,10 +384,13 @@ bool CDMRGatewayNetwork::writeConfig()
 			software = "MMDVM_Unknown";
 			break;
 		}
-	} else {
+	}
+	else
+	{
 		slots = '4';
 
-		switch (m_hwType) {
+		switch (m_hwType)
+		{
 		case HWT_MMDVM:
 			software = "MMDVM_DMO";
 			break;
@@ -413,8 +439,8 @@ bool CDMRGatewayNetwork::writeConfig()
 	::memcpy(buffer + 0U, "DMRC", 4U);
 	::memcpy(buffer + 4U, m_id, 4U);
 	::sprintf(buffer + 8U, "%-8.8s%09u%09u%02u%02u%c%-40.40s%-40.40s",
-		m_callsign.c_str(), m_rxFrequency, m_txFrequency, power, m_colorCode, slots, m_version,
-		software);
+			  m_callsign.c_str(), m_rxFrequency, m_txFrequency, power, m_colorCode, slots, m_version,
+			  software);
 
 	return write((unsigned char*)buffer, 119U);
 }
@@ -437,7 +463,8 @@ bool CDMRGatewayNetwork::write(const unsigned char* data, unsigned int length)
 		CUtils::dump(1U, "DMR Network Transmitted", data, length);
 
 	bool ret = m_socket.write(data, length, m_addr, m_addrLen);
-	if (!ret) {
+	if (!ret)
+	{
 		LogError("DMR, socket error when writing to the DMR Network");
 		return false;
 	}

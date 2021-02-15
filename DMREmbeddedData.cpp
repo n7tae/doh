@@ -27,11 +27,11 @@
 #include <cstring>
 
 CDMREmbeddedData::CDMREmbeddedData() :
-m_raw(NULL),
-m_state(LCS_NONE),
-m_data(NULL),
-m_FLCO(FLCO_GROUP),
-m_valid(false)
+	m_raw(NULL),
+	m_state(LCS_NONE),
+	m_data(NULL),
+	m_FLCO(FLCO_GROUP),
+	m_valid(false)
 {
 	m_raw  = new bool[128U];
 	m_data = new bool[72U];
@@ -56,7 +56,8 @@ bool CDMREmbeddedData::addData(const unsigned char* data, unsigned char lcss)
 	CUtils::byteToBitsBE(data[18U], rawData + 32U);
 
 	// Is this the first block of a 4 block embedded LC ?
-	if (lcss == 1U) {
+	if (lcss == 1U)
+	{
 		for (unsigned int a = 0U; a < 32U; a++)
 			m_raw[a] = rawData[a + 4U];
 
@@ -68,7 +69,8 @@ bool CDMREmbeddedData::addData(const unsigned char* data, unsigned char lcss)
 	}
 
 	// Is this the 2nd block of a 4 block embedded LC ?
-	if (lcss == 3U && m_state == LCS_FIRST) {
+	if (lcss == 3U && m_state == LCS_FIRST)
+	{
 		for (unsigned int a = 0U; a < 32U; a++)
 			m_raw[a + 32U] = rawData[a + 4U];
 
@@ -79,7 +81,8 @@ bool CDMREmbeddedData::addData(const unsigned char* data, unsigned char lcss)
 	}
 
 	// Is this the 3rd block of a 4 block embedded LC ?
-	if (lcss == 3U && m_state == LCS_SECOND) {
+	if (lcss == 3U && m_state == LCS_SECOND)
+	{
 		for (unsigned int a = 0U; a < 32U; a++)
 			m_raw[a + 64U] = rawData[a + 4U];
 
@@ -90,7 +93,8 @@ bool CDMREmbeddedData::addData(const unsigned char* data, unsigned char lcss)
 	}
 
 	// Is this the final block of a 4 block embedded LC ?
-	if (lcss == 2U && m_state == LCS_THIRD)	{
+	if (lcss == 2U && m_state == LCS_THIRD)
+	{
 		for (unsigned int a = 0U; a < 32U; a++)
 			m_raw[a + 96U] = rawData[a + 4U];
 
@@ -158,7 +162,8 @@ void CDMREmbeddedData::encodeEmbeddedData()
 
 	// The data is packed downwards in columns
 	b = 0U;
-	for (unsigned int a = 0U; a < 128U; a++) {
+	for (unsigned int a = 0U; a < 128U; a++)
+	{
 		m_raw[a] = data[b];
 		b += 16U;
 		if (b > 127U)
@@ -170,7 +175,8 @@ unsigned char CDMREmbeddedData::getData(unsigned char* data, unsigned char n) co
 {
 	assert(data != NULL);
 
-	if (n >= 1U && n < 5U) {
+	if (n >= 1U && n < 5U)
+	{
 		n--;
 
 		bool bits[40U];
@@ -190,7 +196,8 @@ unsigned char CDMREmbeddedData::getData(unsigned char* data, unsigned char n) co
 		data[17U] = bytes[3U];
 		data[18U] = (data[18U] & 0x0FU) | (bytes[4U] & 0xF0U);
 
-		switch (n) {
+		switch (n)
+		{
 		case 0U:
 			return 1U;
 		case 3U:
@@ -198,7 +205,9 @@ unsigned char CDMREmbeddedData::getData(unsigned char* data, unsigned char n) co
 		default:
 			return 3U;
 		}
-	} else {
+	}
+	else
+	{
 		data[14U] &= 0xF0U;
 		data[15U]  = 0x00U;
 		data[16U]  = 0x00U;
@@ -217,7 +226,8 @@ void CDMREmbeddedData::decodeEmbeddedData()
 	::memset(data, 0x00U, 128U * sizeof(bool));
 
 	unsigned int b = 0U;
-	for (unsigned int a = 0U; a < 128U; a++) {
+	for (unsigned int a = 0U; a < 128U; a++)
+	{
 		data[b] = m_raw[a];
 		b += 16U;
 		if (b > 127U)
@@ -225,13 +235,15 @@ void CDMREmbeddedData::decodeEmbeddedData()
 	}
 
 	// Hamming (16,11,4) check each row except the last one
-	for (unsigned int a = 0U; a < 112U; a += 16U) {
+	for (unsigned int a = 0U; a < 112U; a += 16U)
+	{
 		if (!CHamming::decode16114(data + a))
 			return;
 	}
 
 	// Check the parity bits
-	for (unsigned int a = 0U; a < 16U; a++) {
+	for (unsigned int a = 0U; a < 16U; a++)
+	{
 		bool parity = data[a + 0U] ^ data[a + 16U] ^ data[a + 32U] ^ data[a + 48U] ^ data[a + 64U] ^ data[a + 80U] ^ data[a + 96U] ^ data[a + 112U];
 		if (parity)
 			return;

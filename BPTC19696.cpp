@@ -27,8 +27,8 @@
 #include <cstring>
 
 CBPTC19696::CBPTC19696() :
-m_rawData(NULL),
-m_deInterData(NULL)
+	m_rawData(NULL),
+	m_deInterData(NULL)
 {
 	m_rawData     = new bool[196];
 	m_deInterData = new bool[196];
@@ -123,34 +123,40 @@ void CBPTC19696::decodeDeInterleave()
 		m_deInterData[i] = false;
 
 	// The first bit is R(3) which is not used so can be ignored
-	for (unsigned int a = 0U; a < 196U; a++)	{
+	for (unsigned int a = 0U; a < 196U; a++)
+	{
 		// Calculate the interleave sequence
 		unsigned int interleaveSequence = (a * 181U) % 196U;
 		// Shuffle the data
 		m_deInterData[a] = m_rawData[interleaveSequence];
 	}
 }
-	
+
 // Check each row with a Hamming (15,11,3) code and each column with a Hamming (13,9,3) code
 void CBPTC19696::decodeErrorCheck()
 {
 	bool fixing;
 	unsigned int count = 0U;
-	do {
+	do
+	{
 		fixing = false;
 
 		// Run through each of the 15 columns
 		bool col[13U];
-		for (unsigned int c = 0U; c < 15U; c++) {
+		for (unsigned int c = 0U; c < 15U; c++)
+		{
 			unsigned int pos = c + 1U;
-			for (unsigned int a = 0U; a < 13U; a++) {
+			for (unsigned int a = 0U; a < 13U; a++)
+			{
 				col[a] = m_deInterData[pos];
 				pos = pos + 15U;
 			}
 
-			if (CHamming::decode1393(col)) {
+			if (CHamming::decode1393(col))
+			{
 				unsigned int pos = c + 1U;
-				for (unsigned int a = 0U; a < 13U; a++) {
+				for (unsigned int a = 0U; a < 13U; a++)
+				{
 					m_deInterData[pos] = col[a];
 					pos = pos + 15U;
 				}
@@ -158,16 +164,18 @@ void CBPTC19696::decodeErrorCheck()
 				fixing = true;
 			}
 		}
-		
+
 		// Run through each of the 9 rows containing data
-		for (unsigned int r = 0U; r < 9U; r++) {
+		for (unsigned int r = 0U; r < 9U; r++)
+		{
 			unsigned int pos = (r * 15U) + 1U;
 			if (CHamming::decode15113_2(m_deInterData + pos))
 				fixing = true;
 		}
 
 		count++;
-	} while (fixing && count < 5U);
+	}
+	while (fixing && count < 5U);
 }
 
 // Extract the 96 bits of payload
@@ -268,18 +276,21 @@ void CBPTC19696::encodeExtractData(const unsigned char* in) const
 // Check each row with a Hamming (15,11,3) code and each column with a Hamming (13,9,3) code
 void CBPTC19696::encodeErrorCheck()
 {
-	
+
 	// Run through each of the 9 rows containing data
-	for (unsigned int r = 0U; r < 9U; r++) {
+	for (unsigned int r = 0U; r < 9U; r++)
+	{
 		unsigned int pos = (r * 15U) + 1U;
 		CHamming::encode15113_2(m_deInterData + pos);
 	}
-	
+
 	// Run through each of the 15 columns
 	bool col[13U];
-	for (unsigned int c = 0U; c < 15U; c++) {
+	for (unsigned int c = 0U; c < 15U; c++)
+	{
 		unsigned int pos = c + 1U;
-		for (unsigned int a = 0U; a < 13U; a++) {
+		for (unsigned int a = 0U; a < 13U; a++)
+		{
 			col[a] = m_deInterData[pos];
 			pos = pos + 15U;
 		}
@@ -287,7 +298,8 @@ void CBPTC19696::encodeErrorCheck()
 		CHamming::encode1393(col);
 
 		pos = c + 1U;
-		for (unsigned int a = 0U; a < 13U; a++) {
+		for (unsigned int a = 0U; a < 13U; a++)
+		{
 			m_deInterData[pos] = col[a];
 			pos = pos + 15U;
 		}
@@ -301,7 +313,8 @@ void CBPTC19696::encodeInterleave()
 		m_rawData[i] = false;
 
 	// The first bit is R(3) which is not used so can be ignored
-	for (unsigned int a = 0U; a < 196U; a++)	{
+	for (unsigned int a = 0U; a < 196U; a++)
+	{
 		// Calculate the interleave sequence
 		unsigned int interleaveSequence = (a * 181U) % 196U;
 		// Unshuffle the data

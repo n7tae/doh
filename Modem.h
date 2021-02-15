@@ -26,13 +26,15 @@
 
 #include <string>
 
-enum RESP_TYPE_MMDVM {
+enum RESP_TYPE_MMDVM
+{
 	RTM_OK,
 	RTM_TIMEOUT,
 	RTM_ERROR
 };
 
-class CModem {
+class CModem
+{
 public:
 	CModem(const std::string& port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned int txDelay, unsigned int dmrDelay, bool useCOSAsLockout, bool trace, bool debug);
 	virtual ~CModem();

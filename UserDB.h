@@ -22,7 +22,8 @@
 #include "UserDBentry.h"
 #include "Mutex.h"
 
-class CUserDB {
+class CUserDB
+{
 public:
 	CUserDB();
 	~CUserDB();
@@ -39,5 +40,5 @@ private:
 	std::unordered_map<unsigned int, class CUserDBentry>    m_table;
 	CMutex                                                  m_mutex;
 };
-	
+
 #endif

@@ -26,7 +26,7 @@
 #include <cctype>
 
 CRSSIInterpolator::CRSSIInterpolator() :
-m_map()
+	m_map()
 {
 }
 
@@ -38,20 +38,23 @@ CRSSIInterpolator::~CRSSIInterpolator()
 bool CRSSIInterpolator::load(const std::string& filename)
 {
 	FILE* fp = ::fopen(filename.c_str(), "rt");
-	if (fp == NULL) {
+	if (fp == NULL)
+	{
 		LogWarning("Cannot open the RSSI data file - %s", filename.c_str());
 		return false;
 	}
-	
+
 	char buffer[100U];
-	while (::fgets(buffer, 100, fp) != NULL) {
+	while (::fgets(buffer, 100, fp) != NULL)
+	{
 		if (buffer[0U] == '#')
 			continue;
 
 		char* p1 = ::strtok(buffer, " \t\r\n");
 		char* p2 = ::strtok(NULL,   " \t\r\n");
 
-		if (p1 != NULL && p2 != NULL) {
+		if (p1 != NULL && p2 != NULL)
+		{
 			uint16_t raw = uint16_t(::atoi(p1));
 			int     rssi = ::atoi(p2);
 			m_map.insert(std::pair<uint16_t, int>(raw, rssi));
@@ -61,7 +64,7 @@ bool CRSSIInterpolator::load(const std::string& filename)
 	::fclose(fp);
 
 	LogInfo("Loaded %u RSSI data mapping points from %s", m_map.size(), filename.c_str());
-	
+
 	return true;
 }
 

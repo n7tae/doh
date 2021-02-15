@@ -25,7 +25,7 @@
 #define	LED_STATUS	28
 
 CNullDisplay::CNullDisplay() :
-CDisplay()
+	CDisplay()
 {
 }
 

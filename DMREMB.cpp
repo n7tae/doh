@@ -24,9 +24,9 @@
 #include <cassert>
 
 CDMREMB::CDMREMB() :
-m_colorCode(0U),
-m_PI(false),
-m_LCSS(0U)
+	m_colorCode(0U),
+	m_PI(false),
+	m_LCSS(0U)
 {
 }
 

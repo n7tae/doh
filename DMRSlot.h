@@ -37,7 +37,8 @@
 
 #include <vector>
 
-enum ACTIVITY_TYPE {
+enum ACTIVITY_TYPE
+{
 	ACTIVITY_NONE,
 	ACTIVITY_VOICE,
 	ACTIVITY_DATA,
@@ -45,7 +46,8 @@ enum ACTIVITY_TYPE {
 	ACTIVITY_EMERG
 };
 
-class CDMRSlot {
+class CDMRSlot
+{
 public:
 	CDMRSlot(unsigned int slotNo, unsigned int timeout);
 	~CDMRSlot();
@@ -132,7 +134,7 @@ private:
 
 	static unsigned char*      m_idle;
 
-    static FLCO                m_flco1;
+	static FLCO                m_flco1;
 	static unsigned char       m_id1;
 	static ACTIVITY_TYPE       m_activity1;
 	static FLCO                m_flco2;

@@ -22,32 +22,32 @@
 
 
 CDMRData::CDMRData(const CDMRData& data) :
-m_slotNo(data.m_slotNo),
-m_data(NULL),
-m_srcId(data.m_srcId),
-m_dstId(data.m_dstId),
-m_flco(data.m_flco),
-m_dataType(data.m_dataType),
-m_seqNo(data.m_seqNo),
-m_n(data.m_n),
-m_ber(data.m_ber),
-m_rssi(data.m_rssi)
+	m_slotNo(data.m_slotNo),
+	m_data(NULL),
+	m_srcId(data.m_srcId),
+	m_dstId(data.m_dstId),
+	m_flco(data.m_flco),
+	m_dataType(data.m_dataType),
+	m_seqNo(data.m_seqNo),
+	m_n(data.m_n),
+	m_ber(data.m_ber),
+	m_rssi(data.m_rssi)
 {
 	m_data = new unsigned char[2U * DMR_FRAME_LENGTH_BYTES];
 	::memcpy(m_data, data.m_data, 2U * DMR_FRAME_LENGTH_BYTES);
 }
 
 CDMRData::CDMRData() :
-m_slotNo(1U),
-m_data(NULL),
-m_srcId(0U),
-m_dstId(0U),
-m_flco(FLCO_GROUP),
-m_dataType(0U),
-m_seqNo(0U),
-m_n(0U),
-m_ber(0U),
-m_rssi(0U)
+	m_slotNo(1U),
+	m_data(NULL),
+	m_srcId(0U),
+	m_dstId(0U),
+	m_flco(FLCO_GROUP),
+	m_dataType(0U),
+	m_seqNo(0U),
+	m_n(0U),
+	m_ber(0U),
+	m_rssi(0U)
 {
 	m_data = new unsigned char[2U * DMR_FRAME_LENGTH_BYTES];
 }
@@ -59,7 +59,8 @@ CDMRData::~CDMRData()
 
 CDMRData& CDMRData::operator=(const CDMRData& data)
 {
-	if (this != &data) {
+	if (this != &data)
+	{
 		::memcpy(m_data, data.m_data, DMR_FRAME_LENGTH_BYTES);
 
 		m_slotNo   = data.m_slotNo;

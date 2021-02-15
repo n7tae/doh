@@ -30,19 +30,19 @@
 class CTFTSurenoo : public CDisplay
 {
 public:
-  CTFTSurenoo(const std::string& callsign, unsigned int dmrid, ISerialPort* serial, unsigned int brightness, bool duplex);
-  virtual ~CTFTSurenoo();
+	CTFTSurenoo(const std::string& callsign, unsigned int dmrid, ISerialPort* serial, unsigned int brightness, bool duplex);
+	virtual ~CTFTSurenoo();
 
-  virtual bool open();
+	virtual bool open();
 
-  virtual void close();
+	virtual void close();
 
 protected:
 	virtual void setIdleInt();
 	virtual void setErrorInt(const char* text);
 	virtual void setLockoutInt();
 	virtual void setQuitInt();
-    virtual void setFMInt();
+	virtual void setFMInt();
 
 	virtual void writeDStarInt(const char* my1, const char* my2, const char* your, const char* type, const char* reflector);
 	virtual void clearDStarInt();
@@ -70,27 +70,27 @@ protected:
 	virtual void clockInt(unsigned int ms);
 
 private:
-   std::string   m_callsign;
-   unsigned int  m_dmrid;
-   ISerialPort*  m_serial;
-   unsigned int  m_brightness;
-   unsigned char m_mode;
-   bool          m_duplex;
-   bool          m_refresh;
-   CTimer        m_refreshTimer;
-   char*         m_lineBuf;
-   char          m_temp[128];
+	std::string   m_callsign;
+	unsigned int  m_dmrid;
+	ISerialPort*  m_serial;
+	unsigned int  m_brightness;
+	unsigned char m_mode;
+	bool          m_duplex;
+	bool          m_refresh;
+	CTimer        m_refreshTimer;
+	char*         m_lineBuf;
+	char          m_temp[128];
 
-  void setLineBuffer(char *buf, const char *text, int maxchar);
-  void setModeLine(const char *text);
-  void setStatusLine(unsigned int line, const char *text);
-  void refreshDisplay(void);
+	void setLineBuffer(char *buf, const char *text, int maxchar);
+	void setModeLine(const char *text);
+	void setStatusLine(unsigned int line, const char *text);
+	void refreshDisplay(void);
 
-  void lcdReset(void);
-  void clearScreen(unsigned char colour);
-  void setBackground(unsigned char colour);
-  void setRotation(unsigned char rotation);
-  void setBrightness(unsigned char brightness);
+	void lcdReset(void);
+	void clearScreen(unsigned char colour);
+	void setBackground(unsigned char colour);
+	void setRotation(unsigned char rotation);
+	void setBrightness(unsigned char brightness);
 };
 
 #endif

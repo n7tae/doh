@@ -22,7 +22,8 @@
 #include "SerialPort.h"
 #include "Modem.h"
 
-class CModemSerialPort : public ISerialPort {
+class CModemSerialPort : public ISerialPort
+{
 public:
 	CModemSerialPort(CModem* modem);
 	virtual ~CModemSerialPort();

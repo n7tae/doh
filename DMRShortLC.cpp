@@ -26,8 +26,8 @@
 #include <cstring>
 
 CDMRShortLC::CDMRShortLC() :
-m_rawData(NULL),
-m_deInterData(NULL)
+	m_rawData(NULL),
+	m_deInterData(NULL)
 {
 	m_rawData     = new bool[72U];
 	m_deInterData = new bool[68U];
@@ -102,7 +102,8 @@ void CDMRShortLC::decodeDeInterleave()
 	for (unsigned int i = 0U; i < 68U; i++)
 		m_deInterData[i] = false;
 
-	for (unsigned int a = 0U; a < 67U; a++)	{
+	for (unsigned int a = 0U; a < 67U; a++)
+	{
 		// Calculate the interleave sequence
 		unsigned int interleaveSequence = (a * 4U) % 67U;
 		// Shuffle the data
@@ -111,7 +112,7 @@ void CDMRShortLC::decodeDeInterleave()
 
 	m_deInterData[67U] = m_rawData[67U];
 }
-	
+
 // Check each row with a Hamming (17,12,3) code and each column with a parity bit
 bool CDMRShortLC::decodeErrorCheck()
 {
@@ -121,7 +122,8 @@ bool CDMRShortLC::decodeErrorCheck()
 	CHamming::decode17123(m_deInterData + 34U);
 
 	// Run through each of the 17 columns
-	for (unsigned int c = 0U; c < 17U; c++) {
+	for (unsigned int c = 0U; c < 17U; c++)
+	{
 		bool bit = m_deInterData[c + 0U] ^ m_deInterData[c + 17U] ^ m_deInterData[c + 34U];
 		if (bit != m_deInterData[c + 51U])
 			return false;
@@ -202,7 +204,8 @@ void CDMRShortLC::encodeInterleave()
 	for (unsigned int i = 0U; i < 72U; i++)
 		m_rawData[i] = false;
 
-	for (unsigned int a = 0U; a < 67U; a++)	{
+	for (unsigned int a = 0U; a < 67U; a++)
+	{
 		// Calculate the interleave sequence
 		unsigned int interleaveSequence = (a * 4U) % 67U;
 		// Unshuffle the data

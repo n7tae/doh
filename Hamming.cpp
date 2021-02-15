@@ -21,7 +21,7 @@
 #include <cstdio>
 #include <cassert>
 
- // Hamming (15,11,3) check a boolean data array
+// Hamming (15,11,3) check a boolean data array
 bool CHamming::decode15113_1(bool* d)
 {
 	assert(d != NULL);
@@ -40,27 +40,58 @@ bool CHamming::decode15113_1(bool* d)
 
 	switch (n)
 	{
-		// Parity bit errors
-		case 0x01U: d[11] = !d[11]; return true;
-		case 0x02U: d[12] = !d[12]; return true;
-		case 0x04U: d[13] = !d[13]; return true;
-		case 0x08U: d[14] = !d[14]; return true;
+	// Parity bit errors
+	case 0x01U:
+		d[11] = !d[11];
+		return true;
+	case 0x02U:
+		d[12] = !d[12];
+		return true;
+	case 0x04U:
+		d[13] = !d[13];
+		return true;
+	case 0x08U:
+		d[14] = !d[14];
+		return true;
 
-		// Data bit errors
-		case 0x0FU: d[0]  = !d[0];  return true;
-		case 0x07U: d[1]  = !d[1];  return true;
-		case 0x0BU: d[2]  = !d[2];  return true;
-		case 0x03U: d[3]  = !d[3];  return true;
-		case 0x0DU: d[4]  = !d[4];  return true;
-		case 0x05U: d[5]  = !d[5];  return true;
-		case 0x09U: d[6]  = !d[6];  return true;
-		case 0x0EU: d[7]  = !d[7];  return true;
-		case 0x06U: d[8]  = !d[8];  return true;
-		case 0x0AU: d[9]  = !d[9];  return true;
-		case 0x0CU: d[10] = !d[10]; return true;
+	// Data bit errors
+	case 0x0FU:
+		d[0]  = !d[0];
+		return true;
+	case 0x07U:
+		d[1]  = !d[1];
+		return true;
+	case 0x0BU:
+		d[2]  = !d[2];
+		return true;
+	case 0x03U:
+		d[3]  = !d[3];
+		return true;
+	case 0x0DU:
+		d[4]  = !d[4];
+		return true;
+	case 0x05U:
+		d[5]  = !d[5];
+		return true;
+	case 0x09U:
+		d[6]  = !d[6];
+		return true;
+	case 0x0EU:
+		d[7]  = !d[7];
+		return true;
+	case 0x06U:
+		d[8]  = !d[8];
+		return true;
+	case 0x0AU:
+		d[9]  = !d[9];
+		return true;
+	case 0x0CU:
+		d[10] = !d[10];
+		return true;
 
-		// No bit errors
-		default: return false;
+	// No bit errors
+	default:
+		return false;
 	}
 }
 
@@ -92,28 +123,60 @@ bool CHamming::decode15113_2(bool* d)
 	n |= (c2 != d[13]) ? 0x04U : 0x00U;
 	n |= (c3 != d[14]) ? 0x08U : 0x00U;
 
-	switch (n) {
-		// Parity bit errors
-		case 0x01U: d[11] = !d[11]; return true;
-		case 0x02U: d[12] = !d[12]; return true;
-		case 0x04U: d[13] = !d[13]; return true;
-		case 0x08U: d[14] = !d[14]; return true;
+	switch (n)
+	{
+	// Parity bit errors
+	case 0x01U:
+		d[11] = !d[11];
+		return true;
+	case 0x02U:
+		d[12] = !d[12];
+		return true;
+	case 0x04U:
+		d[13] = !d[13];
+		return true;
+	case 0x08U:
+		d[14] = !d[14];
+		return true;
 
-		// Data bit errors
-		case 0x09U: d[0]  = !d[0];  return true;
-		case 0x0BU: d[1]  = !d[1];  return true;
-		case 0x0FU: d[2]  = !d[2];  return true;
-		case 0x07U: d[3]  = !d[3];  return true;
-		case 0x0EU: d[4]  = !d[4];  return true;
-		case 0x05U: d[5]  = !d[5];  return true;
-		case 0x0AU: d[6]  = !d[6];  return true;
-		case 0x0DU: d[7]  = !d[7];  return true;
-		case 0x03U: d[8]  = !d[8];  return true;
-		case 0x06U: d[9]  = !d[9];  return true;
-		case 0x0CU: d[10] = !d[10]; return true;
+	// Data bit errors
+	case 0x09U:
+		d[0]  = !d[0];
+		return true;
+	case 0x0BU:
+		d[1]  = !d[1];
+		return true;
+	case 0x0FU:
+		d[2]  = !d[2];
+		return true;
+	case 0x07U:
+		d[3]  = !d[3];
+		return true;
+	case 0x0EU:
+		d[4]  = !d[4];
+		return true;
+	case 0x05U:
+		d[5]  = !d[5];
+		return true;
+	case 0x0AU:
+		d[6]  = !d[6];
+		return true;
+	case 0x0DU:
+		d[7]  = !d[7];
+		return true;
+	case 0x03U:
+		d[8]  = !d[8];
+		return true;
+	case 0x06U:
+		d[9]  = !d[9];
+		return true;
+	case 0x0CU:
+		d[10] = !d[10];
+		return true;
 
-		// No bit errors
-		default: return false;
+	// No bit errors
+	default:
+		return false;
 	}
 }
 
@@ -138,33 +201,61 @@ bool CHamming::decode1393(bool* d)
 	bool c1 = d[0] ^ d[1] ^ d[2] ^ d[4] ^ d[6] ^ d[7];
 	bool c2 = d[0] ^ d[1] ^ d[2] ^ d[3] ^ d[5] ^ d[7] ^ d[8];
 	bool c3 = d[0] ^ d[2] ^ d[4] ^ d[5] ^ d[8];
-	
+
 	unsigned char n = 0x00U;
 	n |= (c0 != d[9])  ? 0x01U : 0x00U;
 	n |= (c1 != d[10]) ? 0x02U : 0x00U;
 	n |= (c2 != d[11]) ? 0x04U : 0x00U;
 	n |= (c3 != d[12]) ? 0x08U : 0x00U;
 
-	switch (n) {
-		// Parity bit errors
-		case 0x01U: d[9]  = !d[9];  return true;
-		case 0x02U: d[10] = !d[10]; return true;
-		case 0x04U: d[11] = !d[11]; return true;
-		case 0x08U: d[12] = !d[12]; return true;
+	switch (n)
+	{
+	// Parity bit errors
+	case 0x01U:
+		d[9]  = !d[9];
+		return true;
+	case 0x02U:
+		d[10] = !d[10];
+		return true;
+	case 0x04U:
+		d[11] = !d[11];
+		return true;
+	case 0x08U:
+		d[12] = !d[12];
+		return true;
 
-		// Data bit erros
-		case 0x0FU: d[0] = !d[0]; return true;
-		case 0x07U: d[1] = !d[1]; return true;
-		case 0x0EU: d[2] = !d[2]; return true;
-		case 0x05U: d[3] = !d[3]; return true;
-		case 0x0AU: d[4] = !d[4]; return true;
-		case 0x0DU: d[5] = !d[5]; return true;
-		case 0x03U: d[6] = !d[6]; return true;
-		case 0x06U: d[7] = !d[7]; return true;
-		case 0x0CU: d[8] = !d[8]; return true;
+	// Data bit erros
+	case 0x0FU:
+		d[0] = !d[0];
+		return true;
+	case 0x07U:
+		d[1] = !d[1];
+		return true;
+	case 0x0EU:
+		d[2] = !d[2];
+		return true;
+	case 0x05U:
+		d[3] = !d[3];
+		return true;
+	case 0x0AU:
+		d[4] = !d[4];
+		return true;
+	case 0x0DU:
+		d[5] = !d[5];
+		return true;
+	case 0x03U:
+		d[6] = !d[6];
+		return true;
+	case 0x06U:
+		d[7] = !d[7];
+		return true;
+	case 0x0CU:
+		d[8] = !d[8];
+		return true;
 
-		// No bit errors
-		default: return false;
+	// No bit errors
+	default:
+		return false;
 	}
 }
 
@@ -196,23 +287,45 @@ bool CHamming::decode1063(bool* d)
 	n |= (c2 != d[8]) ? 0x04U : 0x00U;
 	n |= (c3 != d[9]) ? 0x08U : 0x00U;
 
-	switch (n) {
-		// Parity bit errors
-		case 0x01U: d[6] = !d[6]; return true;
-		case 0x02U: d[7] = !d[7]; return true;
-		case 0x04U: d[8] = !d[8]; return true;
-		case 0x08U: d[9] = !d[9]; return true;
+	switch (n)
+	{
+	// Parity bit errors
+	case 0x01U:
+		d[6] = !d[6];
+		return true;
+	case 0x02U:
+		d[7] = !d[7];
+		return true;
+	case 0x04U:
+		d[8] = !d[8];
+		return true;
+	case 0x08U:
+		d[9] = !d[9];
+		return true;
 
-		// Data bit erros
-		case 0x07U: d[0] = !d[0]; return true;
-		case 0x0BU: d[1] = !d[1]; return true;
-		case 0x0DU: d[2] = !d[2]; return true;
-		case 0x0EU: d[3] = !d[3]; return true;
-		case 0x0CU: d[4] = !d[4]; return true;
-		case 0x03U: d[5] = !d[5]; return true;
+	// Data bit erros
+	case 0x07U:
+		d[0] = !d[0];
+		return true;
+	case 0x0BU:
+		d[1] = !d[1];
+		return true;
+	case 0x0DU:
+		d[2] = !d[2];
+		return true;
+	case 0x0EU:
+		d[3] = !d[3];
+		return true;
+	case 0x0CU:
+		d[4] = !d[4];
+		return true;
+	case 0x03U:
+		d[5] = !d[5];
+		return true;
 
-		// No bit errors
-		default: return false;
+	// No bit errors
+	default:
+		return false;
 	}
 }
 
@@ -247,32 +360,67 @@ bool CHamming::decode16114(bool* d)
 	n |= (c3 != d[14]) ? 0x08U : 0x00U;
 	n |= (c4 != d[15]) ? 0x10U : 0x00U;
 
-	switch (n) {
-		// Parity bit errors
-		case 0x01U: d[11] = !d[11]; return true;
-		case 0x02U: d[12] = !d[12]; return true;
-		case 0x04U: d[13] = !d[13]; return true;
-		case 0x08U: d[14] = !d[14]; return true;
-		case 0x10U: d[15] = !d[15]; return true;
+	switch (n)
+	{
+	// Parity bit errors
+	case 0x01U:
+		d[11] = !d[11];
+		return true;
+	case 0x02U:
+		d[12] = !d[12];
+		return true;
+	case 0x04U:
+		d[13] = !d[13];
+		return true;
+	case 0x08U:
+		d[14] = !d[14];
+		return true;
+	case 0x10U:
+		d[15] = !d[15];
+		return true;
 
-		// Data bit errors
-		case 0x19U: d[0]  = !d[0];  return true;
-		case 0x0BU: d[1]  = !d[1];  return true;
-		case 0x1FU: d[2]  = !d[2];  return true;
-		case 0x07U: d[3]  = !d[3];  return true;
-		case 0x0EU: d[4]  = !d[4];  return true;
-		case 0x15U: d[5]  = !d[5];  return true;
-		case 0x1AU: d[6]  = !d[6];  return true;
-		case 0x0DU: d[7]  = !d[7];  return true;
-		case 0x13U: d[8]  = !d[8];  return true;
-		case 0x16U: d[9]  = !d[9];  return true;
-		case 0x1CU: d[10] = !d[10]; return true;
+	// Data bit errors
+	case 0x19U:
+		d[0]  = !d[0];
+		return true;
+	case 0x0BU:
+		d[1]  = !d[1];
+		return true;
+	case 0x1FU:
+		d[2]  = !d[2];
+		return true;
+	case 0x07U:
+		d[3]  = !d[3];
+		return true;
+	case 0x0EU:
+		d[4]  = !d[4];
+		return true;
+	case 0x15U:
+		d[5]  = !d[5];
+		return true;
+	case 0x1AU:
+		d[6]  = !d[6];
+		return true;
+	case 0x0DU:
+		d[7]  = !d[7];
+		return true;
+	case 0x13U:
+		d[8]  = !d[8];
+		return true;
+	case 0x16U:
+		d[9]  = !d[9];
+		return true;
+	case 0x1CU:
+		d[10] = !d[10];
+		return true;
 
-		// No bit errors
-		case 0x00U: return true;
+	// No bit errors
+	case 0x00U:
+		return true;
 
-		// Unrecoverable errors
-		default: return false;
+	// Unrecoverable errors
+	default:
+		return false;
 	}
 }
 
@@ -307,33 +455,70 @@ bool CHamming::decode17123(bool* d)
 	n |= (c3 != d[15]) ? 0x08U : 0x00U;
 	n |= (c4 != d[16]) ? 0x10U : 0x00U;
 
-	switch (n) {
-		// Parity bit errors
-		case 0x01U: d[12] = !d[12]; return true;
-		case 0x02U: d[13] = !d[13]; return true;
-		case 0x04U: d[14] = !d[14]; return true;
-		case 0x08U: d[15] = !d[15]; return true;
-		case 0x10U: d[16] = !d[16]; return true;
+	switch (n)
+	{
+	// Parity bit errors
+	case 0x01U:
+		d[12] = !d[12];
+		return true;
+	case 0x02U:
+		d[13] = !d[13];
+		return true;
+	case 0x04U:
+		d[14] = !d[14];
+		return true;
+	case 0x08U:
+		d[15] = !d[15];
+		return true;
+	case 0x10U:
+		d[16] = !d[16];
+		return true;
 
-		// Data bit errors
-		case 0x1BU: d[0]  = !d[0];  return true;
-		case 0x1FU: d[1]  = !d[1];  return true;
-		case 0x17U: d[2]  = !d[2];  return true;
-		case 0x07U: d[3]  = !d[3];  return true;
-		case 0x0EU: d[4]  = !d[4];  return true;
-		case 0x1CU: d[5]  = !d[5];  return true;
-		case 0x11U: d[6]  = !d[6];  return true;
-		case 0x0BU: d[7]  = !d[7];  return true;
-		case 0x16U: d[8]  = !d[8];  return true;
-		case 0x05U: d[9]  = !d[9];  return true;
-		case 0x0AU: d[10] = !d[10]; return true;
-		case 0x14U: d[11] = !d[11]; return true;
+	// Data bit errors
+	case 0x1BU:
+		d[0]  = !d[0];
+		return true;
+	case 0x1FU:
+		d[1]  = !d[1];
+		return true;
+	case 0x17U:
+		d[2]  = !d[2];
+		return true;
+	case 0x07U:
+		d[3]  = !d[3];
+		return true;
+	case 0x0EU:
+		d[4]  = !d[4];
+		return true;
+	case 0x1CU:
+		d[5]  = !d[5];
+		return true;
+	case 0x11U:
+		d[6]  = !d[6];
+		return true;
+	case 0x0BU:
+		d[7]  = !d[7];
+		return true;
+	case 0x16U:
+		d[8]  = !d[8];
+		return true;
+	case 0x05U:
+		d[9]  = !d[9];
+		return true;
+	case 0x0AU:
+		d[10] = !d[10];
+		return true;
+	case 0x14U:
+		d[11] = !d[11];
+		return true;
 
-		// No bit errors
-		case 0x00U: return true;
+	// No bit errors
+	case 0x00U:
+		return true;
 
-		// Unrecoverable errors
-		default: return false;
+	// Unrecoverable errors
+	default:
+		return false;
 	}
 }
 

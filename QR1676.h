@@ -19,7 +19,8 @@
 #ifndef QR1676_H
 #define QR1676_H
 
-class CQR1676 {
+class CQR1676
+{
 public:
 	static void encode(unsigned char* data);
 

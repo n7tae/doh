@@ -24,7 +24,8 @@
 
 #include <string>
 
-class CDMRLookup : public CThread {
+class CDMRLookup : public CThread
+{
 public:
 	CDMRLookup(const std::string& filename, unsigned int reloadTime);
 	virtual ~CDMRLookup();

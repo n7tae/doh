@@ -19,7 +19,8 @@
 #ifndef	Hamming_H
 #define	Hamming_H
 
-class CHamming {
+class CHamming
+{
 public:
 	static void encode15113_1(bool* d);
 	static bool decode15113_1(bool* d);

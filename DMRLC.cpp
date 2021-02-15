@@ -24,24 +24,24 @@
 #include <cassert>
 
 CDMRLC::CDMRLC(FLCO flco, unsigned int srcId, unsigned int dstId) :
-m_PF(false),
-m_R(false),
-m_FLCO(flco),
-m_FID(0U),
-m_options(0U),
-m_srcId(srcId),
-m_dstId(dstId)
+	m_PF(false),
+	m_R(false),
+	m_FLCO(flco),
+	m_FID(0U),
+	m_options(0U),
+	m_srcId(srcId),
+	m_dstId(dstId)
 {
 }
 
 CDMRLC::CDMRLC(const unsigned char* bytes) :
-m_PF(false),
-m_R(false),
-m_FLCO(FLCO_GROUP),
-m_FID(0U),
-m_options(0U),
-m_srcId(0U),
-m_dstId(0U)
+	m_PF(false),
+	m_R(false),
+	m_FLCO(FLCO_GROUP),
+	m_FID(0U),
+	m_options(0U),
+	m_srcId(0U),
+	m_dstId(0U)
 {
 	assert(bytes != NULL);
 
@@ -59,13 +59,13 @@ m_dstId(0U)
 }
 
 CDMRLC::CDMRLC(const bool* bits) :
-m_PF(false),
-m_R(false),
-m_FLCO(FLCO_GROUP),
-m_FID(0U),
-m_options(0U),
-m_srcId(0U),
-m_dstId(0U)
+	m_PF(false),
+	m_R(false),
+	m_FLCO(FLCO_GROUP),
+	m_FID(0U),
+	m_options(0U),
+	m_srcId(0U),
+	m_dstId(0U)
 {
 	assert(bits != NULL);
 
@@ -97,13 +97,13 @@ m_dstId(0U)
 }
 
 CDMRLC::CDMRLC() :
-m_PF(false),
-m_R(false),
-m_FLCO(FLCO_GROUP),
-m_FID(0U),
-m_options(0U),
-m_srcId(0U),
-m_dstId(0U)
+	m_PF(false),
+	m_R(false),
+	m_FLCO(FLCO_GROUP),
+	m_FID(0U),
+	m_options(0U),
+	m_srcId(0U),
+	m_dstId(0U)
 {
 }
 

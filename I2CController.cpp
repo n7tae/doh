@@ -31,8 +31,8 @@
 #include <winioctl.h>
 
 CI2CController::CI2CController(const std::string& device, SERIAL_SPEED speed, unsigned int address, bool assertRTS) :
-CSerialController(device, speed, assertRTS),
-m_address(address)
+	CSerialController(device, speed, assertRTS),
+	m_address(address)
 {
 }
 
@@ -68,8 +68,8 @@ int CI2CController::write(const unsigned char* buffer, unsigned int length)
 #endif
 
 CI2CController::CI2CController(const std::string& device, SERIAL_SPEED speed, unsigned int address, bool assertRTS) :
-CSerialController(device, speed, assertRTS),
-m_address(address)
+	CSerialController(device, speed, assertRTS),
+	m_address(address)
 {
 }
 
@@ -83,24 +83,27 @@ bool CI2CController::open()
 
 #if defined(__linux__)
 	m_fd = ::open(m_device.c_str(), O_RDWR);
-	if (m_fd < 0) {
+	if (m_fd < 0)
+	{
 		LogError("Cannot open device - %s", m_device.c_str());
 		return false;
 	}
 
-	if (::ioctl(m_fd, I2C_TENBIT, 0) < 0) {
+	if (::ioctl(m_fd, I2C_TENBIT, 0) < 0)
+	{
 		LogError("CI2C: failed to set 7bitaddress");
 		::close(m_fd);
 		return false;
 	}
 
-	if (::ioctl(m_fd, I2C_SLAVE, m_address) < 0) {
+	if (::ioctl(m_fd, I2C_SLAVE, m_address) < 0)
+	{
 		LogError("CI2C: Failed to acquire bus access/talk to slave 0x%02X", m_address);
 		::close(m_fd);
 		return false;
 	}
 #else
-	#warning "I2C controller supports Linux only"
+#warning "I2C controller supports Linux only"
 #endif
 
 	return true;
@@ -116,11 +119,14 @@ int CI2CController::read(unsigned char* buffer, unsigned int length)
 
 	unsigned int offset = 0U;
 
-	while (offset < length) {
+	while (offset < length)
+	{
 #if defined(__linux__)
 		ssize_t n = ::read(m_fd, buffer + offset, 1U);
-		if (n < 0) {
-			if (errno != EAGAIN) {
+		if (n < 0)
+		{
+			if (errno != EAGAIN)
+			{
 				LogError("Error returned from read(), errno=%d", errno);
 				return -1;
 			}
@@ -143,13 +149,16 @@ int CI2CController::write(const unsigned char* buffer, unsigned int length)
 		return 0;
 
 	unsigned int ptr = 0U;
-	while (ptr < length) {
+	while (ptr < length)
+	{
 		ssize_t n = 0U;
 #if defined(__linux__)
 		n = ::write(m_fd, buffer + ptr, 1U);
 #endif
-		if (n < 0) {
-			if (errno != EAGAIN) {
+		if (n < 0)
+		{
+			if (errno != EAGAIN)
+			{
 				LogError("Error returned from write(), errno=%d", errno);
 				return -1;
 			}

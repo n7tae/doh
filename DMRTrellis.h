@@ -14,7 +14,8 @@
 #ifndef	DMRTrellis_H
 #define	DMRTrellis_H
 
-class CDMRTrellis {
+class CDMRTrellis
+{
 public:
 	CDMRTrellis();
 	~CDMRTrellis();

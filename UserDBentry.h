@@ -31,7 +31,8 @@
 #define keySTATE	"STATE"
 #define keyCOUNTRY	"COUNTRY"
 
-class CUserDBentry {
+class CUserDBentry
+{
 public:
 	CUserDBentry();
 	~CUserDBentry();

@@ -22,11 +22,13 @@
 
 #include <cstdint>
 
-enum {
+enum
+{
 	SHA256_DIGEST_SIZE = 256 / 8
 };
 
-class CSHA256 {
+class CSHA256
+{
 public:
 	CSHA256();
 	~CSHA256();

@@ -50,7 +50,7 @@ public:
 
 	virtual void close() = 0;
 
-private: 
+private:
 };
 
 #endif

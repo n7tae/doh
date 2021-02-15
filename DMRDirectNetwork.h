@@ -71,7 +71,8 @@ private:
 	bool             m_slot2;
 	HW_TYPE          m_hwType;
 
-	enum STATUS {
+	enum STATUS
+	{
 		WAITING_CONNECT,
 		WAITING_LOGIN,
 		WAITING_AUTHORISATION,

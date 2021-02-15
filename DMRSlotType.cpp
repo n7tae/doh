@@ -24,8 +24,8 @@
 #include <cassert>
 
 CDMRSlotType::CDMRSlotType() :
-m_colorCode(0U),
-m_dataType(0U)
+	m_colorCode(0U),
+	m_dataType(0U)
 {
 }
 

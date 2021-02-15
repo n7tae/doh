@@ -19,7 +19,7 @@
 #include <algorithm>
 
 CUserDBentry::CUserDBentry() :
-m_db()
+	m_db()
 {
 }
 
@@ -27,7 +27,8 @@ CUserDBentry::~CUserDBentry()
 {
 }
 
-const std::vector<std::string> CUserDBentry::keyList {
+const std::vector<std::string> CUserDBentry::keyList
+{
 	keyRADIO_ID, keyCALLSIGN, keyFIRST_NAME, keyLAST_NAME,
 	keyCITY, keySTATE, keyCOUNTRY,
 };
@@ -46,9 +47,12 @@ void CUserDBentry::set(const std::string key, const std::string value)
 
 const std::string CUserDBentry::get(const std::string key) const
 {
-	try {
+	try
+	{
 		return m_db.at(key);
-	} catch (...) {
+	}
+	catch (...)
+	{
 		return "";
 	}
 }

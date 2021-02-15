@@ -20,8 +20,8 @@
 #include "Log.h"
 
 CNullModem::CNullModem(const std::string& port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned int txDelay, unsigned int dmrDelay, bool useCOSAsLockout, bool trace, bool debug) :
-CModem(port, duplex,rxInvert, txInvert,pttInvert,txDelay, dmrDelay, useCOSAsLockout, trace, debug),
-m_hwType(HWT_MMDVM)
+	CModem(port, duplex,rxInvert, txInvert,pttInvert,txDelay, dmrDelay, useCOSAsLockout, trace, debug),
+	m_hwType(HWT_MMDVM)
 {
 }
 
@@ -29,7 +29,8 @@ CNullModem::~CNullModem()
 {
 }
 
-bool CNullModem::open(){
+bool CNullModem::open()
+{
 	::LogMessage("Opening the MMDVM Null Modem");
 	return true;
 }
