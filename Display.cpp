@@ -28,7 +28,6 @@
 #include "CASTInfo.h"
 #include "Conf.h"
 #include "Modem.h"
-#include "UMP.h"
 #include "Log.h"
 
 #if defined(HD44780)
@@ -110,45 +109,6 @@ void CDisplay::setFM()
 	m_mode2 = MODE_FM;
 
 	setFMInt();
-}
-
-void CDisplay::writeDStar(const char* my1, const char* my2, const char* your, const char* type, const char* reflector)
-{
-	assert(my1 != NULL);
-	assert(my2 != NULL);
-	assert(your != NULL);
-	assert(type != NULL);
-	assert(reflector != NULL);
-
-	m_timer1.start();
-	m_mode1 = MODE_IDLE;
-
-	writeDStarInt(my1, my2, your, type, reflector);
-}
-
-void CDisplay::writeDStarRSSI(unsigned char rssi)
-{
-	if (rssi != 0U)
-		writeDStarRSSIInt(rssi);
-}
-
-void CDisplay::writeDStarBER(float ber)
-{
-	writeDStarBERInt(ber);
-}
-
-void CDisplay::clearDStar()
-{
-	if (m_timer1.hasExpired())
-	{
-		clearDStarInt();
-		m_timer1.stop();
-		m_mode1 = MODE_IDLE;
-	}
-	else
-	{
-		m_mode1 = MODE_DSTAR;
-	}
 }
 
 void CDisplay::writeDMR(unsigned int slotNo, const std::string& src, bool group, const std::string& dst, const char* type)
@@ -243,149 +203,6 @@ void CDisplay::clearDMR(unsigned int slotNo)
 	}
 }
 
-void CDisplay::writeFusion(const char* source, const char* dest, unsigned char dgid, const char* type, const char* origin)
-{
-	assert(source != NULL);
-	assert(dest != NULL);
-	assert(type != NULL);
-	assert(origin != NULL);
-
-	m_timer1.start();
-	m_mode1 = MODE_IDLE;
-
-	writeFusionInt(source, dest, dgid, type, origin);
-}
-
-void CDisplay::writeFusionRSSI(unsigned char rssi)
-{
-	if (rssi != 0U)
-		writeFusionRSSIInt(rssi);
-}
-
-void CDisplay::writeFusionBER(float ber)
-{
-	writeFusionBERInt(ber);
-}
-
-void CDisplay::clearFusion()
-{
-	if (m_timer1.hasExpired())
-	{
-		clearFusionInt();
-		m_timer1.stop();
-		m_mode1 = MODE_IDLE;
-	}
-	else
-	{
-		m_mode1 = MODE_YSF;
-	}
-}
-
-void CDisplay::writeP25(const char* source, bool group, unsigned int dest, const char* type)
-{
-	assert(source != NULL);
-	assert(type != NULL);
-
-	m_timer1.start();
-	m_mode1 = MODE_IDLE;
-
-	writeP25Int(source, group, dest, type);
-}
-
-void CDisplay::writeP25RSSI(unsigned char rssi)
-{
-	if (rssi != 0U)
-		writeP25RSSIInt(rssi);
-}
-
-void CDisplay::writeP25BER(float ber)
-{
-	writeP25BERInt(ber);
-}
-
-void CDisplay::clearP25()
-{
-	if (m_timer1.hasExpired())
-	{
-		clearP25Int();
-		m_timer1.stop();
-		m_mode1 = MODE_IDLE;
-	}
-	else
-	{
-		m_mode1 = MODE_P25;
-	}
-}
-
-void CDisplay::writeNXDN(const char* source, bool group, unsigned int dest, const char* type)
-{
-	assert(source != NULL);
-	assert(type != NULL);
-
-	m_timer1.start();
-	m_mode1 = MODE_IDLE;
-
-	writeNXDNInt(source, group, dest, type);
-}
-
-void CDisplay::writeNXDN(const class CUserDBentry& source, bool group, unsigned int dest, const char* type)
-{
-	assert(type != NULL);
-
-	m_timer1.start();
-	m_mode1 = MODE_IDLE;
-
-	if (writeNXDNIntEx(source, group, dest, type))
-		writeNXDNInt(source.get(keyCALLSIGN).c_str(), group, dest, type);
-}
-
-void CDisplay::writeNXDNRSSI(unsigned char rssi)
-{
-	if (rssi != 0U)
-		writeNXDNRSSIInt(rssi);
-}
-
-void CDisplay::writeNXDNBER(float ber)
-{
-	writeNXDNBERInt(ber);
-}
-
-void CDisplay::clearNXDN()
-{
-	if (m_timer1.hasExpired())
-	{
-		clearNXDNInt();
-		m_timer1.stop();
-		m_mode1 = MODE_IDLE;
-	}
-	else
-	{
-		m_mode1 = MODE_NXDN;
-	}
-}
-
-void CDisplay::writePOCSAG(uint32_t ric, const std::string& message)
-{
-	m_timer1.start();
-	m_mode1 = MODE_POCSAG;
-
-	writePOCSAGInt(ric, message);
-}
-
-void CDisplay::clearPOCSAG()
-{
-	if (m_timer1.hasExpired())
-	{
-		clearPOCSAGInt();
-		m_timer1.stop();
-		m_mode1 = MODE_IDLE;
-	}
-	else
-	{
-		m_mode1 = MODE_POCSAG;
-	}
-}
-
 void CDisplay::writeCW()
 {
 	m_timer1.start();
@@ -401,33 +218,8 @@ void CDisplay::clock(unsigned int ms)
 	{
 		switch (m_mode1)
 		{
-		case MODE_DSTAR:
-			clearDStarInt();
-			m_mode1 = MODE_IDLE;
-			m_timer1.stop();
-			break;
 		case MODE_DMR:
 			clearDMRInt(1U);
-			m_mode1 = MODE_IDLE;
-			m_timer1.stop();
-			break;
-		case MODE_YSF:
-			clearFusionInt();
-			m_mode1 = MODE_IDLE;
-			m_timer1.stop();
-			break;
-		case MODE_P25:
-			clearP25Int();
-			m_mode1 = MODE_IDLE;
-			m_timer1.stop();
-			break;
-		case MODE_NXDN:
-			clearNXDNInt();
-			m_mode1 = MODE_IDLE;
-			m_timer1.stop();
-			break;
-		case MODE_POCSAG:
-			clearPOCSAGInt();
 			m_mode1 = MODE_IDLE;
 			m_timer1.stop();
 			break;
@@ -460,14 +252,6 @@ void CDisplay::clockInt(unsigned int ms)
 {
 }
 
-void CDisplay::writeDStarRSSIInt(unsigned char rssi)
-{
-}
-
-void CDisplay::writeDStarBERInt(float ber)
-{
-}
-
 int CDisplay::writeDMRIntEx(unsigned int slotNo, const class CUserDBentry& src, bool group, const std::string& dst, const char* type)
 {
 	/*
@@ -492,36 +276,6 @@ void CDisplay::writeDMRTAInt(unsigned int slotNo, unsigned char* talkerAlias, co
 
 void CDisplay::writeDMRBERInt(unsigned int slotNo, float ber)
 {
-}
-
-void CDisplay::writeFusionRSSIInt(unsigned char rssi)
-{
-}
-
-void CDisplay::writeFusionBERInt(float ber)
-{
-}
-
-void CDisplay::writeP25RSSIInt(unsigned char rssi)
-{
-}
-
-void CDisplay::writeP25BERInt(float ber)
-{
-}
-
-void CDisplay::writeNXDNRSSIInt(unsigned char rssi)
-{
-}
-
-void CDisplay::writeNXDNBERInt(float ber)
-{
-}
-
-int CDisplay::writeNXDNIntEx(const class CUserDBentry& source, bool group, unsigned int dest, const char* type)
-{
-	/* return value definition is same as writeDMRIntEx() */
-	return -1;	// not supported
 }
 
 
@@ -603,7 +357,7 @@ CDisplay* CDisplay::createDisplay(const CConf& conf, CUMP* ump, CModem* modem)
 		{
 			if (ump != NULL)
 			{
-				display = new CNextion(conf.getCallsign(), dmrid, ump, brightness, displayClock, utc, idleBrightness, screenLayout, txFrequency, rxFrequency, displayTempInF);
+				display = new CNextion(conf.getCallsign(), dmrid, NULL, brightness, displayClock, utc, idleBrightness, screenLayout, txFrequency, rxFrequency, displayTempInF);
 			}
 			else
 			{

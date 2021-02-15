@@ -17,12 +17,7 @@
  */
 
 #include "I2CController.h"
-#include "DStarDefines.h"
 #include "DMRDefines.h"
-#include "YSFDefines.h"
-#include "P25Defines.h"
-#include "NXDNDefines.h"
-#include "POCSAGDefines.h"
 #include "Thread.h"
 #include "Modem.h"
 #include "NullModem.h"
@@ -1014,7 +1009,7 @@ unsigned int CModem::readSerial(unsigned char* data, unsigned int length)
 
 bool CModem::hasDStarSpace() const
 {
-	unsigned int space = m_txDStarData.freeSpace() / (DSTAR_FRAME_LENGTH_BYTES + 4U);
+	unsigned int space = m_txDStarData.freeSpace() / 16U;
 
 	return space > 1U;
 }
@@ -1116,7 +1111,7 @@ bool CModem::writeDMRData2(const unsigned char* data, unsigned int length)
 
 bool CModem::hasYSFSpace() const
 {
-	unsigned int space = m_txYSFData.freeSpace() / (YSF_FRAME_LENGTH_BYTES + 4U);
+	unsigned int space = m_txYSFData.freeSpace() / 124u;
 
 	return space > 1U;
 }
@@ -1146,7 +1141,7 @@ bool CModem::writeYSFData(const unsigned char* data, unsigned int length)
 
 bool CModem::hasP25Space() const
 {
-	unsigned int space = m_txP25Data.freeSpace() / (P25_LDU_FRAME_LENGTH_BYTES + 4U);
+	unsigned int space = m_txP25Data.freeSpace() / 220u;
 
 	return space > 1U;
 }
@@ -1176,7 +1171,7 @@ bool CModem::writeP25Data(const unsigned char* data, unsigned int length)
 
 bool CModem::hasNXDNSpace() const
 {
-	unsigned int space = m_txNXDNData.freeSpace() / (NXDN_FRAME_LENGTH_BYTES + 4U);
+	unsigned int space = m_txNXDNData.freeSpace() / 52u;
 
 	return space > 1U;
 }
@@ -1206,7 +1201,7 @@ bool CModem::writeNXDNData(const unsigned char* data, unsigned int length)
 
 bool CModem::hasPOCSAGSpace() const
 {
-	unsigned int space = m_txPOCSAGData.freeSpace() / (POCSAG_FRAME_LENGTH_BYTES + 4U);
+	unsigned int space = m_txPOCSAGData.freeSpace() / 25u;
 
 	return space > 1U;
 }
@@ -1286,14 +1281,14 @@ bool CModem::writeDStarInfo(const char* my1, const char* my2, const char* your, 
 
 	buffer[3U] = MODE_DSTAR;
 
-	::memcpy(buffer + 4U,  my1,  DSTAR_LONG_CALLSIGN_LENGTH);
-	::memcpy(buffer + 12U, my2,  DSTAR_SHORT_CALLSIGN_LENGTH);
+	::memcpy(buffer + 4U,  my1,  8);
+	::memcpy(buffer + 12U, my2,  4);
 
-	::memcpy(buffer + 16U, your, DSTAR_LONG_CALLSIGN_LENGTH);
+	::memcpy(buffer + 16U, your, 8);
 
 	::memcpy(buffer + 24U, type, 1U);
 
-	::memcpy(buffer + 25U, reflector, DSTAR_LONG_CALLSIGN_LENGTH);
+	::memcpy(buffer + 25U, reflector, 8);
 
 	return m_serial->write(buffer, 33U) != 33;
 }
@@ -1340,12 +1335,12 @@ bool CModem::writeYSFInfo(const char* source, const char* dest, unsigned char dg
 
 	buffer[3U] = MODE_YSF;
 
-	::memcpy(buffer + 4U,  source, YSF_CALLSIGN_LENGTH);
-	::memcpy(buffer + 14U, dest,   YSF_CALLSIGN_LENGTH);
+	::memcpy(buffer + 4U,  source, 10);
+	::memcpy(buffer + 14U, dest,   10);
 
 	::memcpy(buffer + 24U, type, 1U);
 
-	::memcpy(buffer + 25U, origin, YSF_CALLSIGN_LENGTH);
+	::memcpy(buffer + 25U, origin, 10);
 
 	buffer[35U] = dgid;
 

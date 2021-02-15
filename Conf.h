@@ -36,7 +36,6 @@ public:
 	unsigned int getTimeout() const;
 	bool         getDuplex() const;
 	std::string  getDisplay() const;
-	bool         getDaemon() const;
 
 	// The Info section
 	unsigned int getRXFrequency() const;
@@ -65,10 +64,6 @@ public:
 	std::string  getDMRIdLookupFile() const;
 	unsigned int getDMRIdLookupTime() const;
 
-	// The NXDN Id section
-	std::string  getNXDNIdLookupFile() const;
-	unsigned int getNXDNIdLookupTime() const;
-
 	// The Modem section
 	std::string  getModemPort() const;
 	std::string  getModemProtocol() const;
@@ -85,41 +80,11 @@ public:
 	float        getModemRFLevel() const;
 	float        getModemRXLevel() const;
 	float        getModemCWIdTXLevel() const;
-	float        getModemDStarTXLevel() const;
 	float        getModemDMRTXLevel() const;
-	float        getModemYSFTXLevel() const;
-	float        getModemP25TXLevel() const;
-	float        getModemNXDNTXLevel() const;
-	float        getModemPOCSAGTXLevel() const;
-	float        getModemFMTXLevel() const;
 	std::string  getModemRSSIMappingFile() const;
 	bool         getModemUseCOSAsLockout() const;
 	bool         getModemTrace() const;
 	bool         getModemDebug() const;
-
-	// The Transparent Data section
-	bool         getTransparentEnabled() const;
-	std::string  getTransparentRemoteAddress() const;
-	unsigned int getTransparentRemotePort() const;
-	unsigned int getTransparentLocalPort() const;
-	unsigned int getTransparentSendFrameType() const;
-
-	// The UMP section
-	bool         getUMPEnabled() const;
-	std::string  getUMPPort() const;
-
-	// The D-Star section
-	bool         getDStarEnabled() const;
-	std::string  getDStarModule() const;
-	bool         getDStarSelfOnly() const;
-	std::vector<std::string> getDStarBlackList() const;
-	std::vector<std::string> getDStarWhiteList() const;
-	bool         getDStarAckReply() const;
-	unsigned int getDStarAckTime() const;
-	bool         getDStarAckMessage() const;
-	bool         getDStarErrorReply() const;
-	bool         getDStarRemoteGateway() const;
-	unsigned int getDStarModeHang() const;
 
 	// The DMR section
 	bool         getDMREnabled() const;
@@ -141,80 +106,7 @@ public:
 	unsigned int getDMRModeHang() const;
 	DMR_OVCM_TYPES getDMROVCM() const;
 
-	// The System Fusion section
-	bool          getFusionEnabled() const;
-	bool          getFusionLowDeviation() const;
-	bool          getFusionRemoteGateway() const;
-	bool          getFusionSelfOnly() const;
-	unsigned int  getFusionTXHang() const;
-	unsigned int  getFusionModeHang() const;
-
-	// The P25 section
-	bool         getP25Enabled() const;
-	unsigned int getP25Id() const;
-	unsigned int getP25NAC() const;
-	bool         getP25SelfOnly() const;
-	bool         getP25OverrideUID() const;
-	bool         getP25RemoteGateway() const;
-	unsigned int getP25TXHang() const;
-	unsigned int getP25ModeHang() const;
-
-	// The NXDN section
-	bool         getNXDNEnabled() const;
-	unsigned int getNXDNId() const;
-	unsigned int getNXDNRAN() const;
-	bool         getNXDNSelfOnly() const;
-	bool         getNXDNRemoteGateway() const;
-	unsigned int getNXDNTXHang() const;
-	unsigned int getNXDNModeHang() const;
-
-	// The POCSAG section
-	bool         getPOCSAGEnabled() const;
-	unsigned int getPOCSAGFrequency() const;
-
-	// The FM Section
-	bool         getFMEnabled() const;
-	std::string  getFMCallsign() const;
-	unsigned int getFMCallsignSpeed() const;
-	unsigned int getFMCallsignFrequency() const;
-	unsigned int getFMCallsignTime() const;
-	unsigned int getFMCallsignHoldoff() const;
-	float        getFMCallsignHighLevel() const;
-	float        getFMCallsignLowLevel() const;
-	bool         getFMCallsignAtStart() const;
-	bool         getFMCallsignAtEnd() const;
-	bool         getFMCallsignAtLatch() const;
-	std::string  getFMRFAck() const;
-	std::string  getFMExtAck() const;
-	unsigned int getFMAckSpeed() const;
-	unsigned int getFMAckFrequency() const;
-	unsigned int getFMAckMinTime() const;
-	unsigned int getFMAckDelay() const;
-	float        getFMAckLevel() const;
-	unsigned int getFMTimeout() const;
-	float        getFMTimeoutLevel() const;
-	float        getFMCTCSSFrequency() const;
-	unsigned int getFMCTCSSHighThreshold() const;
-	unsigned int getFMCTCSSLowThreshold() const;
-	float        getFMCTCSSLevel() const;
-	unsigned int getFMKerchunkTime() const;
-	unsigned int getFMHangTime() const;
-	unsigned int getFMAccessMode() const;
-	bool         getFMCOSInvert() const;
-	unsigned int getFMRFAudioBoost() const;
-	float        getFMMaxDevLevel() const;
-	unsigned int getFMExtAudioBoost() const;
-
-	// The D-Star Network section
-	bool         getDStarNetworkEnabled() const;
-	std::string  getDStarGatewayAddress() const;
-	unsigned int getDStarGatewayPort() const;
-	unsigned int getDStarLocalPort() const;
-	unsigned int getDStarNetworkModeHang() const;
-	bool         getDStarNetworkDebug() const;
-
 	// The DMR Network section
-	bool         getDMRNetworkEnabled() const;
 	std::string  getDMRNetworkType() const;
 	std::string  getDMRNetworkAddress() const;
 	unsigned int getDMRNetworkPort() const;
@@ -226,42 +118,6 @@ public:
 	bool         getDMRNetworkSlot1() const;
 	bool         getDMRNetworkSlot2() const;
 	unsigned int getDMRNetworkModeHang() const;
-
-	// The System Fusion Network section
-	bool         getFusionNetworkEnabled() const;
-	std::string  getFusionNetworkMyAddress() const;
-	unsigned int getFusionNetworkMyPort() const;
-	std::string  getFusionNetworkGatewayAddress() const;
-	unsigned int getFusionNetworkGatewayPort() const;
-	unsigned int getFusionNetworkModeHang() const;
-	bool         getFusionNetworkDebug() const;
-
-	// The P25 Network section
-	bool         getP25NetworkEnabled() const;
-	std::string  getP25GatewayAddress() const;
-	unsigned int getP25GatewayPort() const;
-	unsigned int getP25LocalPort() const;
-	unsigned int getP25NetworkModeHang() const;
-	bool         getP25NetworkDebug() const;
-
-	// The NXDN Network section
-	bool         getNXDNNetworkEnabled() const;
-	std::string  getNXDNNetworkProtocol() const;
-	std::string  getNXDNGatewayAddress() const;
-	unsigned int getNXDNGatewayPort() const;
-	std::string  getNXDNLocalAddress() const;
-	unsigned int getNXDNLocalPort() const;
-	unsigned int getNXDNNetworkModeHang() const;
-	bool         getNXDNNetworkDebug() const;
-
-	// The POCSAG Network section
-	bool         getPOCSAGNetworkEnabled() const;
-	std::string  getPOCSAGGatewayAddress() const;
-	unsigned int getPOCSAGGatewayPort() const;
-	std::string  getPOCSAGLocalAddress() const;
-	unsigned int getPOCSAGLocalPort() const;
-	unsigned int getPOCSAGNetworkModeHang() const;
-	bool         getPOCSAGNetworkDebug() const;
 
 	// The TFTSERIAL section
 	std::string  getTFTSerialPort() const;
@@ -304,15 +160,6 @@ public:
 	bool         getLCDprocUTC() const;
 	bool         getLCDprocDimOnIdle() const;
 
-	// The Lock File section
-	bool         getLockFileEnabled() const;
-	std::string  getLockFileName() const;
-
-	// The Remote Control section
-	bool         getRemoteControlEnabled() const;
-	std::string  getRemoteControlAddress() const;
-	unsigned int getRemoteControlPort() const;
-
 private:
 	std::string  m_file;
 	std::string  m_callsign;
@@ -320,7 +167,6 @@ private:
 	unsigned int m_timeout;
 	bool         m_duplex;
 	std::string  m_display;
-	bool         m_daemon;
 
 	unsigned int m_rxFrequency;
 	unsigned int m_txFrequency;
@@ -345,9 +191,6 @@ private:
 	std::string  m_dmrIdLookupFile;
 	unsigned int m_dmrIdLookupTime;
 
-	std::string  m_nxdnIdLookupFile;
-	unsigned int m_nxdnIdLookupTime;
-
 	std::string  m_modemPort;
 	std::string  m_modemProtocol;
 	unsigned int m_modemAddress;
@@ -363,40 +206,12 @@ private:
 	float        m_modemRFLevel;
 	float        m_modemRXLevel;
 	float        m_modemCWIdTXLevel;
-	float        m_modemDStarTXLevel;
 	float        m_modemDMRTXLevel;
-	float        m_modemYSFTXLevel;
-	float        m_modemP25TXLevel;
-	float        m_modemNXDNTXLevel;
-	float        m_modemPOCSAGTXLevel;
-	float        m_modemFMTXLevel;
 	std::string  m_modemRSSIMappingFile;
 	bool         m_modemUseCOSAsLockout;
 	bool         m_modemTrace;
 	bool         m_modemDebug;
 
-	bool         m_transparentEnabled;
-	std::string  m_transparentRemoteAddress;
-	unsigned int m_transparentRemotePort;
-	unsigned int m_transparentLocalPort;
-	unsigned int m_transparentSendFrameType;
-
-	bool         m_umpEnabled;
-	std::string  m_umpPort;
-
-	bool         m_dstarEnabled;
-	std::string  m_dstarModule;
-	bool         m_dstarSelfOnly;
-	std::vector<std::string> m_dstarBlackList;
-	std::vector<std::string> m_dstarWhiteList;
-	bool         m_dstarAckReply;
-	unsigned int m_dstarAckTime;
-	bool         m_dstarAckMessage;
-	bool         m_dstarErrorReply;
-	bool         m_dstarRemoteGateway;
-	unsigned int m_dstarModeHang;
-
-	bool         m_dmrEnabled;
 	DMR_BEACONS  m_dmrBeacons;
 	unsigned int m_dmrBeaconInterval;
 	unsigned int m_dmrBeaconDuration;
@@ -415,73 +230,6 @@ private:
 	unsigned int m_dmrModeHang;
 	DMR_OVCM_TYPES m_dmrOVCM;
 
-	bool          m_fusionEnabled;
-	bool          m_fusionLowDeviation;
-	bool          m_fusionRemoteGateway;
-	bool          m_fusionSelfOnly;
-	unsigned int  m_fusionTXHang;
-	unsigned int  m_fusionModeHang;
-
-	bool         m_p25Enabled;
-	unsigned int m_p25Id;
-	unsigned int m_p25NAC;
-	bool         m_p25SelfOnly;
-	bool         m_p25OverrideUID;
-	bool         m_p25RemoteGateway;
-	unsigned int m_p25TXHang;
-	unsigned int m_p25ModeHang;
-
-	bool         m_nxdnEnabled;
-	unsigned int m_nxdnId;
-	unsigned int m_nxdnRAN;
-	bool         m_nxdnSelfOnly;
-	bool         m_nxdnRemoteGateway;
-	unsigned int m_nxdnTXHang;
-	unsigned int m_nxdnModeHang;
-
-	bool         m_pocsagEnabled;
-	unsigned int m_pocsagFrequency;
-
-	bool         m_fmEnabled;
-	std::string  m_fmCallsign;
-	unsigned int m_fmCallsignSpeed;
-	unsigned int m_fmCallsignFrequency;
-	unsigned int m_fmCallsignTime;
-	unsigned int m_fmCallsignHoldoff;
-	float        m_fmCallsignHighLevel;
-	float        m_fmCallsignLowLevel;
-	bool         m_fmCallsignAtStart;
-	bool         m_fmCallsignAtEnd;
-	bool         m_fmCallsignAtLatch;
-	std::string  m_fmRFAck;
-	std::string  m_fmExtAck;
-	unsigned int m_fmAckSpeed;
-	unsigned int m_fmAckFrequency;
-	unsigned int m_fmAckMinTime;
-	unsigned int m_fmAckDelay;
-	float        m_fmAckLevel;
-	unsigned int m_fmTimeout;
-	float        m_fmTimeoutLevel;
-	float        m_fmCTCSSFrequency;
-	unsigned int m_fmCTCSSHighThreshold;
-	unsigned int m_fmCTCSSLowThreshold;
-	float        m_fmCTCSSLevel;
-	unsigned int m_fmKerchunkTime;
-	unsigned int m_fmHangTime;
-	unsigned int m_fmAccessMode;
-	bool         m_fmCOSInvert;
-	unsigned int m_fmRFAudioBoost;
-	float        m_fmMaxDevLevel;
-	unsigned int m_fmExtAudioBoost;
-
-	bool         m_dstarNetworkEnabled;
-	std::string  m_dstarGatewayAddress;
-	unsigned int m_dstarGatewayPort;
-	unsigned int m_dstarLocalPort;
-	unsigned int m_dstarNetworkModeHang;
-	bool         m_dstarNetworkDebug;
-
-	bool         m_dmrNetworkEnabled;
 	std::string  m_dmrNetworkType;
 	std::string  m_dmrNetworkAddress;
 	unsigned int m_dmrNetworkPort;
@@ -493,39 +241,6 @@ private:
 	bool         m_dmrNetworkSlot1;
 	bool         m_dmrNetworkSlot2;
 	unsigned int m_dmrNetworkModeHang;
-
-	bool         m_fusionNetworkEnabled;
-	std::string  m_fusionNetworkMyAddress;
-	unsigned int m_fusionNetworkMyPort;
-	std::string  m_fusionNetworkGatewayAddress;
-	unsigned int m_fusionNetworkGatewayPort;
-	unsigned int m_fusionNetworkModeHang;
-	bool         m_fusionNetworkDebug;
-
-	bool         m_p25NetworkEnabled;
-	std::string  m_p25GatewayAddress;
-	unsigned int m_p25GatewayPort;
-	unsigned int m_p25LocalPort;
-	unsigned int m_p25NetworkModeHang;
-	bool         m_p25NetworkDebug;
-
-	bool         m_nxdnNetworkEnabled;
-	std::string  m_nxdnNetworkProtocol;
-	std::string  m_nxdnGatewayAddress;
-	unsigned int m_nxdnGatewayPort;
-	std::string  m_nxdnLocalAddress;
-	unsigned int m_nxdnLocalPort;
-	unsigned int m_nxdnNetworkModeHang;
-	bool         m_nxdnNetworkDebug;
-
-	bool         m_pocsagNetworkEnabled;
-	std::string  m_pocsagGatewayAddress;
-	unsigned int m_pocsagGatewayPort;
-	std::string  m_pocsagLocalAddress;
-	unsigned int m_pocsagLocalPort;
-	unsigned int m_pocsagNetworkModeHang;
-	bool         m_pocsagNetworkDebug;
-
 	std::string  m_tftSerialPort;
 	unsigned int m_tftSerialBrightness;
 
@@ -561,13 +276,6 @@ private:
 	bool         m_lcdprocDisplayClock;
 	bool         m_lcdprocUTC;
 	bool         m_lcdprocDimOnIdle;
-
-	bool         m_lockFileEnabled;
-	std::string  m_lockFileName;
-
-	bool         m_remoteControlEnabled;
-	std::string  m_remoteControlAddress;
-	unsigned int m_remoteControlPort;
 };
 
 #endif
