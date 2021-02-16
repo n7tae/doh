@@ -103,7 +103,6 @@ CQnetDMR::CQnetDMR(const std::string& confFile) :
 	m_modem(NULL),
 	m_dmr(NULL),
 	m_dmrNetwork(NULL),
-	m_display(NULL),
 	m_mode(MODE_IDLE),
 	m_dstarRFModeHang(10U),
 	m_dmrRFModeHang(10U),
@@ -169,8 +168,6 @@ int CQnetDMR::run()
 	ret = createModem();
 	if (!ret)
 		return 1;
-
-	m_display = CDisplay::createDisplay(m_conf, NULL, m_modem);
 
 	if (m_dmrEnabled)
 	{
@@ -320,7 +317,7 @@ int CQnetDMR::run()
 			break;
 		}
 
-		m_dmr = new CDMRControl(id, colorCode, callHang, selfOnly, embeddedLCOnly, dumpTAData, prefixes, blackList, whiteList, slot1TGWhiteList, slot2TGWhiteList, m_timeout, m_modem, m_dmrNetwork, m_display, m_duplex, m_dmrLookup, rssi, jitter, ovcm);
+		m_dmr = new CDMRControl(id, colorCode, callHang, selfOnly, embeddedLCOnly, dumpTAData, prefixes, blackList, whiteList, slot1TGWhiteList, slot2TGWhiteList, m_timeout, m_modem, m_dmrNetwork, m_duplex, m_dmrLookup, rssi, jitter, ovcm);
 
 		m_dmrTXTimer.setTimeout(txHang);
 	}
@@ -541,8 +538,6 @@ int CQnetDMR::run()
 		unsigned int ms = stopWatch.elapsed();
 		stopWatch.start();
 
-		m_display->clock(ms);
-
 		m_modem->clock(ms);
 
 		if (!m_fixedMode)
@@ -566,7 +561,6 @@ int CQnetDMR::run()
 			if (!m_modem->hasTX())
 			{
 				LogDebug("sending CW ID");
-				m_display->writeCW();
 				m_modem->sendCWId(m_cwCallsign);
 
 				m_cwIdTimer.setTimeout(m_cwIdTime);
@@ -631,9 +625,6 @@ int CQnetDMR::run()
 
 	m_modem->close();
 	delete m_modem;
-
-	m_display->close();
-	delete m_display;
 
 	if (m_dmrLookup != NULL)
 		m_dmrLookup->stop();
@@ -853,7 +844,6 @@ void CQnetDMR::readParams()
 void CQnetDMR::setMode(unsigned char mode)
 {
 	assert(m_modem != NULL);
-	assert(m_display != NULL);
 
 	switch (mode)
 	{
@@ -944,7 +934,6 @@ void CQnetDMR::setMode(unsigned char mode)
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();
 		}
-		m_display->setFM();
 		m_mode = MODE_FM;
 		m_modeTimer.stop();
 		m_cwIdTimer.stop();
@@ -962,7 +951,6 @@ void CQnetDMR::setMode(unsigned char mode)
 			m_dmrTXTimer.stop();
 		}
 		m_modem->setMode(MODE_IDLE);
-		m_display->setLockout();
 		m_mode = MODE_LOCKOUT;
 		m_modeTimer.stop();
 		m_cwIdTimer.stop();
@@ -980,7 +968,6 @@ void CQnetDMR::setMode(unsigned char mode)
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();
 		}
-		m_display->setError("MODEM");
 		m_mode = MODE_ERROR;
 		m_modeTimer.stop();
 		m_cwIdTimer.stop();
@@ -1009,9 +996,6 @@ void CQnetDMR::setMode(unsigned char mode)
 			m_cwIdTimer.setTimeout(m_cwIdTime / 4U);
 			m_cwIdTimer.start();
 		}
-		m_display->setIdle();
-		if (mode == MODE_QUIT)
-			m_display->setQuit();
 		m_mode = MODE_IDLE;
 		m_modeTimer.stop();
 		removeLockFile();

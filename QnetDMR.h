@@ -22,7 +22,6 @@
 #include "DMRControl.h"
 #include "DMRNetwork.h"
 #include "DMRLookup.h"
-#include "Display.h"
 #include "Timer.h"
 #include "Modem.h"
 #include "Conf.h"
@@ -43,7 +42,6 @@ private:
 	CModem*         m_modem;
 	CDMRControl*    m_dmr;
 	IDMRNetwork*    m_dmrNetwork;
-	CDisplay*       m_display;
 	unsigned char   m_mode;
 	unsigned int    m_dstarRFModeHang;
 	unsigned int    m_dmrRFModeHang;
