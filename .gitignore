@@ -27,7 +27,7 @@
 *.lib
 
 # Config file
-MMDVM.cfg
+qn.cfg
 
 # Executables
-MMDVMHost
+qndmr

@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "MMDVMHost.h"
+#include "QnetDMR.h"
 #include "DMRDirectNetwork.h"
 #include "DMRGatewayNetwork.h"
 #include "RSSIInterpolator.h"
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 	{
 		m_signal = 0;
 
-		CMMDVMHost* host = new CMMDVMHost(argv[1]);
+		CQnetDMR* host = new CQnetDMR(argv[1]);
 		ret = host->run();
 
 		delete host;
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 	return ret;
 }
 
-CMMDVMHost::CMMDVMHost(const std::string& confFile) :
+CQnetDMR::CQnetDMR(const std::string& confFile) :
 	m_conf(confFile),
 	m_modem(NULL),
 	m_dmr(NULL),
@@ -140,12 +140,12 @@ CMMDVMHost::CMMDVMHost(const std::string& confFile) :
 	CUDPSocket::startup();
 }
 
-CMMDVMHost::~CMMDVMHost()
+CQnetDMR::~CQnetDMR()
 {
 	CUDPSocket::shutdown();
 }
 
-int CMMDVMHost::run()
+int CQnetDMR::run()
 {
 	bool ret = m_conf.read();
 	if (!ret)
@@ -649,7 +649,7 @@ int CMMDVMHost::run()
 	return 0;
 }
 
-bool CMMDVMHost::createModem()
+bool CQnetDMR::createModem()
 {
 	std::string port             = m_conf.getModemPort();
 	std::string protocol	     = m_conf.getModemProtocol();
@@ -733,7 +733,7 @@ bool CMMDVMHost::createModem()
 	return true;
 }
 
-bool CMMDVMHost::createDMRNetwork()
+bool CQnetDMR::createDMRNetwork()
 {
 	std::string address  = m_conf.getDMRNetworkAddress();
 	unsigned int port    = m_conf.getDMRNetworkPort();
@@ -822,7 +822,7 @@ bool CMMDVMHost::createDMRNetwork()
 	return true;
 }
 
-void CMMDVMHost::readParams()
+void CQnetDMR::readParams()
 {
 	m_dstarEnabled  = false;
 	m_dmrEnabled    = true;
@@ -850,7 +850,7 @@ void CMMDVMHost::readParams()
 	LogInfo("    FM: %s", m_fmEnabled ? "enabled" : "disabled");
 }
 
-void CMMDVMHost::setMode(unsigned char mode)
+void CQnetDMR::setMode(unsigned char mode)
 {
 	assert(m_modem != NULL);
 	assert(m_display != NULL);
@@ -1019,7 +1019,7 @@ void CMMDVMHost::setMode(unsigned char mode)
 	}
 }
 
-void  CMMDVMHost::createLockFile(const char* mode) const
+void  CQnetDMR::createLockFile(const char* mode) const
 {
 	if (m_lockFileEnabled)
 	{
@@ -1032,17 +1032,17 @@ void  CMMDVMHost::createLockFile(const char* mode) const
 	}
 }
 
-void  CMMDVMHost::removeLockFile() const
+void  CQnetDMR::removeLockFile() const
 {
 	if (m_lockFileEnabled)
 		::remove(m_lockFileName.c_str());
 }
 
-void CMMDVMHost::remoteControl()
+void CQnetDMR::remoteControl()
 {
 }
 
-void CMMDVMHost::processModeCommand(unsigned char mode, unsigned int timeout)
+void CQnetDMR::processModeCommand(unsigned char mode, unsigned int timeout)
 {
 	m_fixedMode = false;
 	m_modeTimer.setTimeout(timeout);
@@ -1050,7 +1050,7 @@ void CMMDVMHost::processModeCommand(unsigned char mode, unsigned int timeout)
 	setMode(mode);
 }
 
-void CMMDVMHost::processEnableCommand(bool& mode, bool enabled)
+void CQnetDMR::processEnableCommand(bool& mode, bool enabled)
 {
 	LogDebug("Setting mode current=%s new=%s",mode ? "true" : "false",enabled ? "true" : "false");
 	mode=enabled;

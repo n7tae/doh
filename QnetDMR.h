@@ -30,11 +30,11 @@
 #include <string>
 
 
-class CMMDVMHost
+class CQnetDMR
 {
 public:
-	CMMDVMHost(const std::string& confFile);
-	~CMMDVMHost();
+	CQnetDMR(const std::string& confFile);
+	~CQnetDMR();
 
 	int run();
 
