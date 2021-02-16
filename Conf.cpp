@@ -61,11 +61,7 @@ CConf::CConf(const std::string& file) :
 	m_location(),
 	m_description(),
 	m_url(),
-	m_logDisplayLevel(0U),
-	m_logFileLevel(0U),
-	m_logFilePath(),
-	m_logFileRoot(),
-	m_logFileRotate(true),
+	m_logLevel(2U),
 	m_cwIdEnabled(false),
 	m_cwIdTime(10U),
 	m_cwIdCallsign(),
@@ -284,16 +280,8 @@ bool CConf::read()
 		}
 		else if (section == SECTION_LOG)
 		{
-			if (::strcmp(key, "FilePath") == 0)
-				m_logFilePath = value;
-			else if (::strcmp(key, "FileRoot") == 0)
-				m_logFileRoot = value;
-			else if (::strcmp(key, "FileLevel") == 0)
-				m_logFileLevel = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "DisplayLevel") == 0)
-				m_logDisplayLevel = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "FileRotate") == 0)
-				m_logFileRotate = ::atoi(value) == 1;
+			if (::strcmp(key, "LogLevel") == 0)
+				m_logLevel = ::atoi(value);
 		}
 		else if (section == SECTION_CWID)
 		{
@@ -647,29 +635,9 @@ std::string CConf::getURL() const
 	return m_url;
 }
 
-unsigned int CConf::getLogDisplayLevel() const
+unsigned int CConf::getLogLevel() const
 {
-	return m_logDisplayLevel;
-}
-
-unsigned int CConf::getLogFileLevel() const
-{
-	return m_logFileLevel;
-}
-
-std::string CConf::getLogFilePath() const
-{
-	return m_logFilePath;
-}
-
-std::string CConf::getLogFileRoot() const
-{
-	return m_logFileRoot;
-}
-
-bool CConf::getLogFileRotate() const
-{
-	return m_logFileRotate;
+	return m_logLevel;
 }
 
 bool CConf::getCWIdEnabled() const

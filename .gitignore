@@ -27,7 +27,7 @@
 *.lib
 
 # Config file
-DOH.cfg
+MMDVM.cfg
 
 # Executables
-doh
+MMDVMHost

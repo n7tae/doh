@@ -79,12 +79,7 @@ private:
 
 	void readParams();
 	bool createModem();
-	bool createDStarNetwork();
 	bool createDMRNetwork();
-	bool createYSFNetwork();
-	bool createP25Network();
-	bool createNXDNNetwork();
-	bool createPOCSAGNetwork();
 
 	void remoteControl();
 	void processModeCommand(unsigned char mode, unsigned int timeout);

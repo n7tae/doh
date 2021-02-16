@@ -9,8 +9,10 @@ SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 
-doh : $(OBJS)
-		g++ $(OBJS) $(CFLAGS) $(LIBS) -o doh
+EXE = MMDVMHost
+
+$(EXE) : $(OBJS)
+		g++ $(OBJS) $(CFLAGS) $(LIBS) -o $(EXE)
 
 %.o : %.cpp
 	g++ -MMD -MD $(CPPFLAGS) -c $< -o $@
@@ -18,6 +20,6 @@ doh : $(OBJS)
 .PHONY : clean
 
 clean :
-	$(RM) doh *.o *.d
+	$(RM) $(EXE) *.o *.d
 
 -include $(DEPS)

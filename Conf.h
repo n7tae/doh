@@ -49,11 +49,7 @@ public:
 	std::string  getURL() const;
 
 	// The Log section
-	unsigned int getLogDisplayLevel() const;
-	unsigned int getLogFileLevel() const;
-	std::string  getLogFilePath() const;
-	std::string  getLogFileRoot() const;
-	bool         getLogFileRotate() const;
+	unsigned int getLogLevel() const;
 
 	// The CW ID section
 	bool         getCWIdEnabled() const;
@@ -178,11 +174,7 @@ private:
 	std::string  m_description;
 	std::string  m_url;
 
-	unsigned int m_logDisplayLevel;
-	unsigned int m_logFileLevel;
-	std::string  m_logFilePath;
-	std::string  m_logFileRoot;
-	bool         m_logFileRotate;
+	unsigned int m_logLevel;
 
 	bool         m_cwIdEnabled;
 	unsigned int m_cwIdTime;

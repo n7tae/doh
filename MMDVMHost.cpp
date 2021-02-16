@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "DOH.h"
+#include "MMDVMHost.h"
 #include "DMRDirectNetwork.h"
 #include "DMRGatewayNetwork.h"
 #include "RSSIInterpolator.h"
@@ -33,25 +33,16 @@
 
 #define VERSION "210115"
 
-#if !defined(_WIN32) && !defined(_WIN64)
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <pwd.h>
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-const char* DEFAULT_INI_FILE = "MMDVM.ini";
-#else
-const char* DEFAULT_INI_FILE = "/etc/MMDVM.ini";
-#endif
 
 static bool m_killed = false;
 static int  m_signal = 0;
 static bool m_reload = false;
 
-#if !defined(_WIN32) && !defined(_WIN64)
 static void sigHandler1(int signum)
 {
 	m_killed = true;
@@ -62,7 +53,6 @@ static void sigHandler2(int signum)
 {
 	m_reload = true;
 }
-#endif
 
 const char* HEADER1 = "This software is for use on amateur radio networks only,";
 const char* HEADER2 = "it is to be used for educational purposes only. Its use on";
@@ -78,12 +68,10 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-#if !defined(_WIN32) && !defined(_WIN64)
 	::signal(SIGINT,  sigHandler1);
 	::signal(SIGTERM, sigHandler1);
 	::signal(SIGHUP,  sigHandler1);
 	::signal(SIGUSR1, sigHandler2);
-#endif
 
 	int ret = 0;
 
@@ -106,8 +94,6 @@ int main(int argc, char** argv)
 			::LogInfo("MMDVMHost-%s is restarting on receipt of SIGHUP", VERSION);
 	}
 	while (m_signal == 1);
-
-	::LogFinalise();
 
 	return ret;
 }
@@ -168,17 +154,7 @@ int CMMDVMHost::run()
 		return 1;
 	}
 
-
-#if !defined(_WIN32) && !defined(_WIN64)
-	ret = ::LogInitialise(false, m_conf.getLogFilePath(), m_conf.getLogFileRoot(), m_conf.getLogFileLevel(), m_conf.getLogDisplayLevel(), m_conf.getLogFileRotate());
-#else
-	ret = ::LogInitialise(false, m_conf.getLogFilePath(), m_conf.getLogFileRoot(), m_conf.getLogFileLevel(), m_conf.getLogDisplayLevel(), m_conf.getLogFileRotate());
-#endif
-	if (!ret)
-	{
-		::fprintf(stderr, "MMDVMHost: unable to open the log file\n");
-		return 1;
-	}
+	LogInitialise(m_conf.getLogLevel());
 
 	LogInfo(HEADER1);
 	LogInfo(HEADER2);
@@ -757,11 +733,6 @@ bool CMMDVMHost::createModem()
 	return true;
 }
 
-bool CMMDVMHost::createDStarNetwork()
-{
-	return true;
-}
-
 bool CMMDVMHost::createDMRNetwork()
 {
 	std::string address  = m_conf.getDMRNetworkAddress();
@@ -848,26 +819,6 @@ bool CMMDVMHost::createDMRNetwork()
 
 	m_dmrNetwork->enable(true);
 
-	return true;
-}
-
-bool CMMDVMHost::createYSFNetwork()
-{
-	return true;
-}
-
-bool CMMDVMHost::createP25Network()
-{
-	return true;
-}
-
-bool CMMDVMHost::createNXDNNetwork()
-{
-	return true;
-}
-
-bool CMMDVMHost::createPOCSAGNetwork()
-{
 	return true;
 }
 
