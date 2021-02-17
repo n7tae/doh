@@ -51,7 +51,7 @@ install : $(EXE) dmr.cfg
 	/bin/cp -f $(EXE) $(BINDIR)
 	/bin/cp -f system/DMRIDUpdate.sh $(BINDIR)/update-dmrid
 	$(BINDIR)/update-dmrid
-	/bin/ln -f -s $(shell pwd)/$(EXE).cfg $(CFGDIR)
+	/bin/ln -f -s $(shell pwd)/dmr.cfg $(CFGDIR)
 	sed -e "s/XXX/$(EXE)/" -e "s/YYY/dmr/" system/$(EXE).service > $(SYSDIR)/$(EXE).service
 	/bin/cp -f system/$(EXE).timer $(SYSDIR)
 	systemctl enable $(EXE).timer
