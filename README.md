@@ -1,1 +1,80 @@
-# doh
+# DOH - A DMR-Only Hot-Spot
+
+## Introduction
+
+This will build a DMR-only Hotspot based on Jonathan Naylor's MMDVMHost software. It's quite a bit smaller than MMDVMHost as it **only** supports DMR modes. Also, it does not support *any* display device, but it will eventually support an html dashboard.
+
+If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's excellent Pi-Star. If you want to try your hand at building your own multi-mode hot-spot, then you can take a look at the MMDVM.README file in https::/github.com/n7tae/QnetGateway.
+
+## Building
+
+### Download the repo
+
+```bash
+git clone https://github.com/n7tae/doh.git
+```
+
+### Move to the build directory and compile
+
+```bash
+cd doh
+make
+```
+
+### Create and edit your configuration file
+
+```bash
+cp dmr.ini dmr.cfg
+```
+
+Use your favorite file editor to edit your `dmr.cfg` file. You'll want to add your callsign and DMR ID in the `[General]` section and if change the Duplex line if you are using a modem that supports duplex operation. Set your frequency in the `[Info]` section and you can also change other values in this section.
+
+Check other values and change as needed. Make sure the `[Modem]` section is correct for your MMDVM-based modem. The `[DMR Network]` section is defined as a **Direct** connection to the IPSC2-QUADNET DMR+ reflector. Of course you can connect to any system you want. Alternatively, you can use DMRGateway, make sure you remove the values and uncomment the values for the DMRGateway network.
+
+### Optionally build and configure the DMRGateway
+
+If you want to connect to multiple DMR networks, like BrandMeister and others, even at the same time:
+
+```bash
+cd ..
+git clone https://github.com/g4klx/DMRGateway.git
+cd DMRGateway
+make
+cp DMRGateway.ini DMRGateway.cfg
+```
+
+Then you can use your favorite editor to edit `DMRGateway.cfg`.
+
+When you are done, move back to the `doh` build directory.
+
+```bash
+cd ../doh
+```
+
+## Installing
+
+Install you program(s):
+
+```bash
+sudo make install
+sudo make installgateway
+```
+
+Of course, you only need to install the gateway if your `doh` is configured to use `Type=Gateway` in the `[DMR Network]` section.
+
+## Monitoring
+
+Until the dashboard is complete, you can keep an eye on `doh` with `sudo journalctl -u doh -f`.
+
+## Uninstalling
+
+```bash
+sudo make uninstall
+sudo make uninstallgateway
+```
+
+## Copyright
+
+Most of the code is Copyright (C) by Jonathan Naylor G4KLX and his development team.
+
+The some parts have addtional Copyright (C) by Thomas A. Early N7TAE
