@@ -1,0 +1,11 @@
+[Unit]
+Description=XXX
+After=systemd-user-session.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/XXX /usr/local/etc/YYY.cfg
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

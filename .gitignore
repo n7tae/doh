@@ -27,7 +27,7 @@
 *.lib
 
 # Config file
-qn.cfg
+dmr.cfg
 
 # Executables
-qndmr
+doh

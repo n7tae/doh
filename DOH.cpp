@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015-2021 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2021 by Thomas A. Early N7TAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "QnetDMR.h"
+#include "DOH.h"
 #include "DMRDirectNetwork.h"
 #include "DMRGatewayNetwork.h"
 #include "RSSIInterpolator.h"
@@ -31,7 +32,7 @@
 
 #include <cstdlib>
 
-#define VERSION "210115"
+#define VERSION "210117"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -79,7 +80,7 @@ int main(int argc, char** argv)
 	{
 		m_signal = 0;
 
-		CQnetDMR* host = new CQnetDMR(argv[1]);
+		DOH* host = new DOH(argv[1]);
 		ret = host->run();
 
 		delete host;
@@ -98,7 +99,7 @@ int main(int argc, char** argv)
 	return ret;
 }
 
-CQnetDMR::CQnetDMR(const std::string& confFile) :
+DOH::DOH(const std::string& confFile) :
 	m_conf(confFile),
 	m_modem(NULL),
 	m_dmr(NULL),
@@ -139,12 +140,12 @@ CQnetDMR::CQnetDMR(const std::string& confFile) :
 	CUDPSocket::startup();
 }
 
-CQnetDMR::~CQnetDMR()
+DOH::~DOH()
 {
 	CUDPSocket::shutdown();
 }
 
-int CQnetDMR::run()
+int DOH::run()
 {
 	bool ret = m_conf.read();
 	if (!ret)
@@ -640,7 +641,7 @@ int CQnetDMR::run()
 	return 0;
 }
 
-bool CQnetDMR::createModem()
+bool DOH::createModem()
 {
 	std::string port             = m_conf.getModemPort();
 	std::string protocol	     = m_conf.getModemProtocol();
@@ -724,7 +725,7 @@ bool CQnetDMR::createModem()
 	return true;
 }
 
-bool CQnetDMR::createDMRNetwork()
+bool DOH::createDMRNetwork()
 {
 	std::string address  = m_conf.getDMRNetworkAddress();
 	unsigned int port    = m_conf.getDMRNetworkPort();
@@ -813,7 +814,7 @@ bool CQnetDMR::createDMRNetwork()
 	return true;
 }
 
-void CQnetDMR::readParams()
+void DOH::readParams()
 {
 	m_dstarEnabled  = false;
 	m_dmrEnabled    = true;
@@ -841,7 +842,7 @@ void CQnetDMR::readParams()
 	LogInfo("    FM: %s", m_fmEnabled ? "enabled" : "disabled");
 }
 
-void CQnetDMR::setMode(unsigned char mode)
+void DOH::setMode(unsigned char mode)
 {
 	assert(m_modem != NULL);
 
@@ -1003,7 +1004,7 @@ void CQnetDMR::setMode(unsigned char mode)
 	}
 }
 
-void  CQnetDMR::createLockFile(const char* mode) const
+void  DOH::createLockFile(const char* mode) const
 {
 	if (m_lockFileEnabled)
 	{
@@ -1016,17 +1017,17 @@ void  CQnetDMR::createLockFile(const char* mode) const
 	}
 }
 
-void  CQnetDMR::removeLockFile() const
+void  DOH::removeLockFile() const
 {
 	if (m_lockFileEnabled)
 		::remove(m_lockFileName.c_str());
 }
 
-void CQnetDMR::remoteControl()
+void DOH::remoteControl()
 {
 }
 
-void CQnetDMR::processModeCommand(unsigned char mode, unsigned int timeout)
+void DOH::processModeCommand(unsigned char mode, unsigned int timeout)
 {
 	m_fixedMode = false;
 	m_modeTimer.setTimeout(timeout);
@@ -1034,7 +1035,7 @@ void CQnetDMR::processModeCommand(unsigned char mode, unsigned int timeout)
 	setMode(mode);
 }
 
-void CQnetDMR::processEnableCommand(bool& mode, bool enabled)
+void DOH::processEnableCommand(bool& mode, bool enabled)
 {
 	LogDebug("Setting mode current=%s new=%s",mode ? "true" : "false",enabled ? "true" : "false");
 	mode=enabled;

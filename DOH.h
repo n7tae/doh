@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015-2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2021 by Thomas A. Early N7TAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,11 +30,11 @@
 #include <string>
 
 
-class CQnetDMR
+class DOH
 {
 public:
-	CQnetDMR(const std::string& confFile);
-	~CQnetDMR();
+	DOH(const std::string& confFile);
+	~DOH();
 
 	int run();
 
