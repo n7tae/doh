@@ -47,7 +47,7 @@ clean :
 
 -include $(DEPS)
 
-install : $(EXE) doh.cfg
+install : $(EXE) dmr.cfg
 	/bin/cp -f $(EXE) $(BINDIR)
 	/bin/cp -f system/DMRIDUpdate.sh $(BINDIR)/update-dmrid
 	$(BINDIR)/update-dmrid
