@@ -62,6 +62,10 @@ sudo make installgateway
 
 Of course, you only need to install the gateway if your `doh` is configured to use `Type=Gateway` in the `[DMR Network]` section.
 
+## Maintenance
+
+When you installed `doh`, you downloaded the DMR ID look up table. If you want to freshen this table, do `update-dmrid`. You system will automatically start using the new table within a day. If you want to start using it right away, then do a `sudo systemctl restart doh`.
+
 ## Monitoring
 
 Until the dashboard is complete, you can keep an eye on `doh` with `sudo journalctl -u doh -f`.
