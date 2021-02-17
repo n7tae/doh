@@ -35,7 +35,7 @@ DEPS = $(SRCS:.cpp=.d)
 EXE = doh
 
 $(EXE) : $(OBJS)
-		g++ $(OBJS) $(CFLAGS) $(LIBS) -o $(EXE)
+	g++ $(OBJS) $(CFLAGS) $(LIBS) -o $(EXE)
 
 %.o : %.cpp
 	g++ -MMD -MD $(CPPFLAGS) -c $< -o $@
@@ -49,7 +49,8 @@ clean :
 
 install : $(EXE) doh.cfg
 	/bin/cp -f $(EXE) $(BINDIR)
-	/bin/cp -f system/DMRIDUpdate.sh $(BINDIR)/DMRIDUpdate
+	/bin/cp -f system/DMRIDUpdate.sh $(BINDIR)/update-dmrid
+	$(BINDIR)/update-dmrid
 	/bin/ln -f -s $(shell pwd)/$(EXE).cfg $(CFGDIR)
 	sed -e "s/XXX/$(EXE)/" -e "s/YYY/dmr/" system/$(EXE).service > $(SYSDIR)/$(EXE).service
 	/bin/cp -f system/$(EXE).timer $(SYSDIR)
@@ -81,7 +82,7 @@ uninstall :
 	systemctl disable $(EXE).timer
 	/bin/rm -f $(SYSDIR)/$(EXE).service
 	/bin/rm -f $(SYSDIR)/$(EXE).timer
-	/bin/rm -f $(BINDIR)/$(EXE)
+	/bin/rm -f $(BINDIR)/$(EXE) $(BINDIR)/update-dmrid
 	/bin/rm -f $(CFGDIR)/$(EXE).cfg
 	sudo systemctl daemon-reload
 

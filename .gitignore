@@ -28,6 +28,7 @@
 
 # Config file
 dmr.cfg
+DMRIds.dat
 
 # Executables
 doh

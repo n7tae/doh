@@ -49,18 +49,17 @@
 #                              CONFIGURATION
 #
 # Full path to DMR ID file, without final slash
-DMRIDPATH=.
+DMRIDPATH=/usr/local/etc
 DMRIDFILE=${DMRIDPATH}/DMRIds.dat
 
 # DMR IDs now served by RadioID.net
 DATABASEURL='https://database.radioid.net/static/user.csv'
 
 # How many DMR ID files do you want backed up (0 = do not keep backups)
-DMRFILEBACKUP=0
+DMRFILEBACKUP=1
 
 # Command line to restart MMDVMHost
-RESTARTCOMMAND="systemctl restart mmdvmhost.service"
-# RESTARTCOMMAND="killall MMDVMHost ; /path/to/MMDVMHost/executable/MMDVMHost /path/to/MMDVM/ini/file/MMDVM.ini"
+RESTARTCOMMAND="systemctl restart doh.service"
 
 ###############################################################################
 #
@@ -69,11 +68,11 @@ RESTARTCOMMAND="systemctl restart mmdvmhost.service"
 ###############################################################################
 
 # Check we are root
-#if [ "$(id -u)" != "0" ]
-#then
-#	echo "This script must be run as root" 1>&2
-#	exit 1
-#fi
+if [ "$(id -u)" != "0" ]
+then
+	echo "This script must be run as root" 1>&2
+	exit 1
+fi
 
 # Create backup of old file
 if [ ${DMRFILEBACKUP} -ne 0 ]
