@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This will build a DMR-only Hotspot based on Jonathan Naylor's MMDVMHost software. It's quite a bit smaller than MMDVMHost as it **only** supports DMR modes. Also, it does not support *any* display device, but it will eventually support an html dashboard.
+This will build a DMR-only Hotspot based on Jonathan Naylor's MMDVMHost software. It's quite a bit smaller than MMDVMHost as it **only** supports DMR modes. Also, it does not support *any* display device, but it will eventually support an html dashboard. While *Hot-spot* is in the title, this does support two time slots, duplex operation and any MMDVM-based modem so it would be suitable for control of a DMR-only repeater.
 
 If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's excellent Pi-Star. If you want to try your hand at building your own multi-mode hot-spot, then you can take a look at the MMDVM.README file in https::/github.com/n7tae/QnetGateway.
 
@@ -27,9 +27,9 @@ make
 cp dmr.ini dmr.cfg
 ```
 
-Use your favorite file editor to edit your `dmr.cfg` file. You'll want to add your callsign and DMR ID in the `[General]` section and if change the Duplex line if you are using a modem that supports duplex operation. Set your frequency in the `[Info]` section and you can also change other values in this section.
+Use your favorite file editor to edit your `dmr.cfg` file. You'll want to add your callsign and DMR ID in the `[General]` section and change the Duplex line if you are using a modem that supports duplex operation. Set your frequency in the `[Info]` section and you can also change other values in this section.
 
-Check other values and change as needed. Make sure the `[Modem]` section is correct for your MMDVM-based modem. The `[DMR Network]` section is defined as a **Direct** connection to the IPSC2-QUADNET DMR+ reflector. Of course you can connect to any system you want. Alternatively, you can use DMRGateway, make sure you remove the values and uncomment the values for the DMRGateway network.
+Check other values and change as needed. Make sure the `[Modem]` section is correct for your MMDVM-based modem. The `[DMR Network]` section is defined as a **Direct** connection to the IPSC2-QUADNET DMR+ reflector. Of course you can connect to any system you want. Alternatively, you can use DMRGateway and connect to several systems, make sure you remove the active values in this `[DMR Network]` and uncomment the values for the `Type=Gateway` network.
 
 ### Optionally build and configure the DMRGateway
 
