@@ -68,7 +68,7 @@ function MyAndSfxToQrz(string $my)
 			$link = $my;
 		$len = strlen($my);
 		$my = '<a*target="_blank"*href="https://www.qrz.com/db/'.$link.'">'.$my.'</a>';
-		while ($len < 13) {
+		while ($len < 8) {
 			$my .= ' ';
 			$len += 1;
 		}
@@ -76,7 +76,7 @@ function MyAndSfxToQrz(string $my)
 	return $my;
 }
 
-IniParser($cfgdir.'/defaults', $cfg);
+IniParser($cfgdir.'/dmr.cfg', $cfg);
 ?>
 
 <html>
@@ -92,7 +92,7 @@ $showlist = explode(',', $cfg['Dashboard']['ShowOrder']);
 foreach($showlist as $section) {
 	switch ($section) {
 		case 'PS':
-			if (`ps -aux | grep -e DMRGateway -e doh | wc -l` > 2) {
+			if (`ps -aux | grep -e DMRGateway -e doh | wc -l` > 1) {
 				echo 'Processes:<br><code>', "\n";
 				echo str_replace(' ', '&nbsp;', 'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND<br>'), "\n";
 				$lines = explode("\n", `ps -aux | grep -e doh -e DMRGateway | grep -v -e grep -e journal`);
@@ -130,7 +130,7 @@ foreach($showlist as $section) {
 			break;
 		case 'LH':
 			echo 'Last Heard:<br><code>', "\n";
-			$rstr = 'Callsign    TimeSlot  Talkgroup Status        Time<br>';
+			$rstr = 'Callsign TimeSlot Talkgroup Status              Time<br>';
 			echo str_replace(' ', '&nbsp;', $rstr), "\n";
 			$dbname = $cfgdir.'/doh.db';
 			$db = new SQLite3($dbname, SQLITE3_OPEN_READONLY);
@@ -139,7 +139,7 @@ foreach($showlist as $section) {
 			if ($stmnt = $db->prepare($ss)) {
 				if ($result = $stmnt->execute()) {
 					while ($row = $result->FetchArray(SQLITE3_NUM)) {
-						$rstr = MyAndSfxToQrz(str_pad($row[0], 12)).str_pad($row[1],8).str_pad($row[2],6,' ',STR_PAD_LEFT).str_pad($row[3],20).SecToString(intval($row[4])).'<br>';
+						$rstr = MyAndSfxToQrz(str_pad($row[0], 12)).str_pad($row[1],5).str_pad($row[2],8,' ',STR_PAD_LEFT).str_pad($row[3],20).SecToString(intval($row[4])).'<br>';
 						echo str_replace('*', ' ', str_replace(' ', '&nbsp;', $rstr)), "\n";
 					}
 					$result->finalize();
