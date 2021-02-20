@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This will build a DMR-only Hotspot based on Jonathan Naylor's MMDVMHost software. It's quite a bit smaller than MMDVMHost as it **only** supports DMR modes. Also, it does not support *any* display device, but it will eventually support an html dashboard. While *Hot-spot* is in the title, this does support two time slots, duplex operation and any MMDVM-based modem so it would be suitable for control of a DMR-only repeater.
+This will build a DMR-only Hotspot based on Jonathan Naylor's MMDVMHost software. It's quite a bit smaller than MMDVMHost as it **only** supports DMR modes. Also, it does not support *any* display device, but it does support an html dashboard. While *Hot-spot* is in the title, this does support two time slots, duplex operation and any MMDVM-based modem so it would be suitable for control of a DMR-only repeater.
 
 If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's excellent Pi-Star. If you want to try your hand at building your own multi-mode hot-spot, then you can take a look at the MMDVM.README file in https::/github.com/n7tae/QnetGateway.
 
@@ -70,6 +70,20 @@ sudo make installgateway
 
 Of course, you only need to install the gateway if your `doh` is configured to use `Type=Gateway` in the `[DMR Network]` section.
 
+## Optionally, install the dashboard
+
+A simple dashboard can be installed. The web server is not robust enough for public access, but it's fine for operation behind a firewall. If you need a public webpage, you'll have to do this yourself.
+
+If you want an HTTP dashboard, it's easy to install:
+
+```bash
+sudo make installdash
+```
+
+The dashboard can be found at <hostname>.local, or <internal_ip_address>.
+
+The dashboard uses a few simple configuration variable at the bottom of your dmr.cfg file. You can edit these anytime and see the results immediately on the webpage.
+
 ## Maintenance
 
 When you installed `doh`, you downloaded the DMR ID look up table. If you want to freshen this table, do `update-dmrid`. You system will automatically start using the new table within a day. If you want to start using it right away, then do a `sudo systemctl restart doh`.
@@ -83,6 +97,7 @@ Until the dashboard is complete, you can keep an eye on `doh` with `sudo journal
 ```bash
 sudo make uninstall
 sudo make uninstallgateway
+sudo make uninstalldash
 ```
 
 ## Copyright
