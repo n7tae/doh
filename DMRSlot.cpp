@@ -370,14 +370,14 @@ bool CDMRSlot::writeModem(unsigned char *data, unsigned int len)
 			if (m_rssi != 0U)
 			{
 				char status[64];
-				snprintf(status, 64, "%.1f s, BER: %.1f%%, RSSI: -%u/-%u/-%u dBm", float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits), m_minRSSI, m_maxRSSI, m_aveRSSI / m_rssiCount);
+				snprintf(status, 64, "%.1f sec, %5.1f%% BER, -%u/-%u/-%u dBm RSSI", float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits), m_minRSSI, m_maxRSSI, m_aveRSSI / m_rssiCount);
 				LogMessage("DMR Slot %u, received RF end of voice transmission from %s to %s%s, %s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), status);
 				m_dashDB->UpdateLH(src.c_str(), status);
 			}
 			else
 			{
 				char status[64];
-				snprintf(status, 64, "%.1f s, BER: %.1f%%", float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits));
+				snprintf(status, 64, "%.1f sec, %5.1f%% BER", float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits));
 				LogMessage("DMR Slot %u, received RF end of voice transmission from %s to %s%s, %s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), status);
 				m_dashDB->UpdateLH(src.c_str(), status);
 			}
@@ -1343,7 +1343,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 		// We've received the voice header and terminator haven't we?
 		m_netFrames += 2U;
 		char status[64];
-		snprintf(status, 64, "%.1f s, %u%% packet loss, BER: %.1f%%", float(m_netFrames) / 16.667F, (m_netLost * 100U) / m_netFrames, float(m_netErrs * 100U) / float(m_netBits));
+		snprintf(status, 64, "%.1f sec, %3u%% PL, %5.1f%% BER", float(m_netFrames) / 16.667F, (m_netLost * 100U) / m_netFrames, float(m_netErrs * 100U) / float(m_netBits));
 		LogMessage("DMR Slot %u, received network end of voice transmission from %s to %s%s, %s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), status);
 		m_dashDB->UpdateLH(src.c_str(), status);
 		writeEndNet();
@@ -1942,7 +1942,7 @@ void CDMRSlot::clock()
 			{
 				// We've received the voice header haven't we?
 				m_netFrames += 1U;
-				LogMessage("DMR Slot %u, network watchdog has expired, %.1f seconds, %u%% packet loss, BER: %.1f%%", m_slotNo, float(m_netFrames) / 16.667F, (m_netLost * 100U) / m_netFrames, float(m_netErrs * 100U) / float(m_netBits));
+				LogMessage("DMR Slot %u, network watchdog has expired, %.1f seconds, %u%% PL, %.1f%% BER", m_slotNo, float(m_netFrames) / 16.667F, (m_netLost * 100U) / m_netFrames, float(m_netErrs * 100U) / float(m_netBits));
 				writeEndNet(true);
 #if defined(DUMP_DMR)
 				closeFile();
