@@ -30,6 +30,7 @@
 #include "DMRSlot.h"
 #include "DMRData.h"
 #include "Defines.h"
+#include "DashDB.h"
 #include "Timer.h"
 #include "Modem.h"
 #include "DMRLC.h"
@@ -63,7 +64,7 @@ public:
 
 	void enable(bool enabled);
 
-	static void init(unsigned int colorCode, bool embeddedLCOnly, bool dumpTAData, unsigned int callHang, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssiMapper, unsigned int jitter, DMR_OVCM_TYPES ovcm);
+	static void init(unsigned int colorCode, bool embeddedLCOnly, bool dumpTAData, unsigned int callHang, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssiMapper, unsigned int jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB);
 
 private:
 	unsigned int               m_slotNo;
@@ -112,6 +113,8 @@ private:
 	unsigned int               m_rssiCount;
 	bool                       m_enabled;
 	FILE*                      m_fp;
+
+	static CDashDB*            m_dashDB;
 
 	static unsigned int        m_colorCode;
 

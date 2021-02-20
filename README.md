@@ -8,6 +8,14 @@ If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's
 
 ## Building
 
+### Install package
+
+DOH includes a dashboard with a last heard section. The lastheard section uses SQLite3, a light-weight database, so you will need a package:
+
+```bash
+sudo apt install libsqlite3-dev
+```
+
 ### Download the repo
 
 ```bash

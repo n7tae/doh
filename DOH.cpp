@@ -40,6 +40,10 @@
 #include <fcntl.h>
 #include <pwd.h>
 
+#ifndef CFG_DIR
+#define CFG_DIR "/usr/local/etc"
+#endif
+
 static bool m_killed = false;
 static int  m_signal = 0;
 static bool m_reload = false;
@@ -225,6 +229,10 @@ int DOH::run()
 	CTimer dmrBeaconIntervalTimer(1000U);
 	CTimer dmrBeaconDurationTimer(1000U);
 
+	std::string dbpath(CFG_DIR);
+	dbpath.append("/doh.DB");
+	m_dashDB.Open(dbpath.c_str());
+
 	if (m_dmrEnabled)
 	{
 		unsigned int id             = m_conf.getDMRId();
@@ -318,7 +326,7 @@ int DOH::run()
 			break;
 		}
 
-		m_dmr = new CDMRControl(id, colorCode, callHang, selfOnly, embeddedLCOnly, dumpTAData, prefixes, blackList, whiteList, slot1TGWhiteList, slot2TGWhiteList, m_timeout, m_modem, m_dmrNetwork, m_duplex, m_dmrLookup, rssi, jitter, ovcm);
+		m_dmr = new CDMRControl(id, colorCode, callHang, selfOnly, embeddedLCOnly, dumpTAData, prefixes, blackList, whiteList, slot1TGWhiteList, slot2TGWhiteList, m_timeout, m_modem, m_dmrNetwork, m_duplex, m_dmrLookup, rssi, jitter, ovcm, &m_dashDB);
 
 		m_dmrTXTimer.setTimeout(txHang);
 	}

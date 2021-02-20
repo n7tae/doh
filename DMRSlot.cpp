@@ -43,6 +43,7 @@ bool           CDMRSlot::m_duplex = true;
 CDMRLookup*    CDMRSlot::m_lookup = NULL;
 unsigned int   CDMRSlot::m_hangCount = 3U * 17U;
 DMR_OVCM_TYPES CDMRSlot::m_ovcm = DMR_OVCM_OFF;
+CDashDB*       CDMRSlot::m_dashDB = NULL;
 
 CRSSIInterpolator* CDMRSlot::m_rssiMapper = NULL;
 
@@ -302,6 +303,7 @@ bool CDMRSlot::writeModem(unsigned char *data, unsigned int len)
 			}
 
 			LogMessage("DMR Slot %u, received RF voice header from %s to %s%s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str());
+			m_dashDB->UpdateLH(src.c_str(), m_slotNo, dst.c_str());
 
 			return true;
 		}
@@ -366,9 +368,19 @@ bool CDMRSlot::writeModem(unsigned char *data, unsigned int len)
 			FLCO flco       = m_rfLC->getFLCO();
 
 			if (m_rssi != 0U)
-				LogMessage("DMR Slot %u, received RF end of voice transmission from %s to %s%s, %.1f seconds, BER: %.1f%%, RSSI: -%u/-%u/-%u dBm", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits), m_minRSSI, m_maxRSSI, m_aveRSSI / m_rssiCount);
+			{
+				char status[64];
+				snprintf(status, 64, "%.1f seconds, BER: %.1f%%, RSSI: -%u/-%u/-%u dBm", float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits), m_minRSSI, m_maxRSSI, m_aveRSSI / m_rssiCount);
+				LogMessage("DMR Slot %u, received RF end of voice transmission from %s to %s%s, %s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), status);
+				m_dashDB->UpdateLH(src.c_str(), status);
+			}
 			else
-				LogMessage("DMR Slot %u, received RF end of voice transmission from %s to %s%s, %.1f seconds, BER: %.1f%%", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits));
+			{
+				char status[64];
+				snprintf(status, 64, "%.1f seconds, BER: %.1f%%", float(m_rfFrames) / 16.667F, float(m_rfErrs * 100U) / float(m_rfBits));
+				LogMessage("DMR Slot %u, received RF end of voice transmission from %s to %s%s, %s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), status);
+				m_dashDB->UpdateLH(src.c_str(), status);
+			}
 
 			if (m_rfTimeout)
 			{
@@ -944,6 +956,8 @@ bool CDMRSlot::writeModem(unsigned char *data, unsigned int len)
 				}
 
 				LogMessage("DMR Slot %u, received RF late entry from %s to %s%s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str());
+				m_dashDB->UpdateLH(src.c_str(), m_slotNo, dst.c_str());
+				m_dashDB->UpdateLH(src.c_str(), "Late entry...");
 
 				return true;
 			}
@@ -1183,6 +1197,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 #endif
 
 		LogMessage("DMR Slot %u, received network voice header from %s to %s%s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str());
+		m_dashDB->UpdateLH(src.c_str(), m_slotNo, dst.c_str());
 	}
 	else if (dataType == DT_VOICE_PI_HEADER)
 	{
@@ -1254,6 +1269,8 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			m_lookup->findWithName(srcId, &cn);
 
 			LogMessage("DMR Slot %u, received network late entry from %s to %s%s", m_slotNo, src.c_str(), m_netLC->getFLCO() == FLCO_GROUP ? "TG " : "", dst.c_str());
+			m_dashDB->UpdateLH(src.c_str(), m_slotNo, dst.c_str());
+			m_dashDB->UpdateLH(src.c_str(), "Late entry...");
 		}
 
 		// Regenerate the Slot Type
@@ -1325,7 +1342,10 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 
 		// We've received the voice header and terminator haven't we?
 		m_netFrames += 2U;
-		LogMessage("DMR Slot %u, received network end of voice transmission from %s to %s%s, %.1f seconds, %u%% packet loss, BER: %.1f%%", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), float(m_netFrames) / 16.667F, (m_netLost * 100U) / m_netFrames, float(m_netErrs * 100U) / float(m_netBits));
+		char status[64];
+		snprintf(status, 64, "%.1f seconds, %u%% packet loss, BER: %.1f%%", float(m_netFrames) / 16.667F, (m_netLost * 100U) / m_netFrames, float(m_netErrs * 100U) / float(m_netBits));
+		LogMessage("DMR Slot %u, received network end of voice transmission from %s to %s%s, %s", m_slotNo, src.c_str(), flco == FLCO_GROUP ? "TG " : "", dst.c_str(), status);
+		m_dashDB->UpdateLH(src.c_str(), status);
 		writeEndNet();
 	}
 	else if (dataType == DT_DATA_HEADER)
@@ -1463,6 +1483,8 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			m_lookup->findWithName(srcId, &cn);
 
 			LogMessage("DMR Slot %u, received network late entry from %s to %s%s", m_slotNo, src.c_str(), m_netLC->getFLCO() == FLCO_GROUP ? "TG " : "", dst.c_str());
+			m_dashDB->UpdateLH(src.c_str(), m_slotNo, dst.c_str());
+			m_dashDB->UpdateLH(src.c_str(), "Late entry...");
 		}
 
 		if (m_netState == RS_NET_AUDIO)
@@ -2029,7 +2051,7 @@ void CDMRSlot::writeQueueNet(const unsigned char *data)
 	m_queue.addData(data, len);
 }
 
-void CDMRSlot::init(unsigned int colorCode, bool embeddedLCOnly, bool dumpTAData, unsigned int callHang, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssiMapper, unsigned int jitter, DMR_OVCM_TYPES ovcm)
+void CDMRSlot::init(unsigned int colorCode, bool embeddedLCOnly, bool dumpTAData, unsigned int callHang, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssiMapper, unsigned int jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB)
 {
 	assert(modem != NULL);
 	assert(lookup != NULL);
@@ -2044,6 +2066,7 @@ void CDMRSlot::init(unsigned int colorCode, bool embeddedLCOnly, bool dumpTAData
 	m_lookup         = lookup;
 	m_hangCount      = callHang * 17U;
 	m_ovcm           = ovcm;
+	m_dashDB         = dashDB;
 
 	m_rssiMapper     = rssiMapper;
 
