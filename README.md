@@ -87,13 +87,19 @@ It's easy to install:
 sudo make installdash
 ```
 
-The dashboard can be found at <hostname>.local, or <internal_ip_address>.
+The dashboard can be found at `<hotspot-hostname>.local`, or `<internal_ip_address>`.
 
-The dashboard uses a few simple configuration variable at the bottom of your dmr.cfg file. You can edit these anytime and see the results immediately on the webpage.
+If your system cannot find the dashboard with `<hotspot-hostname>.local`, try installing the avahi-daemon:
+
+```bash
+sudo apt install -y avahi-daemon
+```
+
+The dashboard uses a few simple configuration variable at the bottom of your dmr.cfg file. You can edit these anytime in your build directory and see the results immediately on your dashboard.
 
 ## Maintenance
 
-When you installed `doh`, you downloaded the DMR ID look up table. If you want to freshen this table, do `update-dmrid`. You system will automatically start using the new table within a day. If you want to start using it right away, then do a `sudo systemctl restart doh`.
+When you installed `doh`, you downloaded the DMR ID look up table. If you want to freshen this table, do `sudo update-dmrid`. You system will automatically start using the new table within a day. If you want to start using it right away, then do a `sudo systemctl restart doh`.
 
 ## Monitoring
 
