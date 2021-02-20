@@ -10,10 +10,17 @@ If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's
 
 ### Install package
 
-DOH includes a dashboard with a last heard section. The lastheard section uses SQLite3, a light-weight database, so you will need a package:
+DOH includes a dashboard with a last heard section. The last heard section uses SQLite3, a light-weight database, so you will need a package. Even if you don't install the dashboard, you need the following package to compile doh:
 
 ```bash
-sudo apt install libsqlite3-dev
+sudo apt update
+sudo apt install -y libsqlite3-dev
+```
+
+You will also need a few more things if you are going to use the dashboard:
+
+```bash
+sudo apt install -y php-common php-fpm sqlite3 php-sqlite3 dnsutils
 ```
 
 ### Download the repo
@@ -72,9 +79,9 @@ Of course, you only need to install the gateway if your `doh` is configured to u
 
 ## Optionally, install the dashboard
 
-A simple dashboard can be installed. The web server is not robust enough for public access, but it's fine for operation behind a firewall. If you need a public webpage, you'll have to do this yourself.
+A simple dashboard can be installed. The php mini-web server is not robust enough for public access, but it's fine for operation behind a firewall. If you need a public webpage, you'll have to install this yourself.
 
-If you want an HTTP dashboard, it's easy to install:
+It's easy to install:
 
 ```bash
 sudo make installdash

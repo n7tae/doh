@@ -68,8 +68,6 @@ installgateway : $(GATDIR)/DMRGateway $(GATDIR)/DMRGateway.cfg
 	systemctl start dmrgateway.service
 
 installdash : index.php
-	/usr/bin/apt update
-	/usr/bin/apt install -y php-common php-fpm sqlite3 php-sqlite3 dnsutils
 	mkdir -p $(WWWDIR)
 	/bin/ln -f -s $(shell pwd)/index.php $(WWWDIR)
 	/bin/cp -f system/qndash.service $(SYSDIR)
