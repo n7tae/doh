@@ -84,6 +84,7 @@ uninstall :
 	/bin/rm -f $(SYSDIR)/$(EXE).timer
 	/bin/rm -f $(BINDIR)/$(EXE) $(BINDIR)/update-dmrid
 	/bin/rm -f $(CFGDIR)/$(EXE).cfg
+	/bin/rm -f $(CFGDIR)/$(exe).db
 	sudo systemctl daemon-reload
 
 uninstallgateway :

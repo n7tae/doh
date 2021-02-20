@@ -230,8 +230,9 @@ int DOH::run()
 	CTimer dmrBeaconDurationTimer(1000U);
 
 	std::string dbpath(CFG_DIR);
-	dbpath.append("/doh.DB");
+	dbpath.append("/doh.db");
 	m_dashDB.Open(dbpath.c_str());
+	m_dashDB.ClearLH();
 
 	if (m_dmrEnabled)
 	{
