@@ -70,7 +70,7 @@ function CallsignToQrz(string $my)
 			else
 				$link = $my;
 			$len = strlen($my);
-			$my = '<a*target="_blank"*href="https://www.qrz.com/db/'.$link.'">'.$my.'</a>';
+			$my = '<a target="_blank" href="https://www.qrz.com/db/'.$link.'">'.$my.'</a>';
 		}
 		while ($len < 8) {
 			$my .= ' ';
@@ -143,7 +143,7 @@ foreach($showlist as $section) {
 			if ($stmnt = $db->prepare($ss)) {
 				if ($result = $stmnt->execute()) {
 					while ($row = $result->FetchArray(SQLITE3_NUM)) {
-						echo '<tr><td style="text-align:center">', CallsignToQrz($row[0]), '</td><td style="text-align:center">', $row[1], '</td><td style="text-align:center">', $row[2], '</td><td style="text-align:center">', $row[3], '</td><td style="text-align:right">', $row[4], '</td></tr>', "\n";
+						echo '<tr><td style="text-align:center">', CallsignToQrz($row[0]), '</td><td style="text-align:center">', $row[1], '</td><td style="text-align:center">', $row[2], '</td><td style="text-align:center">', $row[3], '</td><td style="text-align:right">', SecToString($row[4]), '</td></tr>', "\n";
 					}
 					$result->finalize();
 				}
