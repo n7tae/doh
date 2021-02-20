@@ -134,7 +134,7 @@ foreach($showlist as $section) {
 			break;
 		case 'LH':
 			echo 'Last Heard:<br>', "\n";
-			echo '<table cellpadding="1" border="1" sytle="font-family: monospace">', "\n";
+			echo '<table cellpadding="1" border="1" style="font-family: monospace">', "\n";
 			echo '<tr><td style="text-align:center">Callsign</td><td style="text-align:center">Time Slot</td><td style="text-align:center">Talk Group</td><td style="text-align:center">Status</td><td style="text-align:center">When</td></td>', "\n";
 			$dbname = $cfgdir.'/doh.db';
 			$db = new SQLite3($dbname, SQLITE3_OPEN_READONLY);
@@ -171,6 +171,6 @@ foreach($showlist as $section) {
 }
 ?>
 <br>
-<p align="right">DOH Dashboard Version 210220 Copyright &copy; by Thomas A. Early, N7TAE.</p>
+<p align="center">DOH Dashboard Version 210220 Copyright &copy; by Thomas A. Early, N7TAE.</p>
 </body>
 </html>
