@@ -56,18 +56,22 @@ function SecToString(int $sec) {
 	return sprintf("%2d sec", $sec);
 }
 
-function MyAndSfxToQrz(string $my)
+function CallsignToQrz(string $my)
 {
 	$my = trim($my);
 	if (0 == strlen($my)) {
-		$my = 'Empty MYCall ';
+		$my = 'No Call ';
 	} else {
-		if (strpos($my, ' '))
-			$link = strstr($my, ' ', true);
-		else
-			$link = $my;
-		$len = strlen($my);
-		$my = '<a*target="_blank"*href="https://www.qrz.com/db/'.$link.'">'.$my.'</a>';
+		if (preg_match('/^[0-9]+$/', $my)) {
+			$len = strlen($my);
+		} else {
+			if (strpos($my, ' '))
+				$link = strstr($my, ' ', true);
+			else
+				$link = $my;
+			$len = strlen($my);
+			$my = '<a*target="_blank"*href="https://www.qrz.com/db/'.$link.'">'.$my.'</a>';
+		}
 		while ($len < 8) {
 			$my .= ' ';
 			$len += 1;
@@ -85,7 +89,7 @@ IniParser($cfgdir.'/dmr.cfg', $cfg);
 <meta http-equiv="refresh" content="<?php echo $cfg['Dashboard']['Refresh'];?>">
 </head>
 <body>
-<h2>QnetGateway <?php echo $cfg['General']['Callsign']; ?> Dashboard</h2>
+<h2>DOH <?php echo $cfg['General']['Callsign']; ?> Dashboard</h2>
 
 <?php
 $showlist = explode(',', $cfg['Dashboard']['ShowOrder']);
@@ -129,9 +133,9 @@ foreach($showlist as $section) {
 			echo '<tr><td style="text-align:center">', $cu, '</td><td style="text-align:center">', $kn, '</td><td style="text-align:center">', $os, '</td><td style="text-align:center">', $hn, '</td></tr></table><br>', "\n";
 			break;
 		case 'LH':
-			echo 'Last Heard:<br><code>', "\n";
-			$rstr = 'Callsign TimeSlot Talkgroup Status              Time<br>';
-			echo str_replace(' ', '&nbsp;', $rstr), "\n";
+			echo 'Last Heard:<br>', "\n";
+			echo '<table cellpadding="1" border="1" sytle="font-family: monospace">', "\n";
+			echo '<tr><td style="text-align:center">Callsign</td><td style="text-align:center">Time Slot</td><td style="text-align:center">Talk Group</td><td style="text-align:center">Status</td><td style="text-align:center">When</td></td>', "\n";
 			$dbname = $cfgdir.'/doh.db';
 			$db = new SQLite3($dbname, SQLITE3_OPEN_READONLY);
 			//               0       1    2         3        4
@@ -139,15 +143,14 @@ foreach($showlist as $section) {
 			if ($stmnt = $db->prepare($ss)) {
 				if ($result = $stmnt->execute()) {
 					while ($row = $result->FetchArray(SQLITE3_NUM)) {
-						$rstr = MyAndSfxToQrz(str_pad($row[0], 12)).str_pad($row[1],5).str_pad($row[2],8,' ',STR_PAD_LEFT).str_pad($row[3],20).SecToString(intval($row[4])).'<br>';
-						echo str_replace('*', ' ', str_replace(' ', '&nbsp;', $rstr)), "\n";
+						echo '<tr><td style="text-align:center">', CallsignToQrz($row[0]), '</td><td style="text-align:center">', $row[1], '</td><td style="text-align:center">', $row[2], '</td><td style="text-align:center">', $row[3], '</td><td style="text-align:right">', $row[4], '</td></tr>', "\n";
 					}
 					$result->finalize();
 				}
 				$stmnt->close();
 			}
 			$db->Close();
-			echo '</code><br>', "\n";
+			echo '</table><br>', "\n";
 			break;
 		case 'IP':
 			$hasv6 = stristr(GetCFGValue('ircddb0_host'), 'v6');
@@ -168,6 +171,6 @@ foreach($showlist as $section) {
 }
 ?>
 <br>
-<p align="right">QnetGateway Dashboard Version 210220 Copyright &copy; by Thomas A. Early, N7TAE.</p>
+<p align="right">DOH Dashboard Version 210220 Copyright &copy; by Thomas A. Early, N7TAE.</p>
 </body>
 </html>
