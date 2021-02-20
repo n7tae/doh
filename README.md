@@ -8,16 +8,16 @@ If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's
 
 ## Building
 
-### Install package
+### Prerequisites
 
-DOH includes a dashboard with a last heard section. The last heard section uses SQLite3, a light-weight database, so you will need a package. Even if you don't install the dashboard, you need the following package to compile doh:
+DOH includes a dashboard with a last heard section. The last heard section uses SQLite3, a light-weight database, so you will need `libsqlite3-dev` to compile DOH, you will also need `curl` to be able to download the DMR ID lookup table:
 
 ```bash
 sudo apt update
-sudo apt install -y libsqlite3-dev
+sudo apt install -y libsqlite3-dev curl
 ```
 
-You will also need a few more things if you are going to use the dashboard:
+You will also need a few more things if you are going to *use* the dashboard:
 
 ```bash
 sudo apt install -y php-common php-fpm sqlite3 php-sqlite3 dnsutils
@@ -44,7 +44,7 @@ cp dmr.ini dmr.cfg
 
 Use your favorite file editor to edit your `dmr.cfg` file. You'll want to add your callsign and DMR ID in the `[General]` section and change the Duplex line if you are using a modem that supports duplex operation. Set your frequency in the `[Info]` section and you can also change other values in this section.
 
-Check other values and change as needed. Make sure the `[Modem]` section is correct for your MMDVM-based modem. The `[DMR Network]` section is defined as a **Direct** connection to the IPSC2-QUADNET DMR+ reflector. Of course you can connect to any system you want. Alternatively, you can use DMRGateway and connect to several systems, make sure you remove the active values in this `[DMR Network]` and uncomment the values for the `Type=Gateway` network.
+Check other values and change as needed. Make sure the `[Modem]` section is correct for your MMDVM-based modem. The `[DMR Network]` section is already defined as a **Direct** connection to the IPSC2-QUADNET DMR+ reflector. Of course you can connect to any system you want, so feel free to modify this section as you want. If you want to be able to access multiple DMR networks, you can use DMRGateway and connect to several systems, make sure you remove the active values in this `[DMR Network]` and uncomment the values for the `Type=Gateway` network.
 
 ### Optionally build and configure the DMRGateway
 
