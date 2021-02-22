@@ -32,7 +32,7 @@
 # It will also prune the number of backup files according to a value specified
 # by you in the configuration below.
 #
-# When done, it will restart MMDVMHost to make the ID changes take effect.
+# When done, it will restart DOH to make the ID changes take effect.
 #
 # To install in root's crontab use the command ...
 #
@@ -58,7 +58,7 @@ DATABASEURL='https://database.radioid.net/static/user.csv'
 # How many DMR ID files do you want backed up (0 = do not keep backups)
 DMRFILEBACKUP=1
 
-# Command line to restart MMDVMHost
+# Command line to restart DOH
 RESTARTCOMMAND="systemctl restart doh.service"
 
 ###############################################################################
@@ -103,5 +103,5 @@ else
    rm ${DMRIDPATH}/DMRIds.tmp
 fi
 
-# Restart MMDVMHost
+# Restart DOH
 # eval ${RESTARTCOMMAND}

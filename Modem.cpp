@@ -696,7 +696,7 @@ void CModem::clock(unsigned int ms)
 			break;
 
 		case MMDVM_SERIAL:
-			//MMDVMHost does not process serial data from the display,
+			//DOH does not process serial data from the display,
 			// so we send it to the transparent port if sendFrameType==1
 			if (m_sendTransparentDataFrameType > 0U)
 			{

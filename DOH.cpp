@@ -32,7 +32,7 @@
 
 #include <cstdlib>
 
-#define VERSION "210120"
+#define VERSION "210121"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -66,7 +66,7 @@ const char* HEADER4 = "Copyright(C) 2015-2020 by Jonathan Naylor, G4KLX and othe
 
 int main(int argc, char** argv)
 {
-	printf("MMDVMHost version %s\n", VERSION);
+	printf("DOH version %s\n", VERSION);
 	if (argc != 2)
 	{
 		fprintf(stderr, "Usage: %s /path/to/config/file\n", argv[1]);
@@ -90,13 +90,13 @@ int main(int argc, char** argv)
 		delete host;
 
 		if (m_signal == 2)
-			::LogInfo("MMDVMHost-%s exited on receipt of SIGINT", VERSION);
+			::LogInfo("DOH-%s exited on receipt of SIGINT", VERSION);
 
 		if (m_signal == 15)
-			::LogInfo("MMDVMHost-%s exited on receipt of SIGTERM", VERSION);
+			::LogInfo("DOH-%s exited on receipt of SIGTERM", VERSION);
 
 		if (m_signal == 1)
-			::LogInfo("MMDVMHost-%s is restarting on receipt of SIGHUP", VERSION);
+			::LogInfo("DOH-%s is restarting on receipt of SIGHUP", VERSION);
 	}
 	while (m_signal == 1);
 
@@ -154,7 +154,7 @@ int DOH::run()
 	bool ret = m_conf.read();
 	if (!ret)
 	{
-		::fprintf(stderr, "MMDVMHost: cannot read the .ini file\n");
+		::fprintf(stderr, "DOH: cannot read the configuration file\n");
 		return 1;
 	}
 
@@ -165,7 +165,7 @@ int DOH::run()
 	LogInfo(HEADER3);
 	LogInfo(HEADER4);
 
-	LogMessage("MMDVMHost-%s is starting", VERSION);
+	LogMessage("DOH-%s is starting", VERSION);
 	LogMessage("Built %s %s", __TIME__, __DATE__);
 
 	readParams();
@@ -334,7 +334,7 @@ int DOH::run()
 
 	setMode(MODE_IDLE);
 
-	LogMessage("MMDVMHost-%s is running", VERSION);
+	LogMessage("DOH-%s is running", VERSION);
 
 	while (!m_killed)
 	{
