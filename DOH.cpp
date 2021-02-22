@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 	printf("DOH version %s\n", VERSION);
 	if (argc != 2)
 	{
-		fprintf(stderr, "Usage: %s /path/to/config/file\n", argv[1]);
+		fprintf(stderr, "Usage: %s /path/to/config/file\n", argv[0]);
 		return 1;
 	}
 
