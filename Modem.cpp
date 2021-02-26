@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2011-2018,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2021 by Thomas A. Early
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
 #include "DMRDefines.h"
 #include "Thread.h"
 #include "Modem.h"
-#include "NullModem.h"
 #include "Utils.h"
 #include "Log.h"
 
@@ -115,7 +115,6 @@ CModem::CModem(const std::string& port, bool duplex, bool rxInvert, bool txInver
 	m_p25TXLevel(0.0F),
 	m_nxdnTXLevel(0.0F),
 	m_pocsagTXLevel(0.0F),
-	m_fmTXLevel(0.0F),
 	m_rfLevel(0.0F),
 	m_useCOSAsLockout(useCOSAsLockout),
 	m_trace(trace),
@@ -123,13 +122,6 @@ CModem::CModem(const std::string& port, bool duplex, bool rxInvert, bool txInver
 	m_rxFrequency(0U),
 	m_txFrequency(0U),
 	m_pocsagFrequency(0U),
-	m_dstarEnabled(false),
-	m_dmrEnabled(false),
-	m_ysfEnabled(false),
-	m_p25Enabled(false),
-	m_nxdnEnabled(false),
-	m_pocsagEnabled(false),
-	m_fmEnabled(false),
 	m_rxDCOffset(0),
 	m_txDCOffset(0),
 	m_serial(NULL),
@@ -167,35 +159,7 @@ CModem::CModem(const std::string& port, bool duplex, bool rxInvert, bool txInver
 	m_lockout(false),
 	m_error(false),
 	m_mode(MODE_IDLE),
-	m_hwType(HWT_UNKNOWN),
-	m_fmCallsign(),
-	m_fmCallsignSpeed(20U),
-	m_fmCallsignFrequency(1000U),
-	m_fmCallsignTime(600U),
-	m_fmCallsignHoldoff(0U),
-	m_fmCallsignHighLevel(35.0F),
-	m_fmCallsignLowLevel(15.0F),
-	m_fmCallsignAtStart(true),
-	m_fmCallsignAtEnd(true),
-	m_fmCallsignAtLatch(true),
-	m_fmRfAck("K"),
-	m_fmAckSpeed(20U),
-	m_fmAckFrequency(1750U),
-	m_fmAckMinTime(4U),
-	m_fmAckDelay(1000U),
-	m_fmAckLevel(80.0F),
-	m_fmTimeout(120U),
-	m_fmTimeoutLevel(80.0F),
-	m_fmCtcssFrequency(88.4F),
-	m_fmCtcssHighThreshold(30U),
-	m_fmCtcssLowThreshold(20U),
-	m_fmCtcssLevel(10.0F),
-	m_fmKerchunkTime(0U),
-	m_fmHangTime(5U),
-	m_fmAccessMode(1U),
-	m_fmCOSInvert(false),
-	m_fmRFAudioBoost(1U),
-	m_fmMaxDevLevel(90.0F)
+	m_hwType(HWT_UNKNOWN)
 {
 	m_buffer = new unsigned char[BUFFER_LENGTH];
 
@@ -227,17 +191,6 @@ void CModem::setRFParams(unsigned int rxFrequency, int rxOffset, unsigned int tx
 	m_pocsagFrequency = pocsagFrequency + txOffset;
 }
 
-void CModem::setModeParams(bool dstarEnabled, bool dmrEnabled, bool ysfEnabled, bool p25Enabled, bool nxdnEnabled, bool pocsagEnabled, bool fmEnabled)
-{
-	m_dstarEnabled  = dstarEnabled;
-	m_dmrEnabled    = dmrEnabled;
-	m_ysfEnabled    = ysfEnabled;
-	m_p25Enabled    = p25Enabled;
-	m_nxdnEnabled   = nxdnEnabled;
-	m_pocsagEnabled = pocsagEnabled;
-	m_fmEnabled     = fmEnabled;
-}
-
 void CModem::setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagTXLevel, float fmTXLevel)
 {
 	m_rxLevel       = rxLevel;
@@ -248,7 +201,6 @@ void CModem::setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, flo
 	m_p25TXLevel    = p25TXLevel;
 	m_nxdnTXLevel   = nxdnTXLevel;
 	m_pocsagTXLevel = pocsagTXLevel;
-	m_fmTXLevel     = fmTXLevel;
 }
 
 void CModem::setDMRParams(unsigned int colorCode)
@@ -318,36 +270,6 @@ bool CModem::open()
 		delete m_serial;
 		m_serial = NULL;
 		return false;
-	}
-
-	if (m_fmEnabled && m_duplex)
-	{
-		ret = setFMCallsignParams();
-		if (!ret)
-		{
-			m_serial->close();
-			delete m_serial;
-			m_serial = NULL;
-			return false;
-		}
-
-		ret = setFMAckParams();
-		if (!ret)
-		{
-			m_serial->close();
-			delete m_serial;
-			m_serial = NULL;
-			return false;
-		}
-
-		ret = setFMMiscParams();
-		if (!ret)
-		{
-			m_serial->close();
-			delete m_serial;
-			m_serial = NULL;
-			return false;
-		}
 	}
 
 	m_statusTimer.start();
@@ -1007,48 +929,6 @@ unsigned int CModem::readSerial(unsigned char* data, unsigned int length)
 	return 0U;
 }
 
-bool CModem::hasDStarSpace() const
-{
-	unsigned int space = m_txDStarData.freeSpace() / 16U;
-
-	return space > 1U;
-}
-
-bool CModem::writeDStarData(const unsigned char* data, unsigned int length)
-{
-	assert(data != NULL);
-	assert(length > 0U);
-
-	unsigned char buffer[50U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = length + 2U;
-
-	switch (data[0U])
-	{
-	case TAG_HEADER:
-		buffer[2U] = MMDVM_DSTAR_HEADER;
-		break;
-	case TAG_DATA:
-		buffer[2U] = MMDVM_DSTAR_DATA;
-		break;
-	case TAG_EOT:
-		buffer[2U] = MMDVM_DSTAR_EOT;
-		break;
-	default:
-		CUtils::dump(2U, "Unknown D-Star packet type", data, length);
-		return false;
-	}
-
-	::memcpy(buffer + 3U, data + 1U, length - 1U);
-
-	unsigned char len = length + 2U;
-	m_txDStarData.addData(&len, 1U);
-	m_txDStarData.addData(buffer, len);
-
-	return true;
-}
-
 bool CModem::hasDMRSpace1() const
 {
 	unsigned int space = m_txDMRData1.freeSpace() / (DMR_FRAME_LENGTH_BYTES + 4U);
@@ -1105,161 +985,6 @@ bool CModem::writeDMRData2(const unsigned char* data, unsigned int length)
 	unsigned char len = length + 2U;
 	m_txDMRData2.addData(&len, 1U);
 	m_txDMRData2.addData(buffer, len);
-
-	return true;
-}
-
-bool CModem::hasYSFSpace() const
-{
-	unsigned int space = m_txYSFData.freeSpace() / 124u;
-
-	return space > 1U;
-}
-
-bool CModem::writeYSFData(const unsigned char* data, unsigned int length)
-{
-	assert(data != NULL);
-	assert(length > 0U);
-
-	if (data[0U] != TAG_DATA && data[0U] != TAG_EOT)
-		return false;
-
-	unsigned char buffer[130U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = length + 2U;
-	buffer[2U] = MMDVM_YSF_DATA;
-
-	::memcpy(buffer + 3U, data + 1U, length - 1U);
-
-	unsigned char len = length + 2U;
-	m_txYSFData.addData(&len, 1U);
-	m_txYSFData.addData(buffer, len);
-
-	return true;
-}
-
-bool CModem::hasP25Space() const
-{
-	unsigned int space = m_txP25Data.freeSpace() / 220u;
-
-	return space > 1U;
-}
-
-bool CModem::writeP25Data(const unsigned char* data, unsigned int length)
-{
-	assert(data != NULL);
-	assert(length > 0U);
-
-	if (data[0U] != TAG_HEADER && data[0U] != TAG_DATA && data[0U] != TAG_EOT)
-		return false;
-
-	unsigned char buffer[250U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = length + 2U;
-	buffer[2U] = (data[0U] == TAG_HEADER) ? MMDVM_P25_HDR : MMDVM_P25_LDU;
-
-	::memcpy(buffer + 3U, data + 1U, length - 1U);
-
-	unsigned char len = length + 2U;
-	m_txP25Data.addData(&len, 1U);
-	m_txP25Data.addData(buffer, len);
-
-	return true;
-}
-
-bool CModem::hasNXDNSpace() const
-{
-	unsigned int space = m_txNXDNData.freeSpace() / 52u;
-
-	return space > 1U;
-}
-
-bool CModem::writeNXDNData(const unsigned char* data, unsigned int length)
-{
-	assert(data != NULL);
-	assert(length > 0U);
-
-	if (data[0U] != TAG_DATA && data[0U] != TAG_EOT)
-		return false;
-
-	unsigned char buffer[130U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = length + 2U;
-	buffer[2U] = MMDVM_NXDN_DATA;
-
-	::memcpy(buffer + 3U, data + 1U, length - 1U);
-
-	unsigned char len = length + 2U;
-	m_txNXDNData.addData(&len, 1U);
-	m_txNXDNData.addData(buffer, len);
-
-	return true;
-}
-
-bool CModem::hasPOCSAGSpace() const
-{
-	unsigned int space = m_txPOCSAGData.freeSpace() / 25u;
-
-	return space > 1U;
-}
-
-bool CModem::writePOCSAGData(const unsigned char* data, unsigned int length)
-{
-	assert(data != NULL);
-	assert(length > 0U);
-
-	unsigned char buffer[130U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = length + 3U;
-	buffer[2U] = MMDVM_POCSAG_DATA;
-
-	::memcpy(buffer + 3U, data, length);
-
-	unsigned char len = length + 3U;
-	m_txPOCSAGData.addData(&len, 1U);
-	m_txPOCSAGData.addData(buffer, len);
-
-	return true;
-}
-
-bool CModem::writeTransparentData(const unsigned char* data, unsigned int length)
-{
-	assert(data != NULL);
-	assert(length > 0U);
-
-	unsigned char buffer[250U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = length + 3U;
-	buffer[2U] = MMDVM_TRANSPARENT;
-
-	if (m_sendTransparentDataFrameType > 0U)
-	{
-		::memcpy(buffer + 2U, data, length);
-		length--;
-		buffer[1U]--;
-
-		//when sendFrameType==1 , only 0x80 and 0x90 (MMDVM_SERIAL and MMDVM_TRANSPARENT) are allowed
-		//  and reverted to default (MMDVM_TRANSPARENT) for any other value
-		//when >1, frame type is not checked
-		if (m_sendTransparentDataFrameType == 1U)
-		{
-			if ((buffer[2U] & 0xE0) != 0x80)
-				buffer[2U] = MMDVM_TRANSPARENT;
-		}
-	}
-	else
-	{
-		::memcpy(buffer + 3U, data, length);
-	}
-
-	unsigned char len = length + 3U;
-	m_txTransparentData.addData(&len, 1U);
-	m_txTransparentData.addData(buffer, len);
 
 	return true;
 }
@@ -1594,21 +1319,7 @@ bool CModem::setConfig()
 	if (!m_duplex)
 		buffer[3U] |= 0x80U;
 
-	buffer[4U] = 0x00U;
-	if (m_dstarEnabled)
-		buffer[4U] |= 0x01U;
-	if (m_dmrEnabled)
-		buffer[4U] |= 0x02U;
-	if (m_ysfEnabled)
-		buffer[4U] |= 0x04U;
-	if (m_p25Enabled)
-		buffer[4U] |= 0x08U;
-	if (m_nxdnEnabled)
-		buffer[4U] |= 0x10U;
-	if (m_pocsagEnabled)
-		buffer[4U] |= 0x20U;
-	if (m_fmEnabled && m_duplex)
-		buffer[4U] |= 0x40U;
+	buffer[4U] = 0x02U;	// DMR Only!
 
 	buffer[5U] = m_txDelay / 10U;		// In 10ms units
 
@@ -1638,7 +1349,7 @@ bool CModem::setConfig()
 
 	buffer[20U] = (unsigned char)(m_pocsagTXLevel * 2.55F + 0.5F);
 
-	buffer[21U] = (unsigned char)(m_fmTXLevel * 2.55F + 0.5F);
+	buffer[21U] = 0U;
 
 	buffer[22U] = (unsigned char)m_p25TXHang;
 
@@ -1689,9 +1400,6 @@ bool CModem::setFrequency()
 	unsigned char buffer[20U];
 	unsigned char len;
 	unsigned int  pocsagFrequency = 433000000U;
-
-	if (m_pocsagEnabled)
-		pocsagFrequency = m_pocsagFrequency;
 
 	if (m_hwType == HWT_DVMEGA)
 		len = 12U;
@@ -1986,240 +1694,6 @@ bool CModem::writeDMRShortLC(const unsigned char* lc)
 	return m_serial->write(buffer, 12U) == 12;
 }
 
-void CModem::setFMCallsignParams(const std::string& callsign, unsigned int callsignSpeed, unsigned int callsignFrequency, unsigned int callsignTime, unsigned int callsignHoldoff, float callsignHighLevel, float callsignLowLevel, bool callsignAtStart, bool callsignAtEnd, bool callsignAtLatch)
-{
-	m_fmCallsign          = callsign;
-	m_fmCallsignSpeed     = callsignSpeed;
-	m_fmCallsignFrequency = callsignFrequency;
-	m_fmCallsignTime      = callsignTime;
-	m_fmCallsignHoldoff   = callsignHoldoff;
-	m_fmCallsignHighLevel = callsignHighLevel;
-	m_fmCallsignLowLevel  = callsignLowLevel;
-	m_fmCallsignAtStart   = callsignAtStart;
-	m_fmCallsignAtEnd     = callsignAtEnd;
-	m_fmCallsignAtLatch   = callsignAtLatch;
-}
-
-void CModem::setFMAckParams(const std::string& rfAck, unsigned int ackSpeed, unsigned int ackFrequency, unsigned int ackMinTime, unsigned int ackDelay, float ackLevel)
-{
-	m_fmRfAck        = rfAck;
-	m_fmAckSpeed     = ackSpeed;
-	m_fmAckFrequency = ackFrequency;
-	m_fmAckMinTime   = ackMinTime;
-	m_fmAckDelay     = ackDelay;
-	m_fmAckLevel     = ackLevel;
-}
-
-void CModem::setFMMiscParams(unsigned int timeout, float timeoutLevel, float ctcssFrequency, unsigned int ctcssHighThreshold, unsigned int ctcssLowThreshold, float ctcssLevel, unsigned int kerchunkTime, unsigned int hangTime, unsigned int accessMode, bool cosInvert, unsigned int rfAudioBoost, float maxDevLevel)
-{
-	m_fmTimeout      = timeout;
-	m_fmTimeoutLevel = timeoutLevel;
-
-	m_fmCtcssFrequency     = ctcssFrequency;
-	m_fmCtcssHighThreshold = ctcssHighThreshold;
-	m_fmCtcssLowThreshold  = ctcssLowThreshold;
-	m_fmCtcssLevel         = ctcssLevel;
-
-	m_fmKerchunkTime = kerchunkTime;
-	m_fmHangTime     = hangTime;
-
-	m_fmAccessMode   = accessMode;
-	m_fmCOSInvert    = cosInvert;
-
-	m_fmRFAudioBoost = rfAudioBoost;
-	m_fmMaxDevLevel  = maxDevLevel;
-}
-
-bool CModem::setFMCallsignParams()
-{
-	assert(m_serial != NULL);
-
-	unsigned char buffer[80U];
-	unsigned char len = 10U + m_fmCallsign.size();
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = len;
-	buffer[2U] = MMDVM_FM_PARAMS1;
-
-	buffer[3U] = m_fmCallsignSpeed;
-	buffer[4U] = m_fmCallsignFrequency / 10U;
-	buffer[5U] = m_fmCallsignTime;
-	buffer[6U] = m_fmCallsignHoldoff;
-
-	buffer[7U] = (unsigned char)(m_fmCallsignHighLevel * 2.55F + 0.5F);
-	buffer[8U] = (unsigned char)(m_fmCallsignLowLevel * 2.55F + 0.5F);
-
-	buffer[9U] = 0x00U;
-	if (m_fmCallsignAtStart)
-		buffer[9U] |= 0x01U;
-	if (m_fmCallsignAtEnd)
-		buffer[9U] |= 0x02U;
-	if (m_fmCallsignAtLatch)
-		buffer[9U] |= 0x04U;
-
-	for (unsigned int i = 0U; i < m_fmCallsign.size(); i++)
-		buffer[10U + i] = m_fmCallsign.at(i);
-
-	// CUtils::dump(1U, "Written", buffer, len);
-
-	int ret = m_serial->write(buffer, len);
-	if (ret != len)
-		return false;
-
-	unsigned int count = 0U;
-	RESP_TYPE_MMDVM resp;
-	do
-	{
-		CThread::sleep(10U);
-
-		resp = getResponse();
-		if (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK)
-		{
-			count++;
-			if (count >= MAX_RESPONSES)
-			{
-				LogError("The MMDVM is not responding to the SET_FM_PARAMS1 command");
-				return false;
-			}
-		}
-	}
-	while (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK);
-
-	// CUtils::dump(1U, "Response", m_buffer, m_length);
-
-	if (resp == RTM_OK && m_buffer[2U] == MMDVM_NAK)
-	{
-		LogError("Received a NAK to the SET_FM_PARAMS1 command from the modem");
-		return false;
-	}
-
-	return true;
-}
-
-bool CModem::setFMAckParams()
-{
-	assert(m_serial != NULL);
-
-	unsigned char buffer[80U];
-	unsigned char len = 8U + m_fmRfAck.size();
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = len;
-	buffer[2U] = MMDVM_FM_PARAMS2;
-
-	buffer[3U] = m_fmAckSpeed;
-	buffer[4U] = m_fmAckFrequency / 10U;
-	buffer[5U] = m_fmAckMinTime;
-	buffer[6U] = m_fmAckDelay / 10U;
-
-	buffer[7U] = (unsigned char)(m_fmAckLevel * 2.55F + 0.5F);
-
-	for (unsigned int i = 0U; i < m_fmRfAck.size(); i++)
-		buffer[8U + i] = m_fmRfAck.at(i);
-
-	// CUtils::dump(1U, "Written", buffer, len);
-
-	int ret = m_serial->write(buffer, len);
-	if (ret != len)
-		return false;
-
-	unsigned int count = 0U;
-	RESP_TYPE_MMDVM resp;
-	do
-	{
-		CThread::sleep(10U);
-
-		resp = getResponse();
-		if (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK)
-		{
-			count++;
-			if (count >= MAX_RESPONSES)
-			{
-				LogError("The MMDVM is not responding to the SET_FM_PARAMS2 command");
-				return false;
-			}
-		}
-	}
-	while (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK);
-
-	// CUtils::dump(1U, "Response", m_buffer, m_length);
-
-	if (resp == RTM_OK && m_buffer[2U] == MMDVM_NAK)
-	{
-		LogError("Received a NAK to the SET_FM_PARAMS2 command from the modem");
-		return false;
-	}
-
-	return true;
-}
-
-bool CModem::setFMMiscParams()
-{
-	assert(m_serial != NULL);
-
-	unsigned char buffer[20U];
-
-	buffer[0U] = MMDVM_FRAME_START;
-	buffer[1U] = 15U;
-	buffer[2U] = MMDVM_FM_PARAMS3;
-
-	buffer[3U] = m_fmTimeout / 5U;
-	buffer[4U] = (unsigned char)(m_fmTimeoutLevel * 2.55F + 0.5F);
-
-	buffer[5U] = (unsigned char)m_fmCtcssFrequency;
-	buffer[6U] = m_fmCtcssHighThreshold;
-	buffer[7U] = m_fmCtcssLowThreshold;
-	buffer[8U] = (unsigned char)(m_fmCtcssLevel * 2.55F + 0.5F);
-
-	buffer[9U]  = m_fmKerchunkTime;
-	buffer[10U] = m_fmHangTime;
-
-	buffer[11U] = m_fmAccessMode;
-	if (m_fmCOSInvert)
-		buffer[11U] |= 0x80U;
-
-	buffer[12U] = m_fmRFAudioBoost;
-
-	buffer[13U] = (unsigned char)(m_fmMaxDevLevel * 2.55F + 0.5F);
-
-	buffer[14U] = (unsigned char)(m_rxLevel * 2.55F + 0.5F);
-
-	// CUtils::dump(1U, "Written", buffer, 15U);
-
-	int ret = m_serial->write(buffer, 15U);
-	if (ret != 15)
-		return false;
-
-	unsigned int count = 0U;
-	RESP_TYPE_MMDVM resp;
-	do
-	{
-		CThread::sleep(10U);
-
-		resp = getResponse();
-		if (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK)
-		{
-			count++;
-			if (count >= MAX_RESPONSES)
-			{
-				LogError("The MMDVM is not responding to the SET_FM_PARAMS3 command");
-				return false;
-			}
-		}
-	}
-	while (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK);
-
-	// CUtils::dump(1U, "Response", m_buffer, m_length);
-
-	if (resp == RTM_OK && m_buffer[2U] == MMDVM_NAK)
-	{
-		LogError("Received a NAK to the SET_FM_PARAMS3 command from the modem");
-		return false;
-	}
-
-	return true;
-}
-
 void CModem::printDebug()
 {
 	if (m_buffer[2U] == MMDVM_DEBUG1)
@@ -2252,12 +1726,4 @@ void CModem::printDebug()
 		short val4 = (m_buffer[m_length - 2U] << 8) | m_buffer[m_length - 1U];
 		LogMessage("Debug: %.*s %d %d %d %d", m_length - 11U, m_buffer + 3U, val1, val2, val3, val4);
 	}
-}
-
-CModem* CModem::createModem(const std::string& port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned int txDelay, unsigned int dmrDelay, bool useCOSAsLockout, bool trace, bool debug)
-{
-	if (port == "NullModem")
-		return new CNullModem(port, duplex, rxInvert, txInvert, pttInvert, txDelay, dmrDelay, useCOSAsLockout, trace, debug);
-	else
-		return new CModem(port, duplex, rxInvert, txInvert, pttInvert, txDelay, dmrDelay, useCOSAsLockout, trace, debug);
 }

@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2011-2018,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2021 by Thomas A. Early N7TAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,7 +42,6 @@ public:
 
 	virtual void setSerialParams(const std::string& protocol, unsigned int address);
 	virtual void setRFParams(unsigned int rxFrequency, int rxOffset, unsigned int txFrequency, int txOffset, int txDCOffset, int rxDCOffset, float rfLevel, unsigned int pocsagFrequency);
-	virtual void setModeParams(bool dstarEnabled, bool dmrEnabled, bool ysfEnabled, bool p25Enabled, bool nxdnEnabled, bool pocsagEnabled, bool fmEnabled);
 	virtual void setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagLevel, float fmTXLevel);
 	virtual void setDMRParams(unsigned int colorCode);
 	virtual void setYSFParams(bool loDev, unsigned int txHang);
@@ -49,9 +49,6 @@ public:
 	virtual void setNXDNParams(unsigned int txHang);
 	virtual void setTransparentDataParams(unsigned int sendFrameType);
 
-	virtual void setFMCallsignParams(const std::string& callsign, unsigned int callsignSpeed, unsigned int callsignFrequency, unsigned int callsignTime, unsigned int callsignHoldoff, float callsignHighLevel, float callsignLowLevel, bool callsignAtStart, bool callsignAtEnd, bool callsignAtLatch);
-	virtual void setFMAckParams(const std::string& rfAck, unsigned int ackSpeed, unsigned int ackFrequency, unsigned int ackMinTime, unsigned int ackDelay, float ackLevel);
-	virtual void setFMMiscParams(unsigned int timeout, float timeoutLevel, float ctcssFrequency, unsigned int ctcssHighThreshold, unsigned int ctcssLowThreshold, float ctcssLevel, unsigned int kerchunkTime, unsigned int hangTime, unsigned int accessMode, bool cosInvert, unsigned int rfAudioBoost, float maxDevLevel);
 
 	virtual bool open();
 
@@ -65,13 +62,8 @@ public:
 
 	virtual unsigned int readSerial(unsigned char* data, unsigned int length);
 
-	virtual bool hasDStarSpace() const;
 	virtual bool hasDMRSpace1() const;
 	virtual bool hasDMRSpace2() const;
-	virtual bool hasYSFSpace() const;
-	virtual bool hasP25Space() const;
-	virtual bool hasNXDNSpace() const;
-	virtual bool hasPOCSAGSpace() const;
 
 	virtual bool hasTX() const;
 	virtual bool hasCD() const;
@@ -80,15 +72,8 @@ public:
 	virtual bool hasError() const;
 
 	virtual bool writeConfig();
-	virtual bool writeDStarData(const unsigned char* data, unsigned int length);
 	virtual bool writeDMRData1(const unsigned char* data, unsigned int length);
 	virtual bool writeDMRData2(const unsigned char* data, unsigned int length);
-	virtual bool writeYSFData(const unsigned char* data, unsigned int length);
-	virtual bool writeP25Data(const unsigned char* data, unsigned int length);
-	virtual bool writeNXDNData(const unsigned char* data, unsigned int length);
-	virtual bool writePOCSAGData(const unsigned char* data, unsigned int length);
-
-	virtual bool writeTransparentData(const unsigned char* data, unsigned int length);
 
 	virtual bool writeDStarInfo(const char* my1, const char* my2, const char* your, const char* type, const char* reflector);
 	virtual bool writeDMRInfo(unsigned int slotNo, const std::string& src, bool group, const std::string& dst, const char* type);
@@ -115,8 +100,6 @@ public:
 
 	virtual void close();
 
-	static CModem* createModem(const std::string& port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned int txDelay, unsigned int dmrDelay, bool useCOSAsLockout, bool trace, bool debug);
-
 private:
 	std::string                m_port;
 	unsigned int               m_dmrColorCode;
@@ -138,7 +121,6 @@ private:
 	float                      m_p25TXLevel;
 	float                      m_nxdnTXLevel;
 	float                      m_pocsagTXLevel;
-	float                      m_fmTXLevel;
 	float                      m_rfLevel;
 	bool                       m_useCOSAsLockout;
 	bool                       m_trace;
@@ -146,13 +128,6 @@ private:
 	unsigned int               m_rxFrequency;
 	unsigned int               m_txFrequency;
 	unsigned int               m_pocsagFrequency;
-	bool                       m_dstarEnabled;
-	bool                       m_dmrEnabled;
-	bool                       m_ysfEnabled;
-	bool                       m_p25Enabled;
-	bool                       m_nxdnEnabled;
-	bool                       m_pocsagEnabled;
-	bool                       m_fmEnabled;
 	int                        m_rxDCOffset;
 	int                        m_txDCOffset;
 	CSerialController*         m_serial;
@@ -192,42 +167,11 @@ private:
 	unsigned char              m_mode;
 	HW_TYPE                    m_hwType;
 
-	std::string                m_fmCallsign;
-	unsigned int               m_fmCallsignSpeed;
-	unsigned int               m_fmCallsignFrequency;
-	unsigned int               m_fmCallsignTime;
-	unsigned int               m_fmCallsignHoldoff;
-	float                      m_fmCallsignHighLevel;
-	float                      m_fmCallsignLowLevel;
-	bool                       m_fmCallsignAtStart;
-	bool                       m_fmCallsignAtEnd;
-	bool                       m_fmCallsignAtLatch;
-	std::string                m_fmRfAck;
-	unsigned int               m_fmAckSpeed;
-	unsigned int               m_fmAckFrequency;
-	unsigned int               m_fmAckMinTime;
-	unsigned int               m_fmAckDelay;
-	float                      m_fmAckLevel;
-	unsigned int               m_fmTimeout;
-	float                      m_fmTimeoutLevel;
-	float                      m_fmCtcssFrequency;
-	unsigned int               m_fmCtcssHighThreshold;
-	unsigned int               m_fmCtcssLowThreshold;
-	float                      m_fmCtcssLevel;
-	unsigned int               m_fmKerchunkTime;
-	unsigned int               m_fmHangTime;
-	unsigned int               m_fmAccessMode;
-	bool                       m_fmCOSInvert;
-	unsigned int               m_fmRFAudioBoost;
-	float                      m_fmMaxDevLevel;
 
 	bool readVersion();
 	bool readStatus();
 	bool setConfig();
 	bool setFrequency();
-	bool setFMCallsignParams();
-	bool setFMAckParams();
-	bool setFMMiscParams();
 
 	void printDebug();
 
