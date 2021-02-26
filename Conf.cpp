@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015-2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2021 by Thomas A. Early N7TAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +17,6 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Defines.h"
 #include "Conf.h"
 #include "Log.h"
 
@@ -37,12 +37,7 @@ enum SECTION
 	SECTION_DMRID_LOOKUP,
 	SECTION_MODEM,
 	SECTION_DMR,
-	SECTION_DMR_NETWORK,
-	SECTION_TFTSERIAL,
-	SECTION_HD44780,
-	SECTION_NEXTION,
-	SECTION_OLED,
-	SECTION_LCDPROC
+	SECTION_DMR_NETWORK
 };
 
 CConf::CConf(const std::string& file) :
@@ -116,44 +111,11 @@ CConf::CConf(const std::string& file) :
 	m_dmrNetworkSlot2(true),
 	m_dmrNetworkModeHang(3U),
 	m_tftSerialPort("/dev/ttyAMA0"),
-	m_tftSerialBrightness(50U),
-	m_hd44780Rows(2U),
-	m_hd44780Columns(16U),
-	m_hd44780Pins(),
-	m_hd44780i2cAddress(),
-	m_hd44780PWM(false),
-	m_hd44780PWMPin(),
-	m_hd44780PWMBright(),
-	m_hd44780PWMDim(),
-	m_hd44780DisplayClock(false),
-	m_hd44780UTC(false),
-	m_nextionPort("/dev/ttyAMA0"),
-	m_nextionBrightness(50U),
-	m_nextionDisplayClock(false),
-	m_nextionUTC(false),
-	m_nextionIdleBrightness(20U),
-	m_nextionScreenLayout(0U),
-	m_nextionTempInFahrenheit(false),
-	m_oledType(3U),
-	m_oledBrightness(0U),
-	m_oledInvert(false),
-	m_oledScroll(false),
-	m_oledRotate(false),
-	m_oledLogoScreensaver(true),
-	m_lcdprocAddress(),
-	m_lcdprocPort(0U),
-	m_lcdprocLocalPort(0U),
-	m_lcdprocDisplayClock(false),
-	m_lcdprocUTC(false),
-	m_lcdprocDimOnIdle(false)
+	m_tftSerialBrightness(50U)
 {
 }
 
-CConf::~CConf()
-{
-}
-
-bool CConf::read()
+bool CConf::Read()
 {
 	FILE* fp = ::fopen(m_file.c_str(), "rt");
 	if (fp == NULL)
@@ -188,16 +150,6 @@ bool CConf::read()
 				section = SECTION_DMR;
 			else if (::strncmp(buffer, "[DMR Network]", 13U) == 0)
 				section = SECTION_DMR_NETWORK;
-			else if (::strncmp(buffer, "[TFT Serial]", 12U) == 0)
-				section = SECTION_TFTSERIAL;
-			else if (::strncmp(buffer, "[HD44780]", 9U) == 0)
-				section = SECTION_HD44780;
-			else if (::strncmp(buffer, "[Nextion]", 9U) == 0)
-				section = SECTION_NEXTION;
-			else if (::strncmp(buffer, "[OLED]", 6U) == 0)
-				section = SECTION_OLED;
-			else if (::strncmp(buffer, "[LCDproc]", 9U) == 0)
-				section = SECTION_LCDPROC;
 			else
 				section = SECTION_NONE;
 
@@ -472,91 +424,6 @@ bool CConf::read()
 				m_dmrNetworkSlot2 = ::atoi(value) == 1;
 			else if (::strcmp(key, "ModeHang") == 0)
 				m_dmrNetworkModeHang = (unsigned int)::atoi(value);
-		}
-		else if (section == SECTION_TFTSERIAL)
-		{
-			if (::strcmp(key, "Port") == 0)
-				m_tftSerialPort = value;
-			else if (::strcmp(key, "Brightness") == 0)
-				m_tftSerialBrightness = (unsigned int)::atoi(value);
-		}
-		else if (section == SECTION_HD44780)
-		{
-			if (::strcmp(key, "Rows") == 0)
-				m_hd44780Rows = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "Columns") == 0)
-				m_hd44780Columns = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "I2CAddress") == 0)
-				m_hd44780i2cAddress = (unsigned int)::strtoul(value, NULL, 16);
-			else if (::strcmp(key, "PWM") == 0)
-				m_hd44780PWM = ::atoi(value) == 1;
-			else if (::strcmp(key, "PWMPin") == 0)
-				m_hd44780PWMPin = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "PWMBright") == 0)
-				m_hd44780PWMBright = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "PWMDim") == 0)
-				m_hd44780PWMDim = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "DisplayClock") == 0)
-				m_hd44780DisplayClock = ::atoi(value) == 1;
-			else if (::strcmp(key, "UTC") == 0)
-				m_hd44780UTC = ::atoi(value) == 1;
-			else if (::strcmp(key, "Pins") == 0)
-			{
-				char* p = ::strtok(value, ",\r\n");
-				while (p != NULL)
-				{
-					unsigned int pin = (unsigned int)::atoi(p);
-					m_hd44780Pins.push_back(pin);
-					p = ::strtok(NULL, ",\r\n");
-				}
-			}
-		}
-		else if (section == SECTION_NEXTION)
-		{
-			if (::strcmp(key, "Port") == 0)
-				m_nextionPort = value;
-			else if (::strcmp(key, "Brightness") == 0)
-				m_nextionIdleBrightness = m_nextionBrightness = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "DisplayClock") == 0)
-				m_nextionDisplayClock = ::atoi(value) == 1;
-			else if (::strcmp(key, "UTC") == 0)
-				m_nextionUTC = ::atoi(value) == 1;
-			else if (::strcmp(key, "IdleBrightness") == 0)
-				m_nextionIdleBrightness = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "ScreenLayout") == 0)
-				m_nextionScreenLayout = (unsigned int)::strtoul(value, NULL, 0);
-			else if (::strcmp(key, "DisplayTempInFahrenheit") == 0)
-				m_nextionTempInFahrenheit = ::atoi(value) == 1;
-		}
-		else if (section == SECTION_OLED)
-		{
-			if (::strcmp(key, "Type") == 0)
-				m_oledType = (unsigned char)::atoi(value);
-			else if (::strcmp(key, "Brightness") == 0)
-				m_oledBrightness = (unsigned char)::atoi(value);
-			else if (::strcmp(key, "Invert") == 0)
-				m_oledInvert = ::atoi(value) == 1;
-			else if (::strcmp(key, "Scroll") == 0)
-				m_oledScroll = ::atoi(value) == 1;
-			else if (::strcmp(key, "Rotate") == 0)
-				m_oledRotate = ::atoi(value) == 1;
-			else if (::strcmp(key, "LogoScreensaver") == 0)
-				m_oledLogoScreensaver = ::atoi(value) == 1;
-		}
-		else if (section == SECTION_LCDPROC)
-		{
-			if (::strcmp(key, "Address") == 0)
-				m_lcdprocAddress = value;
-			else if (::strcmp(key, "Port") == 0)
-				m_lcdprocPort = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "LocalPort") == 0)
-				m_lcdprocLocalPort = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "DisplayClock") == 0)
-				m_lcdprocDisplayClock = ::atoi(value) == 1;
-			else if (::strcmp(key, "UTC") == 0)
-				m_lcdprocUTC = ::atoi(value) == 1;
-			else if (::strcmp(key, "DimOnIdle") == 0)
-				m_lcdprocDimOnIdle = ::atoi(value) == 1;
 		}
 	}
 
@@ -903,160 +770,4 @@ bool CConf::getDMRNetworkSlot1() const
 bool CConf::getDMRNetworkSlot2() const
 {
 	return m_dmrNetworkSlot2;
-}
-
-std::string CConf::getTFTSerialPort() const
-{
-	return m_tftSerialPort;
-}
-
-unsigned int CConf::getTFTSerialBrightness() const
-{
-	return m_tftSerialBrightness;
-}
-
-unsigned int CConf::getHD44780Rows() const
-{
-	return m_hd44780Rows;
-}
-
-unsigned int CConf::getHD44780Columns() const
-{
-	return m_hd44780Columns;
-}
-
-std::vector<unsigned int> CConf::getHD44780Pins() const
-{
-	return m_hd44780Pins;
-}
-
-unsigned int CConf::getHD44780i2cAddress() const
-{
-	return m_hd44780i2cAddress;
-}
-
-bool CConf::getHD44780PWM() const
-{
-	return m_hd44780PWM;
-}
-
-unsigned int CConf::getHD44780PWMPin() const
-{
-	return m_hd44780PWMPin;
-}
-
-unsigned int CConf::getHD44780PWMBright() const
-{
-	return m_hd44780PWMBright;
-}
-
-unsigned int CConf::getHD44780PWMDim() const
-{
-	return m_hd44780PWMDim;
-}
-
-bool CConf::getHD44780DisplayClock() const
-{
-	return m_hd44780DisplayClock;
-}
-
-bool CConf::getHD44780UTC() const
-{
-	return m_hd44780UTC;
-}
-
-std::string CConf::getNextionPort() const
-{
-	return m_nextionPort;
-}
-
-unsigned int CConf::getNextionBrightness() const
-{
-	return m_nextionBrightness;
-}
-
-bool CConf::getNextionDisplayClock() const
-{
-	return m_nextionDisplayClock;
-}
-
-bool CConf::getNextionUTC() const
-{
-	return m_nextionUTC;
-}
-
-unsigned int CConf::getNextionIdleBrightness() const
-{
-	return m_nextionIdleBrightness;
-}
-
-unsigned int CConf::getNextionScreenLayout() const
-{
-	return m_nextionScreenLayout;
-}
-
-unsigned char CConf::getOLEDType() const
-{
-	return m_oledType;
-}
-
-unsigned char CConf::getOLEDBrightness() const
-{
-	return m_oledBrightness;
-}
-
-bool CConf::getOLEDInvert() const
-{
-	return m_oledInvert;
-}
-
-bool CConf::getOLEDScroll() const
-{
-	return m_oledScroll;
-}
-
-bool CConf::getOLEDRotate() const
-{
-	return m_oledRotate;
-}
-
-bool CConf::getOLEDLogoScreensaver() const
-{
-	return m_oledLogoScreensaver;
-}
-
-
-std::string CConf::getLCDprocAddress() const
-{
-	return m_lcdprocAddress;
-}
-
-unsigned int CConf::getLCDprocPort() const
-{
-	return m_lcdprocPort;
-}
-
-unsigned int CConf::getLCDprocLocalPort() const
-{
-	return m_lcdprocLocalPort;
-}
-
-bool CConf::getLCDprocDisplayClock() const
-{
-	return m_lcdprocDisplayClock;
-}
-
-bool CConf::getLCDprocUTC() const
-{
-	return m_lcdprocUTC;
-}
-
-bool CConf::getLCDprocDimOnIdle() const
-{
-	return m_lcdprocDimOnIdle;
-}
-
-bool CConf::getNextionTempInFahrenheit() const
-{
-	return m_nextionTempInFahrenheit;
 }

@@ -32,7 +32,7 @@
 
 #include <cstdlib>
 
-#define VERSION "210221"
+#define VERSION "210226"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -151,10 +151,10 @@ DOH::~DOH()
 
 int DOH::run()
 {
-	bool ret = m_conf.read();
+	bool ret = m_conf.Read();
 	if (!ret)
 	{
-		::fprintf(stderr, "DOH: cannot read the configuration file\n");
+		::fprintf(stderr, "DOH: cannot Read the configuration file\n");
 		return 1;
 	}
 

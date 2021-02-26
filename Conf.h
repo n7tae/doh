@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015-2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2021 by Thomas A. Early NTAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,19 +17,19 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(CONF_H)
-#define	CONF_H
+#pragma once
 
 #include <string>
 #include <vector>
+
+#include "Defines.h"
 
 class CConf
 {
 public:
 	CConf(const std::string& file);
-	~CConf();
 
-	bool read();
+	bool Read();
 
 	// The General section
 	std::string  getCallsign() const;
@@ -119,43 +120,6 @@ public:
 	std::string  getTFTSerialPort() const;
 	unsigned int getTFTSerialBrightness() const;
 
-	// The HD44780 section
-	unsigned int getHD44780Rows() const;
-	unsigned int getHD44780Columns() const;
-	std::vector<unsigned int> getHD44780Pins() const;
-	unsigned int getHD44780i2cAddress() const;
-	bool         getHD44780PWM() const;
-	unsigned int getHD44780PWMPin() const;
-	unsigned int getHD44780PWMBright() const;
-	unsigned int getHD44780PWMDim() const;
-	bool         getHD44780DisplayClock() const;
-	bool         getHD44780UTC() const;
-
-	// The Nextion section
-	std::string  getNextionPort() const;
-	unsigned int getNextionBrightness() const;
-	bool         getNextionDisplayClock() const;
-	bool         getNextionUTC() const;
-	unsigned int getNextionIdleBrightness() const;
-	unsigned int getNextionScreenLayout() const;
-	bool         getNextionTempInFahrenheit() const;
-
-	// The OLED section
-	unsigned char  getOLEDType() const;
-	unsigned char  getOLEDBrightness() const;
-	bool           getOLEDInvert() const;
-	bool           getOLEDScroll() const;
-	bool           getOLEDRotate() const;
-	bool           getOLEDLogoScreensaver() const;
-
-	// The LCDproc section
-	std::string  getLCDprocAddress() const;
-	unsigned int getLCDprocPort() const;
-	unsigned int getLCDprocLocalPort() const;
-	bool         getLCDprocDisplayClock() const;
-	bool         getLCDprocUTC() const;
-	bool         getLCDprocDimOnIdle() const;
-
 private:
 	std::string  m_file;
 	std::string  m_callsign;
@@ -235,39 +199,4 @@ private:
 	unsigned int m_dmrNetworkModeHang;
 	std::string  m_tftSerialPort;
 	unsigned int m_tftSerialBrightness;
-
-	unsigned int m_hd44780Rows;
-	unsigned int m_hd44780Columns;
-	std::vector<unsigned int> m_hd44780Pins;
-	unsigned int m_hd44780i2cAddress;
-	bool         m_hd44780PWM;
-	unsigned int m_hd44780PWMPin;
-	unsigned int m_hd44780PWMBright;
-	unsigned int m_hd44780PWMDim;
-	bool         m_hd44780DisplayClock;
-	bool         m_hd44780UTC;
-
-	std::string  m_nextionPort;
-	unsigned int m_nextionBrightness;
-	bool         m_nextionDisplayClock;
-	bool         m_nextionUTC;
-	unsigned int m_nextionIdleBrightness;
-	unsigned int m_nextionScreenLayout;
-	bool         m_nextionTempInFahrenheit;
-
-	unsigned char m_oledType;
-	unsigned char m_oledBrightness;
-	bool          m_oledInvert;
-	bool          m_oledScroll;
-	bool          m_oledRotate;
-	bool          m_oledLogoScreensaver;
-
-	std::string  m_lcdprocAddress;
-	unsigned int m_lcdprocPort;
-	unsigned int m_lcdprocLocalPort;
-	bool         m_lcdprocDisplayClock;
-	bool         m_lcdprocUTC;
-	bool         m_lcdprocDimOnIdle;
 };
-
-#endif
