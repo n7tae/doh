@@ -84,7 +84,7 @@ int main(int argc, char** argv)
 	{
 		m_signal = 0;
 
-		DOH* host = new DOH(argv[1]);
+		CDOH* host = new CDOH(argv[1]);
 		ret = host->run();
 
 		delete host;
@@ -103,35 +103,19 @@ int main(int argc, char** argv)
 	return ret;
 }
 
-DOH::DOH(const std::string& confFile) :
+CDOH::CDOH(const std::string& confFile) :
 	m_conf(confFile),
 	m_modem(NULL),
 	m_dmr(NULL),
 	m_dmrNetwork(NULL),
 	m_mode(MODE_IDLE),
-	m_dstarRFModeHang(10U),
 	m_dmrRFModeHang(10U),
-	m_ysfRFModeHang(10U),
-	m_p25RFModeHang(10U),
-	m_nxdnRFModeHang(10U),
-	m_dstarNetModeHang(3U),
 	m_dmrNetModeHang(3U),
-	m_ysfNetModeHang(3U),
-	m_p25NetModeHang(3U),
-	m_nxdnNetModeHang(3U),
-	m_pocsagNetModeHang(3U),
 	m_modeTimer(1000U),
 	m_dmrTXTimer(1000U),
 	m_cwIdTimer(1000U),
 	m_duplex(false),
 	m_timeout(180U),
-	m_dstarEnabled(false),
-	m_dmrEnabled(true),
-	m_ysfEnabled(false),
-	m_p25Enabled(false),
-	m_nxdnEnabled(false),
-	m_pocsagEnabled(false),
-	m_fmEnabled(false),
 	m_cwIdTime(0U),
 	m_dmrLookup(NULL),
 	m_callsign(),
@@ -144,12 +128,12 @@ DOH::DOH(const std::string& confFile) :
 	CUDPSocket::startup();
 }
 
-DOH::~DOH()
+CDOH::~CDOH()
 {
 	CUDPSocket::shutdown();
 }
 
-int DOH::run()
+int CDOH::run()
 {
 	bool ret = m_conf.Read();
 	if (!ret)
@@ -174,12 +158,9 @@ int DOH::run()
 	if (!ret)
 		return 1;
 
-	if (m_dmrEnabled)
-	{
-		ret = createDMRNetwork();
-		if (!ret)
-			return 1;
-	}
+	ret = createDMRNetwork();
+	if (!ret)
+		return 1;
 
 	if (m_conf.getCWIdEnabled())
 	{
@@ -208,19 +189,16 @@ int DOH::run()
 	}
 
 	// For DMR and P25 we try to map IDs to callsigns
-	if (m_dmrEnabled || m_p25Enabled)
-	{
-		std::string lookupFile  = m_conf.getDMRIdLookupFile();
-		unsigned int reloadTime = m_conf.getDMRIdLookupTime();
+	std::string lookupFile  = m_conf.getDMRIdLookupFile();
+	unsigned int reloadTime = m_conf.getDMRIdLookupTime();
 
-		LogInfo("DMR Id Lookups");
-		LogInfo("    File: %s", lookupFile.length() > 0U ? lookupFile.c_str() : "None");
-		if (reloadTime > 0U)
-			LogInfo("    Reload: %u hours", reloadTime);
+	LogInfo("DMR Id Lookups");
+	LogInfo("    File: %s", lookupFile.length() > 0U ? lookupFile.c_str() : "None");
+	if (reloadTime > 0U)
+		LogInfo("    Reload: %u hours", reloadTime);
 
-		m_dmrLookup = new CDMRLookup(lookupFile, reloadTime);
-		m_dmrLookup->read();
-	}
+	m_dmrLookup = new CDMRLookup(lookupFile, reloadTime);
+	m_dmrLookup->read();
 
 	CStopWatch stopWatch;
 	stopWatch.start();
@@ -234,7 +212,7 @@ int DOH::run()
 	m_dashDB.Open(dbpath.c_str());
 	m_dashDB.ClearLH();
 
-	if (m_dmrEnabled)
+	if (true)
 	{
 		unsigned int id             = m_conf.getDMRId();
 		unsigned int colorCode      = m_conf.getDMRColorCode();
@@ -543,8 +521,6 @@ int DOH::run()
 			}
 		}
 
-		remoteControl();
-
 		unsigned int ms = stopWatch.elapsed();
 		stopWatch.start();
 
@@ -650,7 +626,7 @@ int DOH::run()
 	return 0;
 }
 
-bool DOH::createModem()
+bool CDOH::createModem()
 {
 	std::string port             = m_conf.getModemPort();
 	std::string protocol	     = m_conf.getModemProtocol();
@@ -715,7 +691,7 @@ bool DOH::createModem()
 
 	m_modem = CModem::createModem(port, m_duplex, rxInvert, txInvert, pttInvert, txDelay, dmrDelay, useCOSAsLockout, trace, debug);
 	m_modem->setSerialParams(protocol, address);
-	m_modem->setModeParams(m_dstarEnabled, m_dmrEnabled, m_ysfEnabled, m_p25Enabled, m_nxdnEnabled, m_pocsagEnabled, m_fmEnabled);
+	m_modem->setModeParams(false, true, false, false, false, false, false);
 	m_modem->setLevels(rxLevel, cwIdTXLevel, dstarTXLevel, dmrTXLevel, ysfTXLevel, p25TXLevel, nxdnTXLevel, pocsagTXLevel, fmTXLevel);
 	m_modem->setRFParams(rxFrequency, rxOffset, txFrequency, txOffset, txDCOffset, rxDCOffset, rfLevel, pocsagFrequency);
 	m_modem->setDMRParams(colorCode);
@@ -734,7 +710,7 @@ bool DOH::createModem()
 	return true;
 }
 
-bool DOH::createDMRNetwork()
+bool CDOH::createDMRNetwork()
 {
 	std::string address  = m_conf.getDMRNetworkAddress();
 	unsigned int port    = m_conf.getDMRNetworkPort();
@@ -823,15 +799,8 @@ bool DOH::createDMRNetwork()
 	return true;
 }
 
-void DOH::readParams()
+void CDOH::readParams()
 {
-	m_dstarEnabled  = false;
-	m_dmrEnabled    = true;
-	m_ysfEnabled    = false;
-	m_p25Enabled    = false;
-	m_nxdnEnabled   = false;
-	m_pocsagEnabled = false;
-	m_fmEnabled     = false;
 	m_duplex        = m_conf.getDuplex();
 	m_callsign      = m_conf.getCallsign();
 	m_id            = m_conf.getId();
@@ -842,33 +811,15 @@ void DOH::readParams()
 	LogInfo("    Id: %u", m_id);
 	LogInfo("    Duplex: %s", m_duplex ? "yes" : "no");
 	LogInfo("    Timeout: %us", m_timeout);
-	LogInfo("    D-Star: %s", m_dstarEnabled ? "enabled" : "disabled");
-	LogInfo("    DMR: %s", m_dmrEnabled ? "enabled" : "disabled");
-	LogInfo("    YSF: %s", m_ysfEnabled ? "enabled" : "disabled");
-	LogInfo("    P25: %s", m_p25Enabled ? "enabled" : "disabled");
-	LogInfo("    NXDN: %s", m_nxdnEnabled ? "enabled" : "disabled");
-	LogInfo("    POCSAG: %s", m_pocsagEnabled ? "enabled" : "disabled");
-	LogInfo("    FM: %s", m_fmEnabled ? "enabled" : "disabled");
+	LogInfo("    DMR: enabled");
 }
 
-void DOH::setMode(unsigned char mode)
+void CDOH::setMode(unsigned char mode)
 {
 	assert(m_modem != NULL);
 
 	switch (mode)
 	{
-	case MODE_DSTAR:
-		if (m_dmrNetwork != NULL)
-			m_dmrNetwork->enable(false);
-		if (m_dmr != NULL)
-			m_dmr->enable(false);
-		m_modem->setMode(MODE_DSTAR);
-		m_mode = MODE_DSTAR;
-		m_modeTimer.start();
-		m_cwIdTimer.stop();
-		createLockFile("D-Star");
-		break;
-
 	case MODE_DMR:
 		if (m_dmrNetwork != NULL)
 			m_dmrNetwork->enable(true);
@@ -884,70 +835,6 @@ void DOH::setMode(unsigned char mode)
 		m_modeTimer.start();
 		m_cwIdTimer.stop();
 		createLockFile("DMR");
-		break;
-
-	case MODE_YSF:
-		if (m_dmrNetwork != NULL)
-			m_dmrNetwork->enable(false);
-		if (m_dmr != NULL)
-			m_dmr->enable(false);
-		m_modem->setMode(MODE_YSF);
-		m_mode = MODE_YSF;
-		m_modeTimer.start();
-		m_cwIdTimer.stop();
-		createLockFile("System Fusion");
-		break;
-
-	case MODE_P25:
-		if (m_dmrNetwork != NULL)
-			m_dmrNetwork->enable(false);
-		if (m_dmr != NULL)
-			m_dmr->enable(false);
-		m_modem->setMode(MODE_P25);
-		m_mode = MODE_P25;
-		m_modeTimer.start();
-		m_cwIdTimer.stop();
-		createLockFile("P25");
-		break;
-
-	case MODE_NXDN:
-		if (m_dmrNetwork != NULL)
-			m_dmrNetwork->enable(false);
-		if (m_dmr != NULL)
-			m_dmr->enable(false);
-		m_modem->setMode(MODE_NXDN);
-		m_mode = MODE_NXDN;
-		m_modeTimer.start();
-		m_cwIdTimer.stop();
-		createLockFile("NXDN");
-		break;
-
-	case MODE_POCSAG:
-		if (m_dmrNetwork != NULL)
-			m_dmrNetwork->enable(false);
-		if (m_dmr != NULL)
-			m_dmr->enable(false);
-		m_modem->setMode(MODE_POCSAG);
-		m_mode = MODE_POCSAG;
-		m_modeTimer.start();
-		m_cwIdTimer.stop();
-		createLockFile("POCSAG");
-		break;
-
-	case MODE_FM:
-		if (m_dmrNetwork != NULL)
-			m_dmrNetwork->enable(false);
-		if (m_dmr != NULL)
-			m_dmr->enable(false);
-		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
-		{
-			m_modem->writeDMRStart(false);
-			m_dmrTXTimer.stop();
-		}
-		m_mode = MODE_FM;
-		m_modeTimer.stop();
-		m_cwIdTimer.stop();
-		createLockFile("FM");
 		break;
 
 	case MODE_LOCKOUT:
@@ -1013,7 +900,7 @@ void DOH::setMode(unsigned char mode)
 	}
 }
 
-void  DOH::createLockFile(const char* mode) const
+void  CDOH::createLockFile(const char* mode) const
 {
 	if (m_lockFileEnabled)
 	{
@@ -1026,29 +913,8 @@ void  DOH::createLockFile(const char* mode) const
 	}
 }
 
-void  DOH::removeLockFile() const
+void  CDOH::removeLockFile() const
 {
 	if (m_lockFileEnabled)
 		::remove(m_lockFileName.c_str());
-}
-
-void DOH::remoteControl()
-{
-}
-
-void DOH::processModeCommand(unsigned char mode, unsigned int timeout)
-{
-	m_fixedMode = false;
-	m_modeTimer.setTimeout(timeout);
-
-	setMode(mode);
-}
-
-void DOH::processEnableCommand(bool& mode, bool enabled)
-{
-	LogDebug("Setting mode current=%s new=%s",mode ? "true" : "false",enabled ? "true" : "false");
-	mode=enabled;
-	m_modem->setModeParams(m_dstarEnabled, m_dmrEnabled, m_ysfEnabled, m_p25Enabled, m_nxdnEnabled, m_pocsagEnabled, m_fmEnabled);
-	if (!m_modem->writeConfig())
-		LogError("Cannot write Config to MMDVM");
 }
