@@ -628,13 +628,7 @@ bool CDOH::createModem()
 	unsigned int dmrDelay        = m_conf.getModemDMRDelay();
 	float rxLevel                = m_conf.getModemRXLevel();
 	float cwIdTXLevel            = m_conf.getModemCWIdTXLevel();
-	float dstarTXLevel           = 0.0f;
 	float dmrTXLevel             = m_conf.getModemDMRTXLevel();
-	float ysfTXLevel             = 0.0f;
-	float p25TXLevel             = 0.0f;
-	float nxdnTXLevel            = 0.0f;
-	float pocsagTXLevel          = 0.0f;
-	float fmTXLevel              = 0.0f;
 	bool trace                   = m_conf.getModemTrace();
 	bool debug                   = m_conf.getModemDebug();
 	unsigned int colorCode       = m_conf.getDMRColorCode();
@@ -665,19 +659,13 @@ bool CDOH::createModem()
 	LogInfo("    DMR Delay: %u (%.1fms)", dmrDelay, float(dmrDelay) * 0.0416666F);
 	LogInfo("    RX Level: %.1f%%", rxLevel);
 	LogInfo("    CW Id TX Level: %.1f%%", cwIdTXLevel);
-	LogInfo("    D-Star TX Level: %.1f%%", dstarTXLevel);
 	LogInfo("    DMR TX Level: %.1f%%", dmrTXLevel);
-	LogInfo("    YSF TX Level: %.1f%%", ysfTXLevel);
-	LogInfo("    P25 TX Level: %.1f%%", p25TXLevel);
-	LogInfo("    NXDN TX Level: %.1f%%", nxdnTXLevel);
-	LogInfo("    POCSAG TX Level: %.1f%%", pocsagTXLevel);
-	LogInfo("    FM TX Level: %.1f%%", fmTXLevel);
 	LogInfo("    TX Frequency: %uHz (%uHz)", txFrequency, txFrequency + txOffset);
 	LogInfo("    Use COS as Lockout: %s", useCOSAsLockout ? "yes" : "no");
 
 	m_modem = new CModem(port, m_duplex, rxInvert, txInvert, pttInvert, txDelay, dmrDelay, useCOSAsLockout, trace, debug);
 	m_modem->setSerialParams(protocol, address);
-	m_modem->setLevels(rxLevel, cwIdTXLevel, dstarTXLevel, dmrTXLevel, ysfTXLevel, p25TXLevel, nxdnTXLevel, pocsagTXLevel, fmTXLevel);
+	m_modem->setLevels(rxLevel, cwIdTXLevel, 0.0F, dmrTXLevel, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 	m_modem->setRFParams(rxFrequency, rxOffset, txFrequency, txOffset, txDCOffset, rxDCOffset, rfLevel, pocsagFrequency);
 	m_modem->setDMRParams(colorCode);
 
