@@ -340,8 +340,6 @@ int CDOH::run()
 		unsigned int len;
 		bool ret;
 
-		len = m_modem->readDStarData(data);
-
 		len = m_modem->readDMRData1(data);
 		if (m_dmr != NULL && len > 0U)
 		{
@@ -445,14 +443,6 @@ int CDOH::run()
 				LogWarning("DMR modem data received when in mode %u", m_mode);
 			}
 		}
-
-		len = m_modem->readYSFData(data);
-
-		len = m_modem->readP25Data(data);
-
-		len = m_modem->readNXDNData(data);
-
-		len = m_modem->readTransparentData(data);
 
 		if (!m_fixedMode)
 		{
@@ -648,10 +638,6 @@ bool CDOH::createModem()
 	bool trace                   = m_conf.getModemTrace();
 	bool debug                   = m_conf.getModemDebug();
 	unsigned int colorCode       = m_conf.getDMRColorCode();
-	bool lowDeviation            = false;
-	unsigned int ysfTXHang       = 0u;
-	unsigned int p25TXHang       = 0u;
-	unsigned int nxdnTXHang      = 0u;
 	unsigned int rxFrequency     = m_conf.getRXFrequency();
 	unsigned int txFrequency     = m_conf.getTXFrequency();
 	unsigned int pocsagFrequency = txFrequency;
@@ -694,9 +680,6 @@ bool CDOH::createModem()
 	m_modem->setLevels(rxLevel, cwIdTXLevel, dstarTXLevel, dmrTXLevel, ysfTXLevel, p25TXLevel, nxdnTXLevel, pocsagTXLevel, fmTXLevel);
 	m_modem->setRFParams(rxFrequency, rxOffset, txFrequency, txOffset, txDCOffset, rxDCOffset, rfLevel, pocsagFrequency);
 	m_modem->setDMRParams(colorCode);
-	m_modem->setYSFParams(lowDeviation, ysfTXHang);
-	m_modem->setP25Params(p25TXHang);
-	m_modem->setNXDNParams(nxdnTXHang);
 
 	bool ret = m_modem->open();
 	if (!ret)

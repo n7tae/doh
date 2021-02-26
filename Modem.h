@@ -38,67 +38,49 @@ class CModem
 {
 public:
 	CModem(const std::string& port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned int txDelay, unsigned int dmrDelay, bool useCOSAsLockout, bool trace, bool debug);
-	virtual ~CModem();
+	~CModem();
 
-	virtual void setSerialParams(const std::string& protocol, unsigned int address);
-	virtual void setRFParams(unsigned int rxFrequency, int rxOffset, unsigned int txFrequency, int txOffset, int txDCOffset, int rxDCOffset, float rfLevel, unsigned int pocsagFrequency);
-	virtual void setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagLevel, float fmTXLevel);
-	virtual void setDMRParams(unsigned int colorCode);
-	virtual void setYSFParams(bool loDev, unsigned int txHang);
-	virtual void setP25Params(unsigned int txHang);
-	virtual void setNXDNParams(unsigned int txHang);
-	virtual void setTransparentDataParams(unsigned int sendFrameType);
+	void setSerialParams(const std::string& protocol, unsigned int address);
+	void setRFParams(unsigned int rxFrequency, int rxOffset, unsigned int txFrequency, int txOffset, int txDCOffset, int rxDCOffset, float rfLevel, unsigned int pocsagFrequency);
+	void setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagLevel, float fmTXLevel);
+	void setDMRParams(unsigned int colorCode);
 
+	bool open();
 
-	virtual bool open();
+	unsigned int readDMRData1(unsigned char* data);
+	unsigned int readDMRData2(unsigned char* data);
 
-	virtual unsigned int readDStarData(unsigned char* data);
-	virtual unsigned int readDMRData1(unsigned char* data);
-	virtual unsigned int readDMRData2(unsigned char* data);
-	virtual unsigned int readYSFData(unsigned char* data);
-	virtual unsigned int readP25Data(unsigned char* data);
-	virtual unsigned int readNXDNData(unsigned char* data);
-	virtual unsigned int readTransparentData(unsigned char* data);
+	bool hasDMRSpace1() const;
+	bool hasDMRSpace2() const;
 
-	virtual unsigned int readSerial(unsigned char* data, unsigned int length);
+	bool hasTX() const;
+	bool hasCD() const;
 
-	virtual bool hasDMRSpace1() const;
-	virtual bool hasDMRSpace2() const;
+	bool hasLockout() const;
+	bool hasError() const;
 
-	virtual bool hasTX() const;
-	virtual bool hasCD() const;
+	bool writeConfig();
+	bool writeDMRData1(const unsigned char* data, unsigned int length);
+	bool writeDMRData2(const unsigned char* data, unsigned int length);
 
-	virtual bool hasLockout() const;
-	virtual bool hasError() const;
+	bool writeDMRInfo(unsigned int slotNo, const std::string& src, bool group, const std::string& dst, const char* type);
 
-	virtual bool writeConfig();
-	virtual bool writeDMRData1(const unsigned char* data, unsigned int length);
-	virtual bool writeDMRData2(const unsigned char* data, unsigned int length);
+	bool writeDMRStart(bool tx);
+	bool writeDMRShortLC(const unsigned char* lc);
+	bool writeDMRAbort(unsigned int slotNo);
 
-	virtual bool writeDStarInfo(const char* my1, const char* my2, const char* your, const char* type, const char* reflector);
-	virtual bool writeDMRInfo(unsigned int slotNo, const std::string& src, bool group, const std::string& dst, const char* type);
-	virtual bool writeYSFInfo(const char* source, const char* dest, unsigned char dgid, const char* type, const char* origin);
-	virtual bool writeP25Info(const char* source, bool group, unsigned int dest, const char* type);
-	virtual bool writeNXDNInfo(const char* source, bool group, unsigned int dest, const char* type);
-	virtual bool writePOCSAGInfo(unsigned int ric, const std::string& message);
-	virtual bool writeIPInfo(const std::string& address);
+	bool writeSerial(const unsigned char* data, unsigned int length);
 
-	virtual bool writeDMRStart(bool tx);
-	virtual bool writeDMRShortLC(const unsigned char* lc);
-	virtual bool writeDMRAbort(unsigned int slotNo);
+	unsigned char getMode() const;
+	bool setMode(unsigned char mode);
 
-	virtual bool writeSerial(const unsigned char* data, unsigned int length);
+	bool sendCWId(const std::string& callsign);
 
-	virtual unsigned char getMode() const;
-	virtual bool setMode(unsigned char mode);
+	HW_TYPE getHWType() const;
 
-	virtual bool sendCWId(const std::string& callsign);
+	void clock(unsigned int ms);
 
-	virtual HW_TYPE getHWType() const;
-
-	virtual void clock(unsigned int ms);
-
-	virtual void close();
+	void close();
 
 private:
 	std::string                m_port;
@@ -134,32 +116,15 @@ private:
 	unsigned char*             m_buffer;
 	unsigned int               m_length;
 	unsigned int               m_offset;
-	CRingBuffer<unsigned char> m_rxDStarData;
-	CRingBuffer<unsigned char> m_txDStarData;
 	CRingBuffer<unsigned char> m_rxDMRData1;
 	CRingBuffer<unsigned char> m_rxDMRData2;
 	CRingBuffer<unsigned char> m_txDMRData1;
 	CRingBuffer<unsigned char> m_txDMRData2;
-	CRingBuffer<unsigned char> m_rxYSFData;
-	CRingBuffer<unsigned char> m_txYSFData;
-	CRingBuffer<unsigned char> m_rxP25Data;
-	CRingBuffer<unsigned char> m_txP25Data;
-	CRingBuffer<unsigned char> m_rxNXDNData;
-	CRingBuffer<unsigned char> m_txNXDNData;
-	CRingBuffer<unsigned char> m_txPOCSAGData;
-	CRingBuffer<unsigned char> m_rxTransparentData;
-	CRingBuffer<unsigned char> m_txTransparentData;
-	unsigned int               m_sendTransparentDataFrameType;
 	CTimer                     m_statusTimer;
 	CTimer                     m_inactivityTimer;
 	CTimer                     m_playoutTimer;
-	unsigned int               m_dstarSpace;
 	unsigned int               m_dmrSpace1;
 	unsigned int               m_dmrSpace2;
-	unsigned int               m_ysfSpace;
-	unsigned int               m_p25Space;
-	unsigned int               m_nxdnSpace;
-	unsigned int               m_pocsagSpace;
 	bool                       m_tx;
 	bool                       m_cd;
 	bool                       m_lockout;
