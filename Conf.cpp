@@ -109,9 +109,7 @@ CConf::CConf(const std::string& file) :
 	m_dmrNetworkJitter(360U),
 	m_dmrNetworkSlot1(true),
 	m_dmrNetworkSlot2(true),
-	m_dmrNetworkModeHang(3U),
-	m_tftSerialPort("/dev/ttyAMA0"),
-	m_tftSerialBrightness(50U)
+	m_dmrNetworkModeHang(3U)
 {
 }
 

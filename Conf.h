@@ -116,10 +116,6 @@ public:
 	bool         getDMRNetworkSlot2() const;
 	unsigned int getDMRNetworkModeHang() const;
 
-	// The TFTSERIAL section
-	std::string  getTFTSerialPort() const;
-	unsigned int getTFTSerialBrightness() const;
-
 private:
 	std::string  m_file;
 	std::string  m_callsign;
@@ -197,6 +193,4 @@ private:
 	bool         m_dmrNetworkSlot1;
 	bool         m_dmrNetworkSlot2;
 	unsigned int m_dmrNetworkModeHang;
-	std::string  m_tftSerialPort;
-	unsigned int m_tftSerialBrightness;
 };
