@@ -174,7 +174,7 @@ void CModem::setRFParams(unsigned int rxFrequency, int rxOffset, unsigned int tx
 	m_pocsagFrequency = pocsagFrequency + txOffset;
 }
 
-void CModem::setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagTXLevel, float fmTXLevel)
+void CModem::setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, float dmrTXLevel, float ysfTXLevel, float p25TXLevel, float nxdnTXLevel, float pocsagTXLevel)
 {
 	m_rxLevel       = rxLevel;
 	m_cwIdTXLevel   = cwIdTXLevel;

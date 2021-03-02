@@ -54,7 +54,7 @@ static void sigHandler1(int signum)
 	m_signal = signum;
 }
 
-static void sigHandler2(int signum)
+static void sigHandler2(int /*signum*/)
 {
 	m_reload = true;
 }
@@ -665,7 +665,7 @@ bool CDOH::createModem()
 
 	m_modem = new CModem(port, m_duplex, rxInvert, txInvert, pttInvert, txDelay, dmrDelay, useCOSAsLockout, trace, debug);
 	m_modem->setSerialParams(protocol, address);
-	m_modem->setLevels(rxLevel, cwIdTXLevel, 0.0F, dmrTXLevel, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+	m_modem->setLevels(rxLevel, cwIdTXLevel, 0.0F, dmrTXLevel, 0.0F, 0.0F, 0.0F, 0.0F);
 	m_modem->setRFParams(rxFrequency, rxOffset, txFrequency, txOffset, txDCOffset, rxDCOffset, rfLevel, pocsagFrequency);
 	m_modem->setDMRParams(colorCode);
 
