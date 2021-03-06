@@ -695,7 +695,6 @@ MiscMenu() {
 }
 
 WriteCFGFile() {
-local file
 cat << EOF > dmr.cfg
 # Created on `date`
 [General]
@@ -773,6 +772,7 @@ Refresh=${cfgfile[Dashboard,Refresh]}
 ShowOrder=${cfgfile[Dashboard,ShowOrder]}
 LastHeardLength=${cfgfile[Dashboard,LastHeardLength]}
 EOF
+exit 0
 }
 
 ReadFile inifile dmr.ini
@@ -808,8 +808,8 @@ do
 	echo    " n : DMR Network"
 	echo    " o : Other - DMR ID File, CW ID, Dashboard"
 	echo
-	echo    " w : Write dmr.cfg file (overwrites exsisting file)"
-	echo    " q : Quit"
+	echo    " w : Write dmr.cfg file (overwrites exsisting file) and quit."
+	echo    " q : Quit quit without saving."
 	echo
 	read -p " ? " ans
 	if   [[ "$ans" == g* ]]; then GeneralMenu
