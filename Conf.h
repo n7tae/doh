@@ -36,7 +36,6 @@ public:
 	unsigned int getId() const;
 	unsigned int getTimeout() const;
 	bool         getDuplex() const;
-	std::string  getDisplay() const;
 
 	// The Info section
 	unsigned int getRXFrequency() const;
@@ -122,7 +121,6 @@ private:
 	unsigned int m_id;
 	unsigned int m_timeout;
 	bool         m_duplex;
-	std::string  m_display;
 
 	unsigned int m_rxFrequency;
 	unsigned int m_txFrequency;

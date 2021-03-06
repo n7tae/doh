@@ -44,9 +44,8 @@ CConf::CConf(const std::string& file) :
 	m_file(file),
 	m_callsign(),
 	m_id(0U),
-	m_timeout(120U),
-	m_duplex(true),
-	m_display(),
+	m_timeout(180U),
+	m_duplex(false),
 	m_rxFrequency(0U),
 	m_txFrequency(0U),
 	m_power(0U),
@@ -198,14 +197,6 @@ bool CConf::Read()
 				m_timeout = (unsigned int)::atoi(value);
 			else if (::strcmp(key, "Duplex") == 0)
 				m_duplex = ::atoi(value) == 1;
-			else if (::strcmp(key, "ModeHang") == 0)
-				m_dmrNetworkModeHang = m_dmrModeHang = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "RFModeHang") == 0)
-				m_dmrModeHang = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "NetModeHang") == 0)
-				m_dmrNetworkModeHang = (unsigned int)::atoi(value);
-			else if (::strcmp(key, "Display") == 0)
-				m_display = value;
 		}
 		else if (section == SECTION_INFO)
 		{
@@ -448,11 +439,6 @@ unsigned int CConf::getTimeout() const
 bool CConf::getDuplex() const
 {
 	return m_duplex;
-}
-
-std::string CConf::getDisplay() const
-{
-	return m_display;
 }
 
 unsigned int CConf::getRXFrequency() const

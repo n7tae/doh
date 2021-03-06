@@ -29,6 +29,7 @@
 # Config file
 dmr.cfg
 DMRIds.dat
+DMR_Hosts.txt
 
 # Executables
 doh

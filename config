@@ -1,0 +1,728 @@
+#!/bin/bash
+#
+# Copyright (c) 2021 by Thomas A. Early N7TAE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+declare -A inifile cfgfile
+
+ReadFile() {
+	local -n ar=$1
+	while read line; do
+		local key length section value name
+		if [[ "${line:0:1}" == '#' ]]; then
+			continue
+		fi
+		if [[ "${line:0:1}" == '[' ]]; then
+			length=${#line}
+			section=${line:1:${length}-2}
+		else
+			key=${line%%=*}
+			value=${line#*=}
+			name=${section},${key}
+			ar[${name}]="$value"
+		fi
+	done < $2
+}
+
+EvalVar() {
+	if [[ "${inifile[$1]}" == "${cfgfile[$1]}" ]]; then
+		echo "${cfgfile[$1]} <DEFAULT>"
+	else
+		echo "${cfgfile[$1]}"
+	fi
+}
+
+EvalBool() {
+	if [[ "${cfgfile[$1]}" == 0* ]]; then
+		echo -n false
+	else
+		echo -n true
+	fi
+	if [[ "${inifile[$1]}" == "${cfgfile[$1]}" ]]; then
+		echo " <DEFAULT>"
+	else
+		echo
+	fi
+}
+
+ResetValue() {
+	cfgfile[$1]=${inifile[$1]}
+}
+
+SetBool() {
+	if [ -z "$value" ]; then
+		if [[ ${cfgfile[$1]} == 0* ]]; then
+			cfgfile[$1]=1
+		else
+			cfgfile[$1]=0
+		fi
+	else
+		if [[ "$value" == [fF0]* ]]; then
+			cfgfile[$1]=0
+		else
+			cfgfile[$1]=1
+		fi
+	fi
+}
+
+EndMenu () {
+	echo
+	echo    " u  <key> to unset the value of key (revert to the default value)."
+	echo    " q  to return to the main menu"
+	read -p " Please input: <key> <new_value> # omit value to toggle a true/false : " key value
+}
+
+GeneralMenu() {
+	key=''
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo "    General Parameters"
+		echo
+		echo -n " c : Callsign      = "; EvalVar 'General,Callsign'
+		echo -n " i : DMR ID        = "; EvalVar 'General,Id'
+		echo -n " t : Timeout (sec) = "; EvalVar 'General,Timeout'
+		echo -n " d : Is Duplex     = "; EvalBool 'General,Duplex'
+		EndMenu
+		if   [[ "$key" == c* ]]; then
+			if [[ "${value^^}" =~ ^[0-9]?[A-Z]{1,2}[0-9]{1,2}[A-Z]{1,4}$ ]]; then
+				cfgfile[General,Callsign]=${value^^}
+			else
+				echo "$value does not appear to be a valid callsign"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == i* ]]; then
+			if [[ "$value" =~ ^[1-9][0-9]*$ ]]; then
+				cfgfile[General,Id]=$value
+			else
+				echo "$value does not appear to be a valid DMR ID"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == t* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[General,Timeout]=$value
+			else
+				echo "$value does not appear to be a valid timeout"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == d* ]]; then SetBool 'General,Duplex' "$value"
+		elif [[ "$key" == u* ]]; then
+			if   [[ "$value" == c* ]]; then ResetValue 'General,Callsign'
+			elif [[ "$value" == i* ]]; then ResetValue 'General,Id'
+			elif [[ "$value" == t* ]]; then ResetValue 'General,Timeout'
+			elif [[ "$value" == d* ]]; then ResetValue 'General,Duplex'
+			fi
+		fi
+	done
+}
+
+StationMenu() {
+	key=''
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo "    Station Parameters"
+		echo
+		echo -n " tx : TX Frequency (Hz)   = "; EvalVar 'Info,TXFrequency'
+		echo -n " rx : RX Frequency (Hz)   = "; EvalVar 'Info,RXFrequency'
+		echo -n " pw : Power(Watts)        = "; EvalVar 'Info,Power'
+		echo -n " la : Latitude (degrees)  = "; EvalVar 'Info,Latitude'
+		echo -n " lo : Longitude (degrees) = "; EvalVar 'Info,Longitude'
+		echo -n " hi : Height (meters)     = "; EvalVar 'Info,Height'
+		echo -n " pl : Location            = "; EvalVar 'Info,Location'
+		echo -n " de : Description         = "; EvalVar 'Info,Description'
+		echo -n " ad : URL address         = "; EvalVar 'Info,URL'
+		EndMenu
+		if   [[ "$key" == tx* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[Info,TXFrequency]=$value
+			else
+				echo "'$value' is not a proper TX frequency"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == rx* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[Info,RXFrequency]=$value
+			else
+				echo "'$value' is not a proper RX frequency"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == pw* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[Info,Power]=$value
+			else
+				echo "'$value' is not a proper Power"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == la* ]]; then
+			if [[ "$value" =~ ^[-0-9\.]+$ ]]; then
+				cfgfile[Info,Latitude]=$value
+			else
+				echo "'$value' is not a proper Latitude"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == lo* ]]; then
+			if [[ "$value" =~ ^[-0-9\.]+$ ]]; then
+				cfgfile[Info,Longitude]=$value
+			else
+				echo "'$value' is not a proper Longitude"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == hi* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[Info,Height]=$value
+			else
+				echo "'$value' is not a proper Height"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == pl* ]]; then
+			if [[ "$value" =~ ^[/,0-9a-zA-Z\.\ \-]+$ ]]; then
+				cfgfile[Info,Location]=$value
+			else
+				echo "'$value' is not a proper Location"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == de* ]]; then
+			if [[ "$value" =~ ^[/,0-9a-zA-Z:\.\ \-]+$ ]]; then
+				cfgfile[Info,Description]=$value
+			else
+				echo "'$value' is not a proper Description"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ad* ]]; then
+			if [[ "$value" =~ ^[-/0-9a-zA-Z\.%]+$ ]]; then
+				cfgfile[Info,URL]=$value
+			else
+				echo "'$value' is not a proper URL"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == u* ]]; then
+			if   [[ "$value" == tx* ]]; then ResetValue 'Info,TXFrequency'
+			elif [[ "$value" == rx* ]]; then ResetValue 'Info,RXFrequency'
+			elif [[ "$value" == pw* ]]; then ResetValue 'Info,Power'
+			elif [[ "$value" == la* ]]; then ResetValue 'Info,Latitude'
+			elif [[ "$value" == lo* ]]; then ResetValue 'Info,Longitude'
+			elif [[ "$value" == hi* ]]; then ResetValue 'Info,Height'
+			elif [[ "$value" == pl* ]]; then ResetValue 'Info,Location'
+			elif [[ "$value" == de* ]]; then ResetValue 'Info,Description'
+			elif [[ "$value" == ad* ]]; then ResetValue 'Info,URL'
+			fi
+		fi
+	done
+}
+
+ModemMenu() {
+	key=''
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo "    Modem Parameters"
+		echo
+		echo -n " po : Port Device               = "; EvalVar 'Modem,Port'
+		echo -n " pr : Protocol (i2c or uart)    = "; EvalVar 'Modem,Protocol'
+		if [[ "${cfgfile[Modem,Protocol]}" == i2c ]]; then
+			echo -n " ad : Address                   = "; EvalVar 'Modem,Address'
+		fi
+		echo -n " ti : TX Invert                 = "; EvalBool 'Modem,TXInvert'
+		echo -n " ri : RX Invert                 = "; EvalBool 'Modem,RXInvert'
+		echo -n " pi : PTT Invert                = "; EvalBool 'Modem,PTTInvert'
+		echo -n " td : TX Delay (msec)           = "; EvalVar  'Modem,TXDelay'
+		echo -n " dd : DMR Delay (msec)          = "; EvalVar  'Modem,DMRDelay'
+		echo -n " to : TX Offset (Hz)            = "; EvalVar  'Modem,TXOffset'
+		echo -n " ro : RX Offset (Hz)            = "; EvalVar  'Modem,RXOffset'
+		echo -n " tl : TX Level (0.0 - 100.0)    = "; EvalVar  'Modem,TXLevel'
+		echo -n " rl : RX Level (0.0 - 100.0)    = "; EvalVar  'Modem,RXLevel'
+		echo -n " rf : RF Level (0.0 - 100.0)    = "; EvalVar  'Modem,RFLevel'
+		echo -n " tc : TX DC Offset (-128 - 127) = "; EvalVar  'Modem,TXDCOffset'
+		echo -n " rc : RX DC Offset (-128 - 127) = "; EvalVar  'Modem,RXDCOffset'
+		echo -n " rs : RSSI File Path            = "; EvalVar  'Modem,RSSIMappingFile'
+		echo -n " co : Use COS as Lockout        = "; EvalBool 'Modem,UseCOSAsLockout'
+		echo -n " tr : Trace                     = "; EvalBool 'Modem,Trace'
+		echo -n " db : Debug                     = "; EvalBool 'Modem,Debug'
+		EndMenu
+		if   [[ "$key" == po* ]]; then
+			if [[ "$value" =~ ^/dev/[0-9a-zA-Z]+$ ]]; then
+				cfgfile[Modem,Port]=$value
+			else
+				echo "'$value' is not a proper device path"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == pr* ]]; then
+			if [[ "$value" =~ ^(uart|i2c)$ ]]; then
+				cfgfile[Modem,Protocol]=$value
+			else
+				echo "'$value' is not a proper protocol"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ad* ]]; then
+			if [[ "$value" =~ ^0x[0-9a-fA-F]+$ ]]; then
+				cfgfile[Modem,Address]=$value
+			else
+				echo "'$value' is not a proper Address"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ti* ]]; then SetBool 'Modem,TXInvert' "$value"
+		elif [[ "$key" == ri* ]]; then SetBool 'Modem,RXInvert' "$value"
+		elif [[ "$key" == pi* ]]; then SetBool 'Modem,PTTInvert' "$value"
+		elif [[ "$key" == td* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[Modem,TXDelay]=$value
+			else
+				echo "'$value' is not a proper TX Delay"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == dd* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[Modem,DMRDelay]=$value
+			else
+				echo "'$value' is not a proper DMR Delay"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == to* ]]; then
+			if [[ "$value" =~ ^-?[1-9][0-9]*$ ]]; then
+				cfgfile[Modem,TXOffset]=$value
+			else
+				echo "'$value' is not a proper TX Offset"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ro* ]]; then
+			if [[ "$value" =~ ^-?[1-9][0-9]*$ ]]; then
+				cfgfile[Modem,RXOffset]=$value
+			else
+				echo "'$value' is not a proper RX Offset"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == tl* ]]; then
+			if [[ "$value" =~ ^(([0-9]|[1-9][0-9])(\.[0-9]*)?|100(\.0*)?)$ ]]; then
+				cfgfile[Modem,TXLevel]=$value
+			else
+				echo "'$value' is not a proper TX Level"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == rl* ]]; then
+			if [[ "$value" =~ ^(([0-9]|[1-9][0-9])(\.[0-9]*)?|100(\.0*)?)$ ]]; then
+				cfgfile[Modem,RXLevel]=$value
+			else
+				echo "'$value' is not a proper RX Level"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == rf* ]]; then
+			if [[ "$value" =~ ^(([0-9]|[1-9][0-9])(\.[0-9]*)?|100(\.0*)?)$ ]]; then
+				cfgfile[Modem,RFLevel]=$value
+			else
+				echo "'$value' is not a proper RF Level"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == tc* ]]; then
+			if [[ "$value" =~ ^-?(12[0-7]|10[0-9]|[1-9][0-9]?)$ ]]; then
+				cfgfile[Modem,TXDCOffset]=$value
+			else
+				echo "'$value' is not a proper TX DC Level"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == rc* ]]; then
+			if [[ "$value" =~ ^-?(12[0-7]|10[0-9]|[1-9][0-9]?)$ ]]; then
+				cfgfile[Modem,RXDCOffset]=$value
+			else
+				echo "'$value' is not a proper RX DC Level"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == rs* ]]; then
+			if [[ -n "$value" ]]; then
+				if [[ -e "$value" ]]; then
+					cfgfile[Modem,RSSIMappingFile]="$value"
+				else
+					echo "RSSI file '$value'does not exist!"
+					read -p "<Enter> to continue: " garbage
+				fi
+			else
+				cfgfile[Modem,RSSIMappingFile]=''
+			fi
+		elif [[ "$key" == co* ]]; then SetBool 'Modem,UseCOSAsLockout' "$value"
+		elif [[ "$key" == tr* ]]; then SetBool 'Modem,Trace' "$value"
+		elif [[ "$key" == db* ]]; then SetBool 'Modem,Debug' "$value"
+		elif [[ "$key" == u* ]]; then
+			if   [[ "$value" == po* ]]; then ResetValue 'Modem,Port'
+			elif [[ "$value" == pr* ]]; then ResetValue 'Modem,Protocol'
+			elif [[ "$value" == ad* ]]; then ResetValue 'Modem,Address'
+			elif [[ "$value" == ti* ]]; then ResetValue 'Modem,TXInvert'
+			elif [[ "$value" == ri* ]]; then ResetValue 'Modem,RXInvert'
+			elif [[ "$value" == pi* ]]; then ResetValue 'Modem,PTTInvert'
+			elif [[ "$value" == td* ]]; then ResetValue 'Modem,TXDelay'
+			elif [[ "$value" == dd* ]]; then ResetValue 'Modem,DMRDelay'
+			elif [[ "$value" == to* ]]; then ResetValue 'Modem,TXOffset'
+			elif [[ "$value" == ro* ]]; then ResetValue 'Modem,RXOffset'
+			elif [[ "$value" == tl* ]]; then ResetValue 'Modem,TXLevel'
+			elif [[ "$value" == rl* ]]; then ResetValue 'Modem,RXLevel'
+			elif [[ "$value" == rf* ]]; then ResetValue 'Modem,RFLevel'
+			elif [[ "$value" == tc* ]]; then ResetValue 'Modem,TXDCOffset'
+			elif [[ "$value" == rc* ]]; then ResetValue 'Modem,RXDCOffset'
+			elif [[ "$value" == rs* ]]; then ResetValue 'Modem,RSSIMappingFile'
+			elif [[ "$value" == co* ]]; then ResetValue 'Modem,UseCOSAsLockout'
+			elif [[ "$value" == tr* ]]; then ResetValue 'Modem,Trace'
+			elif [[ "$value" == db* ]]; then ResetValue 'Modem,Debug'
+			fi
+		fi
+	done
+}
+
+SelectDMRPlusServer() {
+	if [ ! -e DMR_Hosts.txt ]; then
+		wget https://pistar.uk/downloads/DMR_Hosts.txt
+	fi
+	if test `find DMR_Hosts.txt -mmin +1440`; then
+		wget https://pistar.uk/downloads/DMR_Hosts.txt
+	fi
+	DPServers=( `grep ^DMR+_IPSC2 DMR_Hosts.txt | awk '{print substr($1, 12)}'` )
+	i=0
+	limit=${#DPServers[@]}
+	clear
+	echo
+	echo "               DMR+ IPSC2 Servers"
+	while [ $i -lt $limit ]; do
+		m=$(( $i % 4 ))
+		if [ 0 -eq "$m" ]; then echo; fi
+		printf " %3d - %-15.15s" $i ${DPServers[$i]}
+		i=$(( $i + 1 ))
+	done
+	echo
+	read -p "Select Server # (or 'q' to quit without selecting a server): " n garbage
+	if [[ "$n" != q* ]]; then
+		if [ "$n" -ge 0 -a "$n" -lt "$limit" ]; then
+			dpar=( `grep ^DMR+_IPSC2-${DPServers[$n]} DMR_Hosts.txt` )
+			if [ "${#dpar[@]}" -eq 5 ]; then
+				cfgfile[DMR Network,Name]=${dpar[0]}
+				cfgfile[DMR Network,Address]=${dpar[2]}
+				cfgfile[DMR Network,Password]=${dpar[3]}
+				cfgfile[DMR Network,Port]=${dpar[4]}
+			else
+				echo "Cannot find 'DMR+IPSC2-${DPServers[$n]}' in DMR_Hosts.txt"
+				read -p "<Enter> to continue: " garbage
+			fi
+		else
+			echo "'$n' is not a valid response"
+			read -p "<Enter> to continue: " garbage
+		fi
+	fi
+}
+
+NetworkMenu() {
+	key=''
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo    "      DMR Network Configuration"
+		if [[ "${cfgfile[DMR Network,Type]}" == Direct ]]; then
+			echo "      Using a Direct connection to ${cfgfile[DMR Network,Name]}"
+			echo
+			echo    " NN : Select a different DMR+ IPSC2 Server"
+		else
+			echo "      Using DMRGateway"
+		fi
+		echo
+		echo    "      ######### DMR Configuration #########"
+		echo -n " be : Beacons Enabled            = "; EvalBool 'DMR,Beacons'
+		if [[ "${cfgfile[DMR,Beacons]}" == 1* ]]; then
+			echo -n " bi : Beacon Interval (min)      = "; EvalVar  'DMR,BeaconInterval'
+			echo -n " bd : Beacon Duration (sec)      = "; EvalVar  'DMR,BeaconDuration'
+		fi
+		echo -n " cc : Color Code (0-15)          = "; EvalVar  'DMR,ColorCode'
+		echo -n " so : Self Only                  = "; EvalBool 'DMR,SelfOnly'
+		echo -n " lc : Embedded LC Only           = "; EvalBool 'DMR,EmbeddedLCOnly'
+		echo -n " ta : Dump TA Data               = "; EvalBool 'DMR,DumpTAData'
+		echo -n " ch : Call Hang (sec)            = "; EvalVar  'DMR,CallHang'
+		echo -n " th : TX Hang (sec)              = "; EvalVar  'DMR,TXHang'
+		echo
+		echo    "      #########    DMR Network    #########"
+		echo -n " ty : Type (Direct or Gateway)   = "; EvalVar  'DMR Network,Type'
+		echo -n " ip : IP Address                 = "; EvalVar  'DMR Network,Address'
+		echo -n " pw : Password                   = "; EvalVar  'DMR Network,Password'
+		echo -n " po : Port                       = "; EvalVar  'DMR Network,Port'
+		if [[ "${cfgfile[DMR Network,Type]}" == Gateway ]]; then
+			echo -n " lo : Local Port                 = "; EvalVar  'DMR Network,Local'
+		else
+			echo -n " op : Connection Options         = "; EvalVar  'DMR Network,Options'
+		fi
+		echo -n " s1 : Slot 1                     = "; EvalBool 'DMR Network,Slot1'
+		echo -n " s2 : Slot 2                     = "; EvalBool 'DMR Network,Slot2'
+		echo -n " ji : Jitter                     = "; EvalVar  'DMR Network,Jitter'
+		echo -n " db : Debug                      = "; EvalBool 'DMR Network,Debug'
+		EndMenu
+		if   [[ "$key" == NN* ]]; then SelectDMRPlusServer
+		elif [[ "$key" == be* ]]; then SetBool 'DMR,Beacons'        "$value"
+		elif [[ "$key" == so* ]]; then SetBool 'DMR,SelfOnly'       "$value"
+		elif [[ "$key" == lc* ]]; then SetBool 'DMR,EmbeddedLCOnly' "$value"
+		elif [[ "$key" == ta* ]]; then SetBool 'DMR,DumpTAData'     "$value"
+		elif [[ "$key" == bi* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[DMR,BeaconInterval]=$value
+			else
+				echo "'$value' is not a valid Beacon Interval"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == bd* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[DMR,BeaconDuration]=$value
+			else
+				echo "'$value' is not a valid Beacon Duration"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == cc* ]]; then
+			if [[ "$value" =~ ^[0-9]|1[0-5]$ ]]; then
+				cfgfile[DMR,ColorCode]=$value
+			else
+				echo "'$value' is not a valid Color Code"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ch* ]]; then
+			if [[ "$value" =~ ^([0-9]|[1-3][0-9])$ ]]; then
+				cfgfile[DMR,CallHang]=$value
+			else
+				echo "'$value' is not a valid Call Hang"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == th* ]]; then
+			if [[ "$value" =~ ^([0-9]|[1-3][0-9])$ ]]; then
+				cfgfile[DMR,TXHang]=$value
+			else
+				echo "'$value' is not a valid TX Hang"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ty* ]]; then
+			if [[ "$value" =~ ^(Direct|Gateway)$ ]]; then
+				if [[ "$value" != "${cfgfile[DMR Network,Type]}" ]]; then
+					if [[ "$value" == Direct ]]; then
+						cfgfile[DMR Network,Name]='DMR+IPSC2-QUADNET'
+						cfgfile[DMR Network,Address]='dmr.openquad.net'
+						cfgfile[DMR Network,Password]=PASSWORD
+						cfgfile[DMR Network,Port]=55555
+						cfgfile[DMR Network,Local]=''
+						cfgfile[DMR Network,Options]='StartRef=4000;RefLinkTime=60;UserLink=1;TS1_1=9;TS1_2=320;TS1_3=321;TS1_4=0;'
+					else
+						cfgfile[DMR Network,Name]='DMRGateway'
+						cfgfile[DMR Network,Address]='127.0.0.1'
+						cfgfile[DMR Network,Password]=''
+						cfgfile[DMR Network,Port]=62031
+						cfgfile[DMR Network,Local]=62032
+						cfgfile[DMR Network,Options]=''
+					fi
+				fi
+				cfgfile[DMR Network,Type]=$value
+			else
+				echo "'$value' is not a valid Type"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ad* ]]; then
+			if [[ "$value" =~ ^[0-9a-zA-z]\.[0-9a-zA-Z]+$ ]]; then
+				cfgfile[DMR Network,Address]=$value
+			else
+				echo "'$value' is not a valid IP Address"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == pw* ]]; then
+			if [[ "$value" =~ ^[0-9a-zA-z!\.]*$ ]]; then
+				cfgfile[DMR Network,Address]=$value
+			else
+				echo "'$value' is not a valid Password"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == po* ]]; then
+			if [[ "$value" =~ ^[1-6][0-9][0-9][0-9][0-9]$ ]]; then
+				cfgfile[DMR Network,Port]=$value
+			else
+				echo "'$value' is not a valid Port"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == lo* ]]; then
+			if [[ "$value" =~ ^[1-6][0-9][0-9][0-9][0-9]$ ]]; then
+				cfgfile[DMR Network,Local]=$value
+			else
+				echo "'$value' is not a valid Local Port"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == op* ]]; then
+			if [[ "$value" =~ ^[0-9a-zA-Z\;=_]+$ ]]; then
+				cfgfile[DMR Network,Options]=$value
+			else
+				echo "'$value' are not a valid Options"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == s1* ]]; then SetBool 'DMR Network,Slot1' "$value"
+		elif [[ "$key" == s2* ]]; then SetBool 'DMR Network,Slot2' "$value"
+		elif [[ "$key" == ji* ]]; then
+			if [[ "$value" =~ ^[0-9]+$ ]]; then
+				cfgfile[DMR Network,Jitter]=$value
+			else
+				echo "'$value' is not a valid Jitter"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == db* ]]; then SetBool 'DMR Network,Debug' "$value"
+		elif [[ "$key" == u*  ]]; then
+			if   [[ "$value" == be* ]]; then ResetValue 'DMR,Beacons'
+			elif [[ "$value" == bi* ]]; then ResetValue 'DMR,BeaconInterval'
+			elif [[ "$value" == bd* ]]; then ResetValue 'DMR,BeaconDuration'
+			elif [[ "$value" == cc* ]]; then ResetValue 'DMR,ColorCode'
+			elif [[ "$value" == so* ]]; then ResetValue 'DMR,SelfOnly'
+			elif [[ "$value" == lc* ]]; then ResetValue 'DMR,EmbeddedLCOnly'
+			elif [[ "$value" == ta* ]]; then ResetValue 'DMR,DumpTAData'
+			elif [[ "$value" == ch* ]]; then ResetValue 'DMR,CallHang'
+			elif [[ "$value" == th* ]]; then ResetValue 'DMR,TXHang'
+			elif [[ "$value" == ty* ]]; then ResetValue 'DMR Network,Type'
+			elif [[ "$value" == cc* ]]; then ResetValue 'DMR Network,ColorCode'
+			elif [[ "$value" == ad* ]]; then ResetValue 'DMR Network,Address'
+			elif [[ "$value" == pw* ]]; then ResetValue 'DMR Network,Password'
+			elif [[ "$value" == po* ]]; then ResetValue 'DMR Network,Port'
+			elif [[ "$value" == lo* ]]; then ResetValue 'DMR Network,Local'
+			elif [[ "$value" == op* ]]; then ResetValue 'DMR Network,Options'
+			elif [[ "$value" == s1* ]]; then ResetValue 'DMR Network,Slot1'
+			elif [[ "$value" == s2* ]]; then ResetValue 'DMR Network,Slot2'
+			elif [[ "$value" == ji* ]]; then ResetValue 'DMR Network,Jitter'
+			elif [[ "$value" == db* ]]; then ResetValue 'DMR Network,Debug'
+			fi
+		fi
+	done
+}
+
+MiscMenu() {
+	key=''
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo    "      Miscellanous Menu"
+		echo
+		echo -n " ll : Log Level (0-6)                              = "; EvalVar  'Log,LogLevel'
+		echo -n " ce : CW ID Enable                                 = "; EvalBool 'CW Id,Enable'
+		if [[ "${cfgfile[CW Id,Enable]}" == 1* ]]; then
+			echo -n " ct : CW ID Time (sec)                             = "; EvalVar  'CW Id,Time'
+			echo -n " cc : CW ID Callsign (blank uses General,Callsign) = "; EvalVar  'CW Id,Callsign'
+		fi
+		echo -n " lf : DMR ID Lookup Pathname                       = "; EvalVar  'DMR Id Lookup,File'
+		echo -n " lt : DMR ID Lookup Reread Time (hrs)              = "; EvalVar  'DMR Id Lookup,Time'
+		echo    "      Dashboard Sections:"
+		echo    "          PS - Processes"
+		echo    "          LH - Last Heard"
+		echo    "          SY - System"
+		echo    "          IP - Int. and Ext. IP Address"
+		echo -n " do : Dashboard Show Order                         = "; EvalVar  'Dashboard,ShowOrder'
+		echo -n " dr : Dashboard Refresh Time (sec)                 = "; EvalVar  'Dashboard,Refresh'
+		echo -n " dl : Dashboard Last Heard Length                  = "; EvalVar  'Dashboard,LastHeardLength'
+		EndMenu
+		if   [[ "$key" == ll* ]]; then
+			if [[ "$value" =~ ^[0123456]$ ]]; then
+				cfgfile[Log,LogLevel]=$value
+			else
+				echo "'$value' is not a valid Log Level"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == ce* ]]; then SetBool 'CW Id,Enable' "$value"
+		elif [[ "$key" == ct* ]]; then
+			if [[ "$value" =~ ^(0|([1-9][0-9]*))$ ]]; then
+				cfgfile[CW Id,Time]=$value
+			else
+				echo "'$value' is not a valid CW Id Time"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == cc* ]]; then
+			if [[ "${value^^}" =~ ^[0-9]?[A-Z]{1,2}[0-9]{1,2}[A-Z]{1,4}$ ]]; then
+				cfgfile[CW Id,Callsign]="${value^^}"
+			else
+				echo "'$value' is not a valid CW Id Callsign"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == lf* ]]; then
+			if [[ "$value" =~ ^~?[-_%\./0-9a-zA-Z]+ ]]; then
+				cfgfile[DMR Id Lookup,File]=$value
+			else
+				echo "'$value' is not a valid DMR Id Lookup File"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == lt* ]]; then
+			if [[ "$value" =~ ^[1-9][0-9]*$ ]]; then
+				cfgfile[DMR Id Lookup,Time]=$value
+			else
+				echo "'$value' is not a valid DMR Id Lookup Time"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == do* ]]; then
+			if [[ "${value^^}" =~ ^(PS|LH|SY|IP)(,(PS|LH|SY|IP))*$ ]]; then
+				cfgfile[Dashboard,ShowOrder]="${value^^}"
+			else
+				echo "'$value' is not a valid Dashboard Show Order"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == dr* ]]; then
+			if [[ "${value^^}" =~ ^([5-9]|[1-5][0-9])$ ]]; then
+				cfgfile[Dashboard,Refresh]=$value
+			else
+				echo "'$value' is not a valid Dashboard Refresh"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == dl* ]]; then
+			if [[ "${value^^}" =~ ^[1-9][0-9]?$ ]]; then
+				cfgfile[Dashboard,LastHeardLength]=$value
+			else
+				echo "'$value' is not a valid Dashboard Last Heard Length"
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$key" == u*  ]]; then
+			if   [[ "$value" == ll* ]]; then ResetValue 'Log,LogLevel'
+			elif [[ "$value" == ce* ]]; then ResetValue 'CW Id,Enable'
+			elif [[ "$value" == ct* ]]; then ResetValue 'CW Id,Time'
+			elif [[ "$value" == cc* ]]; then ResetValue 'CW Id,Callsign'
+			elif [[ "$value" == lf* ]]; then ResetValue 'DMR Id Lookup,File'
+			elif [[ "$value" == lt* ]]; then ResetValue 'DMR Id Lookup,Time'
+			elif [[ "$value" == do* ]]; then ResetValue 'Dashboard,ShowOrder'
+			elif [[ "$value" == dr* ]]; then ResetValue 'Dashboard,Refresh'
+			elif [[ "$value" == dl* ]]; then ResetValue 'Dashboard,LastHeardLength'
+			fi
+		fi
+	done
+}
+
+ReadFile inifile dmr.ini
+
+if [ ! -e dmr.cfg ]; then
+	echo "Copying dmr.ini to dmr.cfg..."
+	cp dmr.ini dmr.cfg
+	sleep 2
+fi
+
+ReadFile cfgfile dmr.cfg
+
+while [[ "$ans" != q* ]]
+do
+	clear
+	echo
+	echo "                 DOH Configure V#210305"
+	echo
+	echo "                 Callsign ${cfgfile[General,Callsign]}"
+	echo "                   DMR ID ${cfgfile[General,Id]}"
+	echo " g  : General"
+	echo " s  : Station"
+	echo " mo : Modem"
+	echo " n  : DMR Network: ${cfgfile[DMR Network,Name]}"
+	echo " mi : Miscellaneous"
+	echo
+	echo " w : Write dmr.cfg file (overwrites exsisting file)"
+	echo " q : Quit"
+	echo
+	read -p " ? " ans
+	if   [[ "$ans" == g*  ]]; then GeneralMenu
+	elif [[ "$ans" == s*  ]]; then StationMenu
+	elif [[ "$ans" == mo* ]]; then ModemMenu
+	elif [[ "$ans" == n*  ]]; then NetworkMenu
+	elif [[ "$ans" == mi* ]]; then MiscMenu
+	fi
+done
