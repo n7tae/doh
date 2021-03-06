@@ -229,6 +229,9 @@ ModemMenu() {
 		clear
 		echo
 		echo "    Modem Parameters"
+		if [ ! -e "${cfgfile[Modem,Port]}" ]; then
+			echo "    WARNING: Modem @ '${cfgfile[Modem,Port]}' not found. Is it unplugged?"
+		fi
 		echo
 		echo -n " po : Port Device               = "; EvalVar 'Modem,Port'
 		echo -n " pr : Protocol (i2c or uart)    = "; EvalVar 'Modem,Protocol'
@@ -255,10 +258,6 @@ ModemMenu() {
 		if   [[ "$key" == po* ]]; then
 			if [[ "$value" =~ ^/dev/[0-9a-zA-Z]+$ ]]; then
 				cfgfile[Modem,Port]=$value
-				if [ ! -e "$value" ]; then
-					echo "WARNING: Device '$value' not found. Is it unplugged?"
-					read -p "<Enter> to continue: "
-				fi
 			else
 				echo "'$value' is not a proper device path"
 				read -p "<Enter> to continue: " garbage
@@ -779,9 +778,7 @@ EOF
 ReadFile inifile dmr.ini
 
 if [ ! -e dmr.cfg ]; then
-	echo "Copying dmr.ini to dmr.cfg..."
 	cp dmr.ini dmr.cfg
-	sleep 2
 fi
 
 ReadFile cfgfile dmr.cfg
@@ -799,6 +796,11 @@ do
 	echo    "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
 	echo    "     Duplex  ${dup[0]}"
 	echo    "     Network ${cfgfile[DMR Network,Name]}"
+	if [ -e ${cfgfile[Modem,Port]} ]; then
+		echo "     Modem @ ${cfgfile[Modem,Port]}"
+	else
+		echo "     WARNING: Modem at '${cfgfile[Modem,Port]}' not found. Is it unplugged?"
+	fi
 	echo
 	echo    " g : General"
 	echo    " s : Station"
