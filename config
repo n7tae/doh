@@ -255,6 +255,10 @@ ModemMenu() {
 		if   [[ "$key" == po* ]]; then
 			if [[ "$value" =~ ^/dev/[0-9a-zA-Z]+$ ]]; then
 				cfgfile[Modem,Port]=$value
+				if [ ! -e "$value" ]; then
+					echo "WARNING: Device '$value' not found. Is it unplugged?"
+					read -p "<Enter> to continue: "
+				fi
 			else
 				echo "'$value' is not a proper device path"
 				read -p "<Enter> to continue: " garbage
@@ -508,7 +512,7 @@ NetworkMenu() {
 						cfgfile[DMR Network,Address]='dmr.openquad.net'
 						cfgfile[DMR Network,Password]=PASSWORD
 						cfgfile[DMR Network,Port]=55555
-						cfgfile[DMR Network,Local]=''
+						cfgfile[DMR Network,Local]=0
 						cfgfile[DMR Network,Options]='StartRef=4000;RefLinkTime=60;UserLink=1;TS1_1=9;TS1_2=320;TS1_3=321;TS1_4=0;'
 					else
 						cfgfile[DMR Network,Name]='DMRGateway'
@@ -691,6 +695,87 @@ MiscMenu() {
 	done
 }
 
+WriteCFGFile() {
+local file
+cat << EOF > dmr.cfg
+# Created on `date`
+[General]
+Callsign=${cfgfile[General,Callsign]}
+Id=${cfgfile[General,Id]}
+Timeout=${cfgfile[General,Timeout]}
+Duplex=${cfgfile[General,Duplex]}
+
+[Info]
+RXFrequency=${cfgfile[Info,RXFrequency]}
+TXFrequency=${cfgfile[Info,TXFrequency]}
+Power=${cfgfile[Info,Power]}
+Latitude=${cfgfile[Info,Latitude]}
+Longitude=${cfgfile[Info,Longitude]}
+Height=${cfgfile[Info,Height]}
+Location=${cfgfile[Info,Location]}
+Description=${cfgfile[Info,Description]}
+URL=${cfgfile[Info,URL]}
+
+
+[Log]
+LogLevel=${cfgfile[Log,LogLevel]}
+
+[DMR Id Lookup]
+File=${cfgfile[DMR Id Lookup,File]}
+Time=${cfgfile[DMR Id Lookup,Time]}
+
+[Modem]
+Port=${cfgfile[Modem,Port]}
+Protocol=${cfgfile[Modem,Protocol]}
+Address=${cfgfile[Modem,Address]}
+TXInvert=${cfgfile[Modem,TXInvert]}
+RXInvert=${cfgfile[Modem,RXInvert]}
+PTTInvert=${cfgfile[Modem,PTTInvert]}
+TXDelay=${cfgfile[Modem,TXDelay]}
+DMRDelay=${cfgfile[Modem,DMRDelay]}
+TXOffset=${cfgfile[Modem,TXOffset]}
+RXOffset=${cfgfile[Modem,RXOffset]}
+TXLevel=${cfgfile[Modem,TXLevel]}
+RXLevel=${cfgfile[Modem,RXLevel]}
+RFLevel=${cfgfile[Modem,RFLevel]}
+CWIdTXLevel=${cfgfile[Modem,CWIdTXLevel]}
+TXDCOffset=${cfgfile[Modem,TXDCOffset]}
+RXDCOffset=${cfgfile[Modem,RXDCOffset]}
+UseCOSAsLockout=${cfgfile[Modem,UseCOSAsLockout]}
+Trace=${cfgfile[Modem,Trace]}
+Debug=${cfgfile[Modem,Debug]}
+
+[DMR]
+Beacons=${cfgfile[DMR,Beacons]}
+BeaconInterval=${cfgfile[DMR,BeaconInterval]}
+BeaconDuration=${cfgfile[DMR,BeaconDuration]}
+ColorCode=${cfgfile[DMR,ColorCode]}
+SelfOnly=${cfgfile[DMR,SelfOnly]}
+EmbeddedLCOnly=${cfgfile[DMR,EmbeddedLCOnly]}
+DumpTAData=${cfgfile[DMR,DumpTAData]}
+CallHang=${cfgfile[DMR,CallHang]}
+TXHang=${cfgfile[DMR,TXHang]}
+
+[DMR Network]
+Type=${cfgfile[DMR Network,Type]}
+Name=${cfgfile[DMR Network,Name]}
+Address=${cfgfile[DMR Network,Address]}
+Password=${cfgfile[DMR Network,Password]}
+Port=${cfgfile[DMR Network,Port]}
+Jitter=${cfgfile[DMR Network,Jitter]}
+Options=${cfgfile[DMR Network,Options]}
+Local=${cfgfile[DMR Network,Local]}
+Slot1=${cfgfile[DMR Network,Slot1]}
+Slot2=${cfgfile[DMR Network,Slot2]}
+Debug=${cfgfile[DMR Network,Debug]}
+
+[Dashboard]
+Refresh=${cfgfile[Dashboard,Refresh]}
+ShowOrder=${cfgfile[Dashboard,ShowOrder]}
+LastHeardLength=${cfgfile[Dashboard,LastHeardLength]}
+EOF
+}
+
 ReadFile inifile dmr.ini
 
 if [ ! -e dmr.cfg ]; then
@@ -703,26 +788,33 @@ ReadFile cfgfile dmr.cfg
 
 while [[ "$ans" != q* ]]
 do
+	txfreq=$( awk "BEGIN{print ${cfgfile[Info,TXFrequency]}/1000000}" )
+	rxfreq=$( awk "BEGIN{print ${cfgfile[Info,RXFrequency]}/1000000}" )
+	dup=( `EvalBool 'General,Duplex'` )
 	clear
 	echo
-	echo "                 DOH Configure V#210305"
+	echo    "     DOH Configure V#210306"
 	echo
-	echo "                 Callsign ${cfgfile[General,Callsign]}"
-	echo "                   DMR ID ${cfgfile[General,Id]}"
-	echo " g  : General"
-	echo " s  : Station"
-	echo " mo : Modem"
-	echo " n  : DMR Network: ${cfgfile[DMR Network,Name]}"
-	echo " mi : Miscellaneous"
+	echo    "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
+	echo    "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
+	echo    "     Duplex  ${dup[0]}"
+	echo    "     Network ${cfgfile[DMR Network,Name]}"
 	echo
-	echo " w : Write dmr.cfg file (overwrites exsisting file)"
-	echo " q : Quit"
+	echo    " g : General"
+	echo    " s : Station"
+	echo    " m : Modem"
+	echo    " n : DMR Network"
+	echo    " o : Other - DMR ID File, CW ID, Dashboard"
+	echo
+	echo    " w : Write dmr.cfg file (overwrites exsisting file)"
+	echo    " q : Quit"
 	echo
 	read -p " ? " ans
-	if   [[ "$ans" == g*  ]]; then GeneralMenu
-	elif [[ "$ans" == s*  ]]; then StationMenu
-	elif [[ "$ans" == mo* ]]; then ModemMenu
-	elif [[ "$ans" == n*  ]]; then NetworkMenu
-	elif [[ "$ans" == mi* ]]; then MiscMenu
+	if   [[ "$ans" == g* ]]; then GeneralMenu
+	elif [[ "$ans" == s* ]]; then StationMenu
+	elif [[ "$ans" == m* ]]; then ModemMenu
+	elif [[ "$ans" == n* ]]; then NetworkMenu
+	elif [[ "$ans" == o* ]]; then MiscMenu
+	elif [[ "$ans" == w* ]]; then WriteCFGFile
 	fi
 done
