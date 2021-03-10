@@ -809,7 +809,7 @@ do
 	echo    " o : Other - DMR ID File, CW ID, Dashboard"
 	echo
 	echo    " w : Write dmr.cfg file (overwrites exsisting file) and quit."
-	echo    " q : Quit quit without saving."
+	echo    " q : Quit without saving."
 	echo
 	read -p " ? " ans
 	if   [[ "$ans" == g* ]]; then GeneralMenu
