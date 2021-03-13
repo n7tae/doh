@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2017,2018,2020,2021 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ public:
 	virtual void close();
 
 private:
+	std::string      m_address;
+	unsigned int     m_port;
 	sockaddr_storage m_addr;
 	unsigned int     m_addrLen;
 	uint8_t*         m_id;
@@ -71,8 +73,7 @@ private:
 	bool             m_slot2;
 	HW_TYPE          m_hwType;
 
-	enum STATUS
-	{
+	enum STATUS {
 		WAITING_CONNECT,
 		WAITING_LOGIN,
 		WAITING_AUTHORISATION,
