@@ -431,7 +431,7 @@ SelectDMRServer() {
 				cfgfile[DMR Network,Password]=${dpar[3]}
 				cfgfile[DMR Network,Port]=${dpar[4]}
 				if [[ "$1" == DMR+_IPSC2* ]]; then
-					cfgfile[DMR Network,Options]='StartRef=4000;RefLinkTime=60;UserLink=1;'
+					cfgfile[DMR Network,Options]='StartRef=4000;RelinkTime=60;UserLink=1;'
 				else
 					cfgfile[DMR Network,Options]=''
 				fi
@@ -547,7 +547,7 @@ NetworkMenu() {
 						cfgfile[DMR Network,Password]=PASSWORD
 						cfgfile[DMR Network,Port]=55555
 						cfgfile[DMR Network,Local]=0
-						cfgfile[DMR Network,Options]='StartRef=4000;RefLinkTime=60;UserLink=1;TS1_1=9;TS1_2=320;TS1_3=321;TS1_4=0;'
+						cfgfile[DMR Network,Options]='StartRef=4000;RelinkTime=60;UserLink=1;TS1_1=9;TS1_2=320;TS1_3=321;TS1_4=0;'
 					else
 						cfgfile[DMR Network,Name]='DMRGateway'
 						cfgfile[DMR Network,Address]='127.0.0.1'
