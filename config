@@ -484,7 +484,6 @@ SelectDMRPlusReflector() {
 	wget -q -N http://ipsc2-lists.xreflector.net/Database/dmr/reflector_names.db
 	/bin/rm -f reflector_names.db.*
 
-	read -p "<enter> to continue: " garbage
 	while IFS=';' read -r tg name language garbage; do
 		if [[ -z "$language" ]]; then language=unspecified; fi
 		if [[ -z "${lang[$language]}" ]]; then lang[$language]=0; fi
@@ -684,16 +683,6 @@ NetworkMenu() {
 		if [[ "${cfgfile[DMR Network,Type]}" == Gateway ]]; then
 			echo -n " lo : Local Port                 = "; EvalVar  'DMR Network,Local'
 		fi
-		if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2-* ]]; then
-			echo    "      ######### DMR+ Options #########"
-			echo    "      Start reflector      = $StartRef"
-			echo    "      Relink time (min)    = $RelinkTime"
-			echo -n "      User can relink      = "
-			if [[ "$UserLink" == 1 ]]; then echo true; else echo false; fi
-			echo -n "      Slot 1 static groups ="; EchoStatic one
-			echo -n "      Slot 2 static groups ="; EchoStatic two
-			echo    " op : Change Options"
-		fi
 		echo -n " ji : Jitter                     = "; EvalVar  'DMR Network,Jitter'
 		echo -n " db : Debug                      = "; EvalBool 'DMR Network,Debug'
 		EndMenu
@@ -756,7 +745,7 @@ NetworkMenu() {
 				cfgfile[DMR Network,Password]=PASSWORD
 				cfgfile[DMR Network,Port]=55555
 				cfgfile[DMR Network,Local]=0
-				StartRef=4541
+				StartRef=4000
 				RelinkTime=15
 				UserLink=1
 				TS1_1=0;TS1_2=0;TS1_3=0;TS1_4=0;TS1_5=0;TS1_6=0;TS1_7=0;TS1_8=0;TS1_9=0
@@ -790,8 +779,6 @@ NetworkMenu() {
 				echo "'$value' is not a valid Local Port"
 				read -p "<Enter> to continue: " garbage
 			fi
-		elif [[ "$key" == op* ]]; then
-			SetDMRPlusOptions
 		elif [[ "$key" == s1* ]]; then SetBool 'DMR Network,Slot1' "$value"
 		elif [[ "$key" == s2* ]]; then SetBool 'DMR Network,Slot2' "$value"
 		elif [[ "$key" == ji* ]]; then
@@ -818,7 +805,6 @@ NetworkMenu() {
 			elif [[ "$value" == pw* ]]; then ResetValue 'DMR Network,Password'
 			elif [[ "$value" == po* ]]; then ResetValue 'DMR Network,Port'
 			elif [[ "$value" == lo* ]]; then ResetValue 'DMR Network,Local'
-			elif [[ "$value" == op* ]]; then ResetValue 'DMR Network,Options'
 			elif [[ "$value" == s1* ]]; then ResetValue 'DMR Network,Slot1'
 			elif [[ "$value" == s2* ]]; then ResetValue 'DMR Network,Slot2'
 			elif [[ "$value" == ji* ]]; then ResetValue 'DMR Network,Jitter'
@@ -1029,33 +1015,49 @@ do
 	dup=( `EvalBool 'General,Duplex'` )
 	clear
 	echo
-	echo    "     DOH Configure V#210318"
+	echo "     DOH Configure V#210319"
 	echo
-	echo    "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
-	echo    "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
-	echo    "     Duplex  ${dup[0]}"
-	echo    "     Network ${cfgfile[DMR Network,Name]}"
+	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
+	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
+	echo "     Duplex  ${dup[0]}"
+	echo "     Network ${cfgfile[DMR Network,Name]}"
 	if [ -e ${cfgfile[Modem,Port]} ]; then
 		echo "     Modem @ ${cfgfile[Modem,Port]}"
 	else
 		echo "     WARNING: Modem at '${cfgfile[Modem,Port]}' not found. Is it unplugged?"
 	fi
+	if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
+		echo
+		echo "     DMR+ Options:"
+		echo "         Start Reflector:      $StartRef"
+		echo "         Relink Time (min):    $RelinkTime"
+		echo -n "         User can Relink:      "
+		if (( 1 == UserLink )); then echo true; else echo false; fi
+		if (( 4000 == StartRef )); then
+			echo -n "         Slot 1 Static groups: "; EchoStatic one
+			echo -n "         Slot 2 Static groups: "; EchoStatic two
+		fi
+	fi
 	echo
-	echo    " g : General"
-	echo    " s : Station"
-	echo    " m : Modem"
-	echo    " n : DMR Network"
-	echo    " o : Other - DMR ID File, CW ID, Dashboard"
+	echo " g : General"
+	echo " s : Station"
+	echo " m : Modem"
+	echo " n : DMR Network"
+	if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
+		echo " + : Configure DMR+ Options"
+	fi
+	echo " o : Other - DMR ID File, CW ID, Dashboard"
 	echo
-	echo    " w : Write dmr.cfg file (overwrites exsisting file) and quit."
-	echo    " q : Quit without saving."
+	echo " w : Write dmr.cfg file (overwrites exsisting file) and quit."
+	echo " q : Quit without saving."
 	echo
-	read -p " ? " ans
+	read -p "Command: " ans
 	if   [[ "$ans" == g* ]]; then GeneralMenu
 	elif [[ "$ans" == s* ]]; then StationMenu
 	elif [[ "$ans" == m* ]]; then ModemMenu
 	elif [[ "$ans" == n* ]]; then NetworkMenu
 	elif [[ "$ans" == o* ]]; then MiscMenu
+	elif [[ "$ans" == +* ]]; then SetDMRPlusOptions
 	elif [[ "$ans" == w* ]]; then WriteCFGFile
 	fi
 done
