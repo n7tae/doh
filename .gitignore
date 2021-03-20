@@ -26,10 +26,11 @@
 *.a
 *.lib
 
-# Config file
+# Config files
 dmr.cfg
 DMRIds.dat
 DMR_Hosts.txt
+reflector_names.db
 
 # Executables
 doh
