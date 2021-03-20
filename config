@@ -1043,8 +1043,8 @@ do
 		echo -n "         User can Relink:      "
 		if (( 1 == UserLink )); then echo true; else echo false; fi
 		if (( 4000 == StartRef )); then
-			echo -n "         Slot 1 Static groups: "; EchoStatic one
-			echo -n "         Slot 2 Static groups: "; EchoStatic two
+			echo -n "         Slot 1 Static groups:"; EchoStatic one
+			echo -n "         Slot 2 Static groups:"; EchoStatic two
 		fi
 	fi
 	echo
