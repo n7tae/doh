@@ -75,13 +75,14 @@ then
 fi
 
 # Create backup of old file
-if [ ${DMRFILEBACKUP} -ne 0 ]
-then
-	cp ${DMRIDFILE} ${DMRIDFILE}.$(date +%d%m%y)
+if [ -e ${DMRIDFILE} ]; then
+	if ((${DMRFILEBACKUP} != 0)); then
+		/bin/cp -f ${DMRIDFILE} ${DMRIDFILE}.$(date +%d%m%y)
+	fi
 fi
 
 # Prune backups
-BACKUPCOUNT=$(ls ${DMRIDFILE}.* | wc -l)
+BACKUPCOUNT=$(find ${DMRIDPATH} -name 'DMRIDs.dat.*' -print | wc -l)
 BACKUPSTODELETE=$(expr ${BACKUPCOUNT} - ${DMRFILEBACKUP})
 
 if [ ${BACKUPCOUNT} -gt ${DMRFILEBACKUP} ]
@@ -95,7 +96,7 @@ fi
 # Generate new file
 curl ${DATABASEURL} 2>/dev/null | sed -e 's/\t//g' | awk -F"," '/,/{gsub(/ /, "", $2); printf "%s\t%s\t%s\n", $1, $2, $3}' | sed -e 's/\(.\) .*/\1/g' > ${DMRIDPATH}/DMRIds.tmp
 NUMOFLINES=$(wc -l ${DMRIDPATH}/DMRIds.tmp | awk '{print $1}')
-if [ $NUMOFLINES -gt 1 ]
+if (( $NUMOFLINES > 1 ))
 then
    mv ${DMRIDPATH}/DMRIds.tmp ${DMRIDFILE}
 else

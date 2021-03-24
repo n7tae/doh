@@ -1,0 +1,301 @@
+#!/bin/bash
+#
+# Copyright (c) 2021 by Thomas A. Early N7TAE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+declare -A cfgfile
+
+SetStartRef() {
+	local garbage
+	IFS=';' read -r StartRef StartRefName garbage < <(grep ^$1 reflector_names.db)
+	unset IFS
+}
+
+ReadFile() {
+	local -n ar=$1
+	while read line; do
+		local key length section value name
+		if [[ "${line:0:1}" == '#' ]]; then
+			continue
+		fi
+		if [[ "${line:0:1}" == '[' ]]; then
+			length=${#line}
+			section=${line:1:${length}-2}
+		else
+			key=${line%%=*}
+			value=${line#*=}
+			name=${section},${key}
+			ar[${name}]="$value"
+		fi
+	done < $2
+}
+
+EvalBool() {
+	if [[ "${cfgfile[$1]}" == 0* ]]; then
+		echo false
+	else
+		echo true
+	fi
+}
+
+SetBool() {
+	if [ -z "$value" ]; then
+		if [[ ${cfgfile[$1]} == 0* ]]; then
+			cfgfile[$1]=1
+		else
+			cfgfile[$1]=0
+		fi
+	else
+		if [[ "$value" == [fF0]* ]]; then
+			cfgfile[$1]=0
+		else
+			cfgfile[$1]=1
+		fi
+	fi
+}
+
+Header () {
+	local count
+	count=$( ps -aux | grep -e doh -e DMRGateway -e qndash | grep -v grep | wc -l )
+	if ((${count} > 0)); then
+		echo
+		echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
+		ps -aux | grep -e doh -e DMRGateway -e qndash | grep -v grep
+	fi
+	echo
+}
+
+EndMenu () {
+	echo
+	echo    " u  <key> to unset the value of key (revert to the default value)."
+	echo    " q  to return to the main menu"
+	echo
+	read -p " Please input: <key> <new_value> # omit value to toggle a true/false : " key value
+}
+
+ZeroStatic() {
+	local i vn1 vn2
+	for i in {1..9}; do
+		vn1=TS1_$i
+		vn2=TS2_$i
+		eval $vn1=0
+		eval $vn2=0
+	done
+}
+
+EchoStatic() {
+	local i=-1
+	local -a static
+	if [[ "$1" == one ]]; then
+		if (( TS1_1 > 0 )); then
+			static=( $TS1_1 $TS1_2 $TS1_3 $TS1_4 $TS1_5 $TS1_6 $TS1_7 $TS1_8 $TS1_9 0 )
+			while (( static[++i] > 0 )); do
+				echo -n " ${static[$i]}"
+			done
+		else
+			echo -n " <EMPTY>"
+		fi
+	elif [[ "$1" == two ]]; then
+		if (( TS2_1 > 0 )); then
+			static=( $TS2_1 $TS2_2 $TS2_3 $TS2_4 $TS2_5 $TS2_6 $TS2_7 $TS2_8 $TS2_9 0 )
+			while (( static[++i] > 0 )); do
+				echo -n " ${static[$i]}"
+			done
+		else
+			echo -n " <EMPTY>"
+		fi
+	fi
+	echo
+}
+
+CodeMenu() {
+	local n=$(getconf _NPROCESSORS_ONLN)
+	local garbage
+	ans=X
+	while [[ "$ans" != q* ]]; do
+		clear
+		echo
+		echo    "     Code Menu"
+		echo -n "     Current branch: ": git branch --show-current
+		echo    "     Detected $n processors for make"
+		echo
+		echo    " l : List available branches"
+		echo    " s : Switch to a different branch"
+		echo    " p : Git pull - pull any changes from the repo"
+		echo    " c : Compile"
+		if [[ "${cfgfile[DMR Network,Type]}" == Gateway && -d ../DMRGateway ]]; then
+			echo " d : git pull and compile ../DMRGateway"
+		fi
+		echo
+		echo    " q : Quit"
+		read -p "     Input command and optional argument: " ans value
+
+		if   [[ "$ans" == l* ]]; then
+			echo "Available branches:"
+			git branch --List
+			read -p "<Enter> to continue: " garbage
+		elif [[ "$ans" == s* ]]; then
+			if [[ -n "$value" ]]; then
+				if (( `git branch --list | grep "$value" | wc -l` == 1 )); tjen
+					git branch "$value";
+				else
+					echo "'$value' is not a valid branch name."
+					read -p "<Enter> to continue: " garbage
+				if
+			else
+				echo "Please specify a valid branch name after the 's' command."
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$ans" == p* ]]; then
+			git pull
+			read -p "<Enter> to continue: " garbage
+		elif [[ "$ans" == c* ]]; then
+			echo "Detected $n processors for make"
+			make -j$n
+			read -p "<Enter> to continue: " garbage
+		elif [[ "$ans" == d* ]]; then
+			pushd ../DMRGateway
+			git pull
+			make -j$n
+			echo
+			echo "Be sure the DMRGateway.cfg file is set up to your needs"
+			echo "before installing or reinstalling DMRGateway!"
+			echo
+			read -p "<Enter> to continue: " garbage
+			popd
+		fi
+	done
+}
+
+CodeMenu() {
+	local n=$(getconf _NPROCESSORS_ONLN)
+	local garbage
+	ans=X
+	while [[ "$ans" != q* ]]; do
+		clear
+		echo
+		echo    "     Code Menu"
+		echo -n "     Current branch: ": git branch --show-current
+		echo    "     Detected $n processors for make"
+		echo
+		echo    " l : List available branches"
+		echo    " s : Switch to a different branch"
+		echo    " p : Git pull - pull any changes from the repo"
+		echo    " c : Compile"
+		if [[ "${cfgfile[DMR Network,Type]}" == Gateway && -d ../DMRGateway ]]; then
+			echo " d : git pull and compile ../DMRGateway"
+		fi
+		echo
+		echo    " q : Quit"
+		read -p "     Input command and optional argument: " ans value
+
+		if   [[ "$ans" == l* ]]; then
+			echo "Available branches:"
+			git branch --List
+			read -p "<Enter> to continue: " garbage
+		elif [[ "$ans" == s* ]]; then
+			if [[ -n "$value" ]]; then
+				if (( `git branch --list | grep "$value" | wc -l` == 1 )); tjen
+					git branch "$value";
+				else
+					echo "'$value' is not a valid branch name."
+					read -p "<Enter> to continue: " garbage
+				if
+			else
+				echo "Please specify a valid branch name after the 's' command."
+				read -p "<Enter> to continue: " garbage
+			fi
+		elif [[ "$ans" == p* ]]; then
+			git pull
+			read -p "<Enter> to continue: " garbage
+		elif [[ "$ans" == c* ]]; then
+			echo "Detected $n processors for make"
+			make -j$n
+			read -p "<Enter> to continue: " garbage
+		elif [[ "$ans" == d* ]]; then
+			pushd ../DMRGateway
+			git pull
+			make -j$n
+			echo
+			echo "Be sure the DMRGateway.cfg file is set up to your needs"
+			echo "before installing or reinstalling DMRGateway!"
+			echo
+			read -p "<Enter> to continue: " garbage
+			popd
+		fi
+	done
+}
+
+ZeroStatic
+
+ReadFile inifile dmr.ini
+
+if [ ! -e dmr.cfg ]; then
+	echo "No configure file found!"
+	exit 1
+fi
+
+ReadFile cfgfile dmr.cfg
+eval "${cfgfile[DMR Network,Options]}"
+if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
+	SetStartRef $StartRef
+fi
+
+while [[ "$ans" != q* ]]
+do
+	txfreq=$( awk "BEGIN{print ${cfgfile[Info,TXFrequency]}/1000000}" )
+	rxfreq=$( awk "BEGIN{print ${cfgfile[Info,RXFrequency]}/1000000}" )
+	dup=( `EvalBool 'General,Duplex'` )
+	clear
+	Header
+	echo
+	echo "     DOH Adminstration V#210320"
+	echo
+	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
+	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
+	echo "     Duplex  ${dup[0]}"
+	echo "     Network ${cfgfile[DMR Network,Name]}"
+	if [ -e ${cfgfile[Modem,Port]} ]; then
+		echo "     Modem @ ${cfgfile[Modem,Port]}"
+	else
+		echo "     WARNING: Modem at '${cfgfile[Modem,Port]}' not found. Is it unplugged?"
+	fi
+	if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
+		echo
+		echo "     DMR+ Options:"
+		echo "         Start Reflector:      $StartRef - $StartRefName"
+		echo "         Relink Time (min):    $RelinkTime"
+		echo -n "         User can Relink:      "
+		if (( 1 == UserLink )); then echo true; else echo false; fi
+		if (( 4000 == StartRef )); then
+			echo -n "         Slot 1 Static groups:"; EchoStatic one
+			echo -n "         Slot 2 Static groups:"; EchoStatic two
+		fi
+	fi
+	echo
+	echo " c : Configuration Menu (./config)"
+	echo " s : Source code (compiling) Menu"
+	echo " p : Process Menu"
+	echo " l : Log view"
+	echo
+	echo " q : Quit"
+	echo
+	read -p "Command: " ans
+	if   [[ "$ans" == c* ]]; then ./config
+	elif [[ "$ans" == s* ]]; then CodeMenu
+	elif [[ "$ans" == p* ]]; then ProcessMenu
+	elif [[ "$ans" == l* ]]; then LogMenu
+	fi
+done
