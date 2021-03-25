@@ -120,61 +120,91 @@ EchoStatic() {
 	echo
 }
 
-CodeMenu() {
-	local n=$(getconf _NPROCESSORS_ONLN)
+ProcessStatus() {
+	if [[ `systemctl show -p LoadState --value doh` == 'loaded' ]]; then
+		if [[ `systemctl show -p SubState  --value doh` == 'running' ]]; then
+			DOHState='running'
+		else
+			DOHState='stopped'
+		fi
+	else
+		DOHState='uninstalled'
+	fi
+
+	if [ -e ../DMRGateway/DMRGateway ]; then
+		if [[ `systemctl show -p LoadState --value DMRGateway` == 'loaded' ]]; then
+			if [[ `systemctl show -p SubState  --value DMRGateway` == 'running' ]]; then
+				GateState='running'
+			else
+				GateState='stopped'
+			fi
+		else
+			GateState='uninstalled'
+		fi
+	else
+		GateState='not found'
+	fi
+
+	if [[ `systemctl show -p LoadState --value qndash` == 'loaded' ]]; then
+		if [[ `systemctl show -p SubState  --value qndash` == 'running' ]]; then
+			DashState='running'
+		else
+			DashState='stopped'
+		fi
+	else
+		DashState='uninstalled'
+	fi
+}
+
+ProcessMenu() {
 	local garbage
 	ans=X
 	while [[ "$ans" != q* ]]; do
+		ProcessStatus
 		clear
-		echo
-		echo    "     Code Menu"
-		echo -n "     Current branch: ": git branch --show-current
-		echo    "     Detected $n processors for make"
-		echo
-		echo    " l : List available branches"
-		echo    " s : Switch to a different branch"
-		echo    " p : Git pull - pull any changes from the repo"
-		echo    " c : Compile"
-		if [[ "${cfgfile[DMR Network,Type]}" == Gateway && -d ../DMRGateway ]]; then
-			echo " d : git pull and compile ../DMRGateway"
+		header
+		if [[ "$DOHState" == un* ]]; then
+			echo    " id : Install DOH"
+		elif [[ "$DOHState" == stop* ]]; then
+			echo    " rd : Restart DOH"
+		else
+			echo    " ud : Uninstall DOH"
+			echo    " vd : View the DOH log"
+		fi
+		if [[ "$GateState" != not* ]]; then
+			if [[ "$GateState" ==  un* ]]; then
+				echo    " ig : Install Gateway"
+			elif [[ $GateState == stop* ]]; then
+				echo    " rg : Restart Gateway"
+			else
+				echo    " ug : Uninstall Gateway"
+				echo    " vg : View the Gateway log"
+			fi
+		fi
+		if [[ "$DashState" == un* ]]; then
+			echo    " ID : Install Dashboard"
+		elif [[ "$DashState" == stop* ]]; then
+			echo    " RD : Restart Dashboard"
+		else
+			echo    " UD : Uninstall Dashboard"
+			echo    " VD : View the Dashboard log"
 		fi
 		echo
-		echo    " q : Quit"
-		read -p "     Input command and optional argument: " ans value
+		echo    " q  : Quit"
+		read -p "      Input command: " ans
 
-		if   [[ "$ans" == l* ]]; then
-			echo "Available branches:"
-			git branch --List
-			read -p "<Enter> to continue: " garbage
-		elif [[ "$ans" == s* ]]; then
-			if [[ -n "$value" ]]; then
-				if (( `git branch --list | grep "$value" | wc -l` == 1 )); tjen
-					git branch "$value";
-				else
-					echo "'$value' is not a valid branch name."
-					read -p "<Enter> to continue: " garbage
-				if
-			else
-				echo "Please specify a valid branch name after the 's' command."
-				read -p "<Enter> to continue: " garbage
-			fi
-		elif [[ "$ans" == p* ]]; then
-			git pull
-			read -p "<Enter> to continue: " garbage
-		elif [[ "$ans" == c* ]]; then
-			echo "Detected $n processors for make"
-			make -j$n
-			read -p "<Enter> to continue: " garbage
-		elif [[ "$ans" == d* ]]; then
-			pushd ../DMRGateway
-			git pull
-			make -j$n
-			echo
-			echo "Be sure the DMRGateway.cfg file is set up to your needs"
-			echo "before installing or reinstalling DMRGateway!"
-			echo
-			read -p "<Enter> to continue: " garbage
-			popd
+		if   [[ "$ans" == id* ]]; then sudo make install
+		elif [[ "$ans" == rd* ]]; then sudo systemctl restart doh
+		elif [[ "$ans" == ug* ]]; then sudo make uninstall
+		elif [[ "$ans" == vl* ]]; then sudo journalctl -u doh -f
+		elif [[ "$ans" == ig* ]]; then sudo make installgateway
+		elif [[ "$ans" == rg* ]]; then sudo systemctl restart dmrgateway
+		elif [[ "$ans" == ug* ]]; then sudo make uninstallgateway
+		elif [[ "$ans" == vg* ]]; then sudo journalctl -u dmrgateway -f
+		elif [[ "$ans" == ID* ]]; then sudo make installdash
+		elif [[ "$ans" == RD* ]]; then sudo systemctl qndash restart
+		elif [[ "$ans" == UD* ]]; then sudo make uninstalldash
+		elif [[ "$ans" == VD* ]]; then sudo journalctl -u qndash -f
 		fi
 	done
 }
@@ -207,12 +237,12 @@ CodeMenu() {
 			read -p "<Enter> to continue: " garbage
 		elif [[ "$ans" == s* ]]; then
 			if [[ -n "$value" ]]; then
-				if (( `git branch --list | grep "$value" | wc -l` == 1 )); tjen
+				if (( `git branch --list | grep "$value" | wc -l` == 1 )); then
 					git branch "$value";
 				else
 					echo "'$value' is not a valid branch name."
 					read -p "<Enter> to continue: " garbage
-				if
+				fi
 			else
 				echo "Please specify a valid branch name after the 's' command."
 				read -p "<Enter> to continue: " garbage
@@ -261,7 +291,7 @@ do
 	clear
 	Header
 	echo
-	echo "     DOH Adminstration V#210320"
+	echo "     DOH Adminstration V#210325"
 	echo
 	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
 	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
@@ -287,15 +317,15 @@ do
 	echo
 	echo " c : Configuration Menu (./config)"
 	echo " s : Source code (compiling) Menu"
-	echo " p : Process Menu"
-	echo " l : Log view"
+	if [ -e doh ]; then
+		echo " p : Process Menu"
+	fi
 	echo
 	echo " q : Quit"
 	echo
 	read -p "Command: " ans
 	if   [[ "$ans" == c* ]]; then ./config
 	elif [[ "$ans" == s* ]]; then CodeMenu
-	elif [[ "$ans" == p* ]]; then ProcessMenu
-	elif [[ "$ans" == l* ]]; then LogMenu
+	elif [[ "$ans" == p* ]] && [ -e doh ]; then ProcessMenu
 	fi
 done

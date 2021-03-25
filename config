@@ -404,7 +404,7 @@ SelectXLXReflector() {
 		printf " %-3.3s" ${DPServers[$i]}
 	done
 	echo
-	read -p "Type the XLX Reflector characters like '307': " ans
+	read -p "Type the XLX Reflector 3-character designator: " ans
 	if [[ "${ans^^}" =~ [0-9A-Z][0-9A-Z][0-9A-Z] ]]; then
 		dpar=( `awk '{if($1=="XLX_'${ans^^}'")print $0}' DMR_Hosts.txt` )
 		if (( 5 == ${#dpar[@]} )); then
