@@ -232,7 +232,7 @@ CodeMenu() {
 		echo    " co : Compile"
 		echo    " cl : Clean build (remove executible and intermediate files)"
 		if [[ "${cfgfile[DMR Network,Type]}" == Gateway ]]; then
-			[[ -d ../DMRGateway ]]; then
+			if [[ -d ../DMRGateway ]]; then
 				echo " pg : Git pull ../DMRGateway"
 				echo " cg : Compile  ../DMRGateway"
 				echo " lg : Clean    ../DMRGateway"
