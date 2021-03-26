@@ -32,7 +32,7 @@
 
 #include <cstdlib>
 
-#define VERSION "DMR_Only_Host-20210324"
+#define VERSION "20210324"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -90,13 +90,13 @@ int main(int argc, char** argv)
 		delete host;
 
 		if (m_signal == 2)
-			::LogInfo("%s exited on receipt of SIGINT", VERSION);
+			::LogInfo("DOH V#%s exited on receipt of SIGINT", VERSION);
 
 		if (m_signal == 15)
-			::LogInfo("%s exited on receipt of SIGTERM", VERSION);
+			::LogInfo("DOH V#%s exited on receipt of SIGTERM", VERSION);
 
 		if (m_signal == 1)
-			::LogInfo("%s is restarting on receipt of SIGHUP", VERSION);
+			::LogInfo("DOH V#%s is restarting on receipt of SIGHUP", VERSION);
 	}
 	while (m_signal == 1);
 
@@ -149,7 +149,7 @@ int CDOH::run()
 	LogInfo(HEADER3);
 	LogInfo(HEADER4);
 
-	LogMessage("%s is starting", VERSION);
+	LogMessage("DOH V#%s is starting", VERSION);
 	LogMessage("Built %s %s", __TIME__, __DATE__);
 
 	readParams();
@@ -312,7 +312,7 @@ int CDOH::run()
 
 	setMode(MODE_IDLE);
 
-	LogMessage("%s is running", VERSION);
+	LogMessage("DOH V#%s is running", VERSION);
 
 	while (!m_killed)
 	{

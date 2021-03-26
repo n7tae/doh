@@ -64,7 +64,7 @@ m_longitude(0.0F),
 m_height(0),
 m_location(),
 m_description(),
-m_url(), 
+m_url(),
 m_beacon(false)
 {
 	assert(!address.empty());
