@@ -162,7 +162,7 @@ ProcessMenu() {
 	while [[ "$ans" != q* ]]; do
 		ProcessStatus
 		clear
-		header
+		Header
 		if [[ "$DOHState" == un* ]]; then
 			echo    " id : Install DOH"
 		else
