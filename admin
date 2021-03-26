@@ -163,6 +163,8 @@ ProcessMenu() {
 		ProcessStatus
 		clear
 		Header
+		echo "            Process Menu"
+		echo
 		if [[ "$DOHState" == un* ]]; then
 			echo    " id : Install DOH"
 		else
@@ -367,7 +369,7 @@ do
 				fi
 			fi
 		fi
-	elif [[ "$ans" == s* ]]; then CodeMenu
-	elif [[ "$ans" == p* ]] && [ -e doh ]; then ProcessMenu
+	elif [[ "$ans" == s* ]]; then CodeMenu; ans=X
+	elif [[ "$ans" == p* ]] && [ -e doh ]; then ProcessMenu; ans=X
 	fi
 done
