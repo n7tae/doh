@@ -6,9 +6,7 @@ This will build a DMR-only Hotspot based on Jonathan Naylor's MMDVMHost software
 
 If you want a pre-build, multi-mode hot-spot, then you want Andy Taylor MW0MWZ's excellent Pi-Star. If you want to try your hand at building your own multi-mode hot-spot, then you can take a look at the MMDVM.README file in https::/github.com/n7tae/QnetGateway.
 
-## Building
-
-### Prerequisites
+## Prerequisites
 
 DOH includes a dashboard with a last heard section. The last heard section uses SQLite3, a light-weight database, so you will need `libsqlite3-dev` to compile DOH, you will also need `curl` to be able to download the DMR ID lookup table:
 
@@ -23,11 +21,23 @@ You will also need a few more things if you are going to *use* the dashboard:
 sudo apt install -y php-common php-fpm sqlite3 php-sqlite3 dnsutils
 ```
 
-### Download the repo
+Now you are ready to download DOH:
 
 ```bash
 git clone https://github.com/n7tae/doh.git
 ```
+
+## Script control
+
+You can mostly ignore the sections below (it's still recommend that you read this entier README file) and do most everything you need to do regarding configuring and operating DOH *via* two scripts, `./admin` and `./config`. The *admin* script is used to maintain your cloned repository, compile the executable, install, restart and uninstall DOH, and, view the logs. You can also manage the dashboard and control DMRGateway, if you want either one of those features. The *config* script is used to maintain you DOH configuration file, `dmr.cfg`. In fact, you can launch `./config` from within `./admin`!
+
+The *config* script is used to construct your `dmr.cfg` file, the configuration file for DOH. It allows you easily and quickly define connections to different DMR networks. It supports, XLX linking, DMR+, Brandmeister, HB Link, FreeDMR and TGIF. The idea here is that instead of using DMRGateway and connecting to multiple networks, you can quickly switch your direct connection to anywhere you want to go. You might that there is a simplicity to this approach. In fact, it greatly simplify your radio's code plug setup and one of the benefits is that you will be using the native TG groups from each network to which you connect, rather than having to remember to use a remapped TG that might be unique to your DMRGateway.ini file.
+
+You can do everything from within *admin*. If you modify your `dmr.cfg` file from *admin* and DOH is already running, you will be asked if you want to restart DOH, making it incredibly easy to switch networks on the fly.
+
+Of course, if you want to use DMRGateway, you can and the *admin* script supports that too.
+
+## Building
 
 ### Move to the build directory and compile
 
