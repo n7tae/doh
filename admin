@@ -15,6 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+trap ControlC INT
+
+ControlC () {
+	echo "caught SIGINT"
+}
+
 declare -A cfgfile
 
 SetStartRef() {
@@ -313,7 +319,7 @@ do
 	clear
 	Header
 	echo
-	echo "     DOH Adminstration V#210326"
+	echo "     DOH Adminstration V#210327"
 	echo
 	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
 	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
