@@ -185,7 +185,7 @@ ProcessMenu() {
 				echo    " ig : Install Gateway"
 			else
 				echo    " rg : Restart Gateway"
-				if [[ $GateState == run* ]]; then
+				if [[ "$GateState" == run* ]]; then
 					echo    " ug : Uninstall Gateway"
 				fi
 				echo    " vg : View the Gateway log"
