@@ -68,11 +68,11 @@ SetBool() {
 
 Header () {
 	local count
-	count=$( ps -aux | grep -e doh -e DMRGateway -e qndash | grep -v grep | wc -l )
+	count=$( ps -aux | grep -e doh -e DMRGateway -e 0.0.0.0:80 | grep -v grep | wc -l )
 	if ((${count} > 0)); then
 		echo
 		echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
-		ps -aux | grep -e doh -e DMRGateway -e qndash | grep -v grep
+		ps -aux | grep -e doh -e DMRGateway -e 0.0.0.0:80 | grep -v grep
 	fi
 	echo
 }
@@ -192,7 +192,6 @@ ProcessMenu() {
 			if [[ "$DashState" == run* ]]; then
 				echo    " UD : Uninstall Dashboard"
 			fi
-			echo    " VD : View the Dashboard log"
 		fi
 		echo
 		echo    " q  : Quit"
@@ -213,7 +212,6 @@ ProcessMenu() {
 		elif [[ "$ans" == ID* ]]; then sudo make installdash
 		elif [[ "$ans" == RD* ]]; then sudo systemctl qndash restart
 		elif [[ "$ans" == UD* ]]; then sudo make uninstalldash
-		elif [[ "$ans" == VD* ]]; then sudo journalctl -u qndash -f
 		fi
 	done
 }
