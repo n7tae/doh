@@ -231,9 +231,9 @@ CodeMenu() {
 		echo
 		echo    "      Code Menu"
 		echo    "      Detected $n processors for make"
+		echo -n "      Current Branch: "; git branch --show-current
 		echo
-		echo    " lb : List available branches"
-		echo -n " br : Branch = "; git branch --show-current
+		echo    " br : Switch Branch"
 		echo    " gp : Git pull - pull any changes from the repo"
 		echo    " co : Compile"
 		echo    " cl : Clean build (remove executible and intermediate files)"
@@ -250,21 +250,20 @@ CodeMenu() {
 		echo    " q  : Quit"
 		read -p "      Input command and optional argument: " ans value
 
-		if   [[ "$ans" == lb* ]]; then
-			echo "Available branches:"
-			git branch --List
-			read -p "<Enter> to continue: " garbage
 		elif [[ "$ans" == br* ]]; then
+			clear
+			echo
+			echo "Current Branches:"
+			git branch --list
+			echo
+			read -p "Input desired branch name, or nothing to not make a selection: " value
 			if [[ -n "$value" ]]; then
 				if (( `git branch --list | grep "$value" | wc -l` == 1 )); then
-					git branch "$value";
+					git checkout "$value";
 				else
 					echo "'$value' is not a valid branch name."
 					read -p "<Enter> to continue: " garbage
 				fi
-			else
-				echo "Please specify a valid branch name after the 's' command."
-				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$ans" == gp* ]]; then
 			git pull
@@ -319,7 +318,7 @@ do
 	clear
 	Header
 	echo
-	echo "     DOH Adminstration V#210327"
+	echo "     DOH Adminstration V#210330"
 	echo
 	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
 	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
