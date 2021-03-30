@@ -250,7 +250,7 @@ CodeMenu() {
 		echo    " q  : Quit"
 		read -p "      Input command and optional argument: " ans value
 
-		elif [[ "$ans" == br* ]]; then
+		if   [[ "$ans" == br* ]]; then
 			clear
 			echo
 			echo "Current Branches:"
@@ -265,7 +265,7 @@ CodeMenu() {
 					read -p "<Enter> to continue: " garbage
 				fi
 			fi
-		fi   [[ "$ans" == gp* ]]; then
+		elif [[ "$ans" == gp* ]]; then
 			git pull
 			read -p "<Enter> to continue: " garbage
 		elif [[ "$ans" == co* ]]; then
