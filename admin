@@ -253,7 +253,7 @@ CodeMenu() {
 		if   [[ "$ans" == br* ]]; then
 			clear
 			echo
-			echo "Current Branches:"
+			echo "Current Branches ('*' == current branch):"
 			git branch --list
 			echo
 			read -p "Input desired branch name, or nothing to not make a selection: " value
