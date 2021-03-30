@@ -231,7 +231,7 @@ CodeMenu() {
 		echo
 		echo    "      Code Menu"
 		echo    "      Detected $n processors for make"
-		echo -n "      Current Branch: "; git branch --show-current
+		echo -n "      Current Branch: "; git rev-parse --abbrev-ref HEAD
 		echo
 		echo    " br : Switch Branch"
 		echo    " gp : Git pull - pull any changes from the repo"
