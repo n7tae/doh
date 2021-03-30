@@ -265,7 +265,7 @@ CodeMenu() {
 					read -p "<Enter> to continue: " garbage
 				fi
 			fi
-		elif [[ "$ans" == gp* ]]; then
+		fi   [[ "$ans" == gp* ]]; then
 			git pull
 			read -p "<Enter> to continue: " garbage
 		elif [[ "$ans" == co* ]]; then
