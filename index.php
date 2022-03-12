@@ -23,8 +23,8 @@ function IniParser(string $filepath, &$kvarray)
 					else
 						list ( $value ) = explode(' ', $value);
 					$value = trim($value);
-					$kvarray[$section][$key] = $value;
 				}
+				$kvarray[$section][$key] = $value;
 			}
 		}
 	}
