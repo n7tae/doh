@@ -17,11 +17,13 @@ function IniParser(string $filepath, &$kvarray)
 				if (! strpos($line, '=')) continue;
 				if (0 == strlen("$section")) continue;
 				list( $key, $value ) = explode('=', $line);
-				if ('"' == $value[0])
-					list ( $value ) = explode('"', substr($value, 1));
-				else
-					list ( $value ) = explode(' ', $value);
-				$value = trim($value);
+				if (!empty($value)) {
+					if ('"' == $value[0])
+						list ( $value ) = explode('"', substr($value, 1));
+					else
+						list ( $value ) = explode(' ', $value);
+					$value = trim($value);
+				}
 				$kvarray[$section][$key] = $value;
 			}
 		}
@@ -171,6 +173,6 @@ foreach($showlist as $section) {
 }
 ?>
 <br>
-<p align="center">DOH Dashboard Version 210220 Copyright &copy; by Thomas A. Early, N7TAE.</p>
+<p align="center">DOH Dashboard Version 220312 Copyright &copy; by Thomas A. Early, N7TAE.</p>
 </body>
 </html>
