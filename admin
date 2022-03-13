@@ -36,6 +36,9 @@ ReadFile() {
 		if [[ "${line:0:1}" == '#' ]]; then
 			continue
 		fi
+		if [ -z "$line" ];then
+			continue
+		fi
 		if [[ "${line:0:1}" == '[' ]]; then
 			length=${#line}
 			section=${line:1:${length}-2}
@@ -146,8 +149,8 @@ ProcessStatus() {
 	fi
 
 	if [ -d ../DMRGateway ]; then
-		if [[ `systemctl show -p LoadState --value DMRGateway` == 'loaded' ]]; then
-			if [[ `systemctl show -p SubState  --value DMRGateway` == 'running' ]]; then
+		if [[ `systemctl show -p LoadState --value dmrgateway` == 'loaded' ]]; then
+			if [[ `systemctl show -p SubState  --value dmrgateway` == 'running' ]]; then
 				GateState='running'
 			else
 				GateState='stopped'
@@ -217,7 +220,7 @@ ProcessMenu() {
 		elif [[ "$ans" == vd* ]]; then sudo journalctl -u doh -f
 		elif [[ "$ans" == ig* ]]; then
 			pushd ../DMRGateway
-			make -j`getconf _PROCESSORS_ONLN`
+			make -j`getconf _NPROCESSORS_ONLN`
 			popd
 			sudo make installgateway
 		elif [[ "$ans" == rg* ]]; then sudo systemctl restart dmrgateway
@@ -305,6 +308,8 @@ CodeMenu() {
 
 ZeroStatic
 
+declare -A inifile
+declare -A cfgfile
 ReadFile inifile dmr.ini
 
 if [ ! -e dmr.cfg ]; then
@@ -322,7 +327,7 @@ do
 	clear
 	Header
 	echo
-	echo "     DOH Adminstration V#220301"
+	echo "     DOH Adminstration V#220313"
 	echo
 	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
 	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"

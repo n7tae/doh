@@ -30,6 +30,9 @@ ReadFile() {
 		if [[ "${line:0:1}" == '#' ]]; then
 			continue
 		fi
+		if [ -z "$line" ]; then
+			continue
+		fi
 		if [[ "${line:0:1}" == '[' ]]; then
 			length=${#line}
 			section=${line:1:${length}-2}
@@ -1061,6 +1064,9 @@ exit 0
 
 ZeroStatic
 
+declare -A inifile
+declare -A cfgfile
+
 ReadFile inifile dmr.ini
 
 if [ ! -e dmr.cfg ]; then
@@ -1080,7 +1086,7 @@ do
 	dup=( `EvalBool 'General,Duplex'` )
 	clear
 	echo
-	echo "     DOH Configure V#220312"
+	echo "     DOH Configure V#220313"
 	echo
 	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
 	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
