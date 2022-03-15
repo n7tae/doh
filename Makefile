@@ -67,9 +67,12 @@ installgateway : $(GATDIR)/DMRGateway $(GATDIR)/DMRGateway.cfg
 	systemctl daemon-reload
 	systemctl start dmrgateway.service
 
-installdash : index.php
+installdash : www/index.php www/functions.php www/lh.php www/jquery.min.js
 	mkdir -p $(WWWDIR)
-	/bin/ln -f -s $(shell pwd)/index.php $(WWWDIR)
+	/bin/ln -f -s $(shell pwd)/www/index.php $(WWWDIR)
+	/bin/ln -f -s $(shell pwd)/www/functions.php $(WWWDIR)
+	/bin/ln -f -s $(shell pwd)/www/lh.php $(WWWDIR)
+	/bin/ln -f -s $(shell pwd)/www/jquery.min.js $(WWWDIR)
 	/bin/cp -f system/qndash.service $(SYSDIR)
 	systemctl enable qndash.service
 	systemctl daemon-reload
@@ -101,4 +104,6 @@ uninstalldash :
 	/bin/rm -f $(SYSDIR)/qndash.service
 	systemctl daemon-reload
 	/bin/rm -f $(WWWDIR)/index.php
-	/bin/rm -f $(CFGDIR)/qn.db
+	/bin/rm -f $(WWWDIR)/functions.php
+	/bin/rm -f $(WWWDIR)/lh.php
+	/bin/rm -f $(WWWDIR)/jquery.min.js
