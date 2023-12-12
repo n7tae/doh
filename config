@@ -474,8 +474,8 @@ SelectDMRServer() {
 	read -p "Select Server # (or 'q' to quit without selecting a server): " n garbage
 	if [[ "$n" =~ [0-9]* ]]; then
 		if (( n >= 0 && n < limit )); then
-			dpar=( `awk '{if($1=="'${1}${DPServers[$n]}'")print $0}' DMR_Hosts.txt` )
-			if [ "${#dpar[@]}" -ge 5 ]; then
+			dpar=( `awk '{if($1=="'${1}${DPServers[$n]}'"){print $0;exit;}}' DMR_Hosts.txt` )
+			if [ "${#dpar[@]}" -eq 5 ]; then
 				cfgfile[DMR Network,Name]=${dpar[0]}
 				cfgfile[DMR Network,Address]=${dpar[2]}
 				cfgfile[DMR Network,Password]=${dpar[3]}
