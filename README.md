@@ -50,7 +50,7 @@ make
 
 You can either manually create and edit your `doh.cfg` file, or you can use a menu-based script.
 
-#### Use a script to create your configuration.
+#### Use a script to create your configuration
 
 In your build directory, type `./config`. The main menu reports some of the most important configuration values and also presents you with several sub-menus used to change all configuration values. When your ready, type `w` in the main menu to write you config file and exit the script. As you are changing values most input is examined to be sure your new values are reasonable. If not, the script will let you know.
 
