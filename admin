@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2021 by Thomas A. Early N7TAE
+# Copyright (c) 2021,2025 by Thomas A. Early N7TAE
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -227,7 +227,7 @@ ProcessMenu() {
 		elif [[ "$ans" == ug* ]]; then sudo make uninstallgateway
 		elif [[ "$ans" == vg* ]]; then sudo journalctl -u dmrgateway -f
 		elif [[ "$ans" == ID* ]]; then sudo make installdash
-		elif [[ "$ans" == RD* ]]; then sudo systemctl qndash restart
+		elif [[ "$ans" == RD* ]]; then sudo systemctl restart qndash
 		elif [[ "$ans" == UD* ]]; then sudo make uninstalldash
 		fi
 	done
