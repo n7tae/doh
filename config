@@ -450,7 +450,7 @@ SelectDMRServer() {
 	elif [[ "$1" == B* ]]; then
 		DPServers=( `grep ^BM_         DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 4)}'` )
 		title='BrandMeister'
-	elif [[ "$1" == F* ]]; then
+	elif [[ "$1" == FreeDMR* ]]; then
 		DPServers=( `grep ^FreeDMR_    DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 9)}'` )
 		title='FreeDMR'
 	elif [[ "$1" == H* ]]; then
@@ -459,7 +459,7 @@ SelectDMRServer() {
 	elif [[ "$1" == T* ]]; then
 		DPServers=( `grep ^TGIF_       DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 6)}'` )
 		title='TGIF'
-	elif [[ "$1" == A* ]]; then
+	elif [[ "$1" == FD_AmComm_* ]]; then
 		DPServers=( `grep ^FD_AmComm_  DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 11)}'` )
 		title='AmComm'
 	else
@@ -755,7 +755,7 @@ NetworkMenu() {
 		elif [[ "$key" == FD* ]]; then SelectDMRServer 'FreeDMR_'
 		elif [[ "$key" == HB* ]]; then SelectDMRServer 'HB_'
 		elif [[ "$key" == TG* ]]; then SelectDMRServer 'TGIF_'
-		elif [[ "$key" == AM* ]]; then SelectDMRServer 'AmComm_'
+		elif [[ "$key" == AM* ]]; then SelectDMRServer 'FD_AmComm_'
 		elif [[ "$key" == be* ]]; then SetBool 'DMR,Beacons'        "$value"
 		elif [[ "$key" == so* ]]; then SetBool 'DMR,SelfOnly'       "$value"
 		elif [[ "$key" == lc* ]]; then SetBool 'DMR,EmbeddedLCOnly' "$value"
