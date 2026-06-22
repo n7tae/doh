@@ -459,7 +459,7 @@ SelectDMRServer() {
 	elif [[ "$1" == T* ]]; then
 		DPServers=( `grep ^TGIF_       DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 6)}'` )
 		title='TGIF'
-	elif [[ "$1" == A* ]]l then
+	elif [[ "$1" == A* ]]; then
 		DPServers=( `grep ^FD_AmComm_  DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 11)}'` )
 		title='AmComm'
 	else
