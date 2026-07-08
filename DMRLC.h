@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2019 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,22 +17,21 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRLC_H)
-#define DMRLC_H
+#pragma once
 
 #include "DMRDefines.h"
 
 class CDMRLC
 {
 public:
-	CDMRLC(FLCO flco, unsigned int srcId, unsigned int dstId);
-	CDMRLC(const unsigned char* bytes);
-	CDMRLC(const bool* bits);
+	CDMRLC(FLCO flco, unsigned srcId, unsigned dstId);
+	CDMRLC(const uint8_t *bytes);
+	CDMRLC(const bool *bits);
 	CDMRLC();
 	~CDMRLC();
 
-	void getData(unsigned char* bytes) const;
-	void getData(bool* bits) const;
+	void getData(uint8_t *bytes) const;
+	void getData(bool *bits) const;
 
 	bool getPF() const;
 	void setPF(bool pf);
@@ -42,24 +42,23 @@ public:
 	bool getOVCM() const;
 	void setOVCM(bool ovcm);
 
-	unsigned char getFID() const;
-	void setFID(unsigned char fid);
+	uint8_t getFID() const;
+	void setFID(uint8_t fid);
 
-	unsigned int getSrcId() const;
-	void setSrcId(unsigned int id);
+	unsigned getSrcId() const;
+	void setSrcId(unsigned id);
 
-	unsigned int getDstId() const;
-	void setDstId(unsigned int id);
+	unsigned getDstId() const;
+	void setDstId(unsigned id);
 
 private:
 	bool          m_PF;
 	bool          m_R;
 	FLCO          m_FLCO;
-	unsigned char m_FID;
-	unsigned char m_options;
-	unsigned int  m_srcId;
-	unsigned int  m_dstId;
+	uint8_t       m_FID;
+	uint8_t       m_options;
+	unsigned  m_srcId;
+	unsigned  m_dstId;
 };
 
-#endif
 

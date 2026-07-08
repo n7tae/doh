@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2020 by SASANO Takayoshi JG1UAA
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -28,17 +29,17 @@ public:
 	CUserDB();
 	~CUserDB();
 
-	bool lookup(unsigned int id, class CUserDBentry *entry);
+	bool lookup(unsigned id, class CUserDBentry *entry);
 	bool load(std::string const& filename);
 
 private:
-	bool makeindex(char* buf, std::unordered_map<std::string, int>& index);
-	void parse(char* buf, std::unordered_map<std::string, int>& index);
-	void toupper_string(char* str);
-	char* tokenize(char* str, char** next);
+	bool makeindex(char *buf, std::unordered_map<std::string, int>& index);
+	void parse(char *buf, std::unordered_map<std::string, int>& index);
+	void toupper_string(char *str);
+	char *tokenize(char *str, char **next);
 
-	std::unordered_map<unsigned int, class CUserDBentry>    m_table;
-	CMutex                                                  m_mutex;
+	std::unordered_map<unsigned, class CUserDBentry> m_table;
+	CMutex m_mutex;
 };
 
 #endif

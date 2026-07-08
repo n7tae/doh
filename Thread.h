@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,14 +17,10 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(THREAD_H)
-#define	THREAD_H
+#pragma once
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#else
 #include <pthread.h>
-#endif
+
 
 class CThread
 {
@@ -37,20 +34,10 @@ public:
 
 	virtual void wait();
 
-	static void sleep(unsigned int ms);
+	static void sleep(unsigned ms);
 
 private:
-#if defined(_WIN32) || defined(_WIN64)
-	HANDLE    m_handle;
-#else
 	pthread_t m_thread;
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-	static DWORD __stdcall helper(LPVOID arg);
-#else
 	static void* helper(void* arg);
-#endif
 };
 
-#endif

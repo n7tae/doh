@@ -36,11 +36,11 @@ CDMRFullLC::~CDMRFullLC()
 {
 }
 
-CDMRLC* CDMRFullLC::decode(const unsigned char* data, unsigned char type)
+CDMRLC* CDMRFullLC::decode(const uint8_t *data, uint8_t type)
 {
 	assert(data != NULL);
 
-	unsigned char lcData[12U];
+	uint8_t lcData[12U];
 	m_bptc.decode(data, lcData);
 
 	switch (type)
@@ -68,14 +68,14 @@ CDMRLC* CDMRFullLC::decode(const unsigned char* data, unsigned char type)
 	return new CDMRLC(lcData);
 }
 
-void CDMRFullLC::encode(const CDMRLC& lc, unsigned char* data, unsigned char type)
+void CDMRFullLC::encode(const CDMRLC& lc, uint8_t *data, uint8_t type)
 {
 	assert(data != NULL);
 
-	unsigned char lcData[12U];
+	uint8_t lcData[12U];
 	lc.getData(lcData);
 
-	unsigned char parity[4U];
+	uint8_t parity[4U];
 	CRS129::encode(lcData, 9U, parity);
 
 	switch (type)

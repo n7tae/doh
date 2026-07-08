@@ -1,6 +1,6 @@
 /*
+ *   Copyright (C) 2021,2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015-2020 by Jonathan Naylor G4KLX
- *   Copyright (C) 2021 by Thomas A. Early N7TAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(MMDVMHOST_H)
-#define	MMDVMHOST_H
+#pragma once
 
 #include "DMRControl.h"
 #include "DMRNetwork.h"
@@ -34,29 +33,29 @@
 class CDOH
 {
 public:
-	CDOH(const std::string& confFile);
+	CDOH(const std::string &confFile);
 	~CDOH();
 
 	int run();
 
 private:
 	CConf           m_conf;
-	CModem*         m_modem;
-	CDMRControl*    m_dmr;
-	IDMRNetwork*    m_dmrNetwork;
+	CModem         *m_modem;
+	CDMRControl    *m_dmr;
+	IDMRNetwork    *m_dmrNetwork;
 	CDashDB         m_dashDB;
-	unsigned char   m_mode;
-	unsigned int    m_dmrRFModeHang;
-	unsigned int    m_dmrNetModeHang;
+	uint8_t         m_mode;
+	unsigned    m_dmrRFModeHang;
+	unsigned    m_dmrNetModeHang;
 	CTimer          m_modeTimer;
 	CTimer          m_dmrTXTimer;
 	CTimer          m_cwIdTimer;
 	bool            m_duplex;
-	unsigned int    m_timeout;
-	unsigned int    m_cwIdTime;
-	CDMRLookup*     m_dmrLookup;
+	unsigned    m_timeout;
+	unsigned    m_cwIdTime;
+	CDMRLookup     *m_dmrLookup;
 	std::string     m_callsign;
-	unsigned int    m_id;
+	unsigned    m_id;
 	std::string     m_cwCallsign;
 	bool            m_lockFileEnabled;
 	std::string     m_lockFileName;
@@ -66,10 +65,8 @@ private:
 	bool createModem();
 	bool createDMRNetwork();
 
-	void setMode(unsigned char mode);
+	void setMode(uint8_t mode);
 
-	void createLockFile(const char* mode) const;
+	void createLockFile(const char *mode) const;
 	void removeLockFile() const;
 };
-
-#endif

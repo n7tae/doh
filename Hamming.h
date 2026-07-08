@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,29 +17,26 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	Hamming_H
-#define	Hamming_H
+#pragma once
 
 class CHamming
 {
 public:
-	static void encode15113_1(bool* d);
-	static bool decode15113_1(bool* d);
+	static void encode15113_1(bool *d);
+	static bool decode15113_1(bool *d);
 
-	static void encode15113_2(bool* d);
-	static bool decode15113_2(bool* d);
+	static void encode15113_2(bool *d);
+	static bool decode15113_2(bool *d);
 
-	static void encode1393(bool* d);
-	static bool decode1393(bool* d);
+	static void encode1393(bool *d);
+	static bool decode1393(bool *d);
 
-	static void encode1063(bool* d);
-	static bool decode1063(bool* d);
+	static void encode1063(bool *d);
+	static bool decode1063(bool *d);
 
-	static void encode16114(bool* d);
-	static bool decode16114(bool* d);
+	static void encode16114(bool *d);
+	static bool decode16114(bool *d);
 
-	static void encode17123(bool* d);
-	static bool decode17123(bool* d);
+	static void encode17123(bool *d);
+	static bool decode17123(bool *d);
 };
-
-#endif

@@ -16,8 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef RingBuffer_H
-#define RingBuffer_H
+#pragma once
 
 #include "Log.h"
 
@@ -28,12 +27,7 @@
 template<class T> class CRingBuffer
 {
 public:
-	CRingBuffer(unsigned int length, const char* name) :
-		m_length(length),
-		m_name(name),
-		m_buffer(NULL),
-		m_iPtr(0U),
-		m_oPtr(0U)
+	CRingBuffer(unsigned length, const char *name) : m_length(length), m_name(name), m_buffer(NULL), m_iPtr(0U), m_oPtr(0U)
 	{
 		assert(length > 0U);
 		assert(name != NULL);
@@ -48,7 +42,7 @@ public:
 		delete[] m_buffer;
 	}
 
-	bool addData(const T* buffer, unsigned int nSamples)
+	bool addData(const T* buffer, unsigned nSamples)
 	{
 		if (nSamples >= freeSpace())
 		{
@@ -57,7 +51,7 @@ public:
 			return false;
 		}
 
-		for (unsigned int i = 0U; i < nSamples; i++)
+		for (unsigned i = 0U; i < nSamples; i++)
 		{
 			m_buffer[m_iPtr++] = buffer[i];
 
@@ -68,7 +62,7 @@ public:
 		return true;
 	}
 
-	bool getData(T* buffer, unsigned int nSamples)
+	bool getData(T* buffer, unsigned nSamples)
 	{
 		if (dataSize() < nSamples)
 		{
@@ -76,7 +70,7 @@ public:
 			return false;
 		}
 
-		for (unsigned int i = 0U; i < nSamples; i++)
+		for (unsigned i = 0U; i < nSamples; i++)
 		{
 			buffer[i] = m_buffer[m_oPtr++];
 
@@ -87,7 +81,7 @@ public:
 		return true;
 	}
 
-	bool peek(T* buffer, unsigned int nSamples)
+	bool peek(T* buffer, unsigned nSamples)
 	{
 		if (dataSize() < nSamples)
 		{
@@ -95,8 +89,8 @@ public:
 			return false;
 		}
 
-		unsigned int ptr = m_oPtr;
-		for (unsigned int i = 0U; i < nSamples; i++)
+		unsigned ptr = m_oPtr;
+		for (unsigned i = 0U; i < nSamples; i++)
 		{
 			buffer[i] = m_buffer[ptr++];
 
@@ -115,9 +109,9 @@ public:
 		::memset(m_buffer, 0x00, m_length * sizeof(T));
 	}
 
-	unsigned int freeSpace() const
+	unsigned freeSpace() const
 	{
-		unsigned int len = m_length;
+		unsigned len = m_length;
 
 		if (m_oPtr > m_iPtr)
 			len = m_oPtr - m_iPtr;
@@ -130,12 +124,12 @@ public:
 		return len;
 	}
 
-	unsigned int dataSize() const
+	unsigned dataSize() const
 	{
 		return m_length - freeSpace();
 	}
 
-	bool hasSpace(unsigned int length) const
+	bool hasSpace(unsigned length) const
 	{
 		return freeSpace() > length;
 	}
@@ -151,11 +145,9 @@ public:
 	}
 
 private:
-	unsigned int m_length;
-	const char*  m_name;
+	unsigned m_length;
+	const char * m_name;
 	T*           m_buffer;
-	unsigned int m_iPtr;
-	unsigned int m_oPtr;
+	unsigned m_iPtr;
+	unsigned m_oPtr;
 };
-
-#endif

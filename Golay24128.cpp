@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <cassert>
 
-const unsigned int ENCODING_TABLE_23127[] =
+const unsigned ENCODING_TABLE_23127[] =
 {
 	0x000000U, 0x0018EAU, 0x00293EU, 0x0031D4U, 0x004A96U, 0x00527CU, 0x0063A8U, 0x007B42U, 0x008DC6U, 0x00952CU,
 	0x00A4F8U, 0x00BC12U, 0x00C750U, 0x00DFBAU, 0x00EE6EU, 0x00F684U, 0x010366U, 0x011B8CU, 0x012A58U, 0x0132B2U,
@@ -422,7 +422,7 @@ const unsigned int ENCODING_TABLE_23127[] =
 	0xFFAD82U, 0xFFB568U, 0xFFCE2AU, 0xFFD6C0U, 0xFFE714U, 0xFFFFFEU
 };
 
-static const unsigned int ENCODING_TABLE_24128[] =
+static const unsigned ENCODING_TABLE_24128[] =
 {
 	0x000000U, 0x0018EBU, 0x00293EU, 0x0031D5U, 0x004A97U, 0x00527CU, 0x0063A9U, 0x007B42U, 0x008DC6U, 0x00952DU,
 	0x00A4F8U, 0x00BC13U, 0x00C751U, 0x00DFBAU, 0x00EE6FU, 0x00F684U, 0x010367U, 0x011B8CU, 0x012A59U, 0x0132B2U,
@@ -836,7 +836,7 @@ static const unsigned int ENCODING_TABLE_24128[] =
 	0xFFAD83U, 0xFFB568U, 0xFFCE2AU, 0xFFD6C1U, 0xFFE714U, 0xFFFFFFU
 };
 
-static const unsigned int DECODING_TABLE_23127[] =
+static const unsigned DECODING_TABLE_23127[] =
 {
 	0x000000U, 0x000001U, 0x000002U, 0x000003U, 0x000004U, 0x000005U, 0x000006U, 0x000007U, 0x000008U, 0x000009U,
 	0x00000AU, 0x00000BU, 0x00000CU, 0x00000DU, 0x00000EU, 0x024020U, 0x000010U, 0x000011U, 0x000012U, 0x000013U,
@@ -1050,7 +1050,7 @@ static const unsigned int DECODING_TABLE_23127[] =
 #define MASK12          0xfffff800   /* auxiliary vector for testing */
 #define GENPOL          0x00000c75   /* generator polinomial, g(x) */
 
-static unsigned int get_syndrome_23127(unsigned int pattern)
+static unsigned get_syndrome_23127(unsigned pattern)
 /*
  * Compute the syndrome corresponding to the given pattern, i.e., the
  * remainder after dividing the pattern (when considering it as the vector
@@ -1061,7 +1061,7 @@ static unsigned int get_syndrome_23127(unsigned int pattern)
  * obtain its syndrome in decoding.
  */
 {
-	unsigned int aux = X22;
+	unsigned aux = X22;
 
 	if (pattern >= X11)
 	{
@@ -1077,36 +1077,36 @@ static unsigned int get_syndrome_23127(unsigned int pattern)
 	return pattern;
 }
 
-unsigned int CGolay24128::encode23127(unsigned int data)
+unsigned CGolay24128::encode23127(unsigned data)
 {
 	return ENCODING_TABLE_23127[data];
 }
 
-unsigned int CGolay24128::encode24128(unsigned int data)
+unsigned CGolay24128::encode24128(unsigned data)
 {
 	return ENCODING_TABLE_24128[data];
 }
 
-unsigned int CGolay24128::decode23127(unsigned int code)
+unsigned CGolay24128::decode23127(unsigned code)
 {
-	unsigned int syndrome = ::get_syndrome_23127(code);
-	unsigned int error_pattern = DECODING_TABLE_23127[syndrome];
+	unsigned syndrome = ::get_syndrome_23127(code);
+	unsigned error_pattern = DECODING_TABLE_23127[syndrome];
 
 	code ^= error_pattern;
 
 	return code >> 11;
 }
 
-unsigned int CGolay24128::decode24128(unsigned int code)
+unsigned CGolay24128::decode24128(unsigned code)
 {
 	return decode23127(code >> 1);
 }
 
-unsigned int CGolay24128::decode24128(unsigned char* bytes)
+unsigned CGolay24128::decode24128(uint8_t *bytes)
 {
 	assert(bytes != NULL);
 
-	unsigned int code = bytes[0U];
+	unsigned code = bytes[0U];
 	code <<= 8;
 	code |= bytes[1U];
 	code <<= 8;

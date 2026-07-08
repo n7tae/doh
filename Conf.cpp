@@ -40,7 +40,7 @@ enum SECTION
 	SECTION_DMR_NETWORK
 };
 
-CConf::CConf(const std::string& file) :
+CConf::CConf(const std::string &file) :
 	m_file(file),
 	m_callsign(),
 	m_id(0U),
@@ -153,11 +153,11 @@ bool CConf::Read()
 			continue;
 		}
 
-		char* key   = ::strtok(buffer, " \t=\r\n");
+		char *key   = ::strtok(buffer, " \t=\r\n");
 		if (key == NULL)
 			continue;
 
-		char* value = ::strtok(NULL, "\r\n");
+		char *value = ::strtok(NULL, "\r\n");
 		if (value == NULL)
 			continue;
 
@@ -187,25 +187,25 @@ bool CConf::Read()
 			if (::strcmp(key, "Callsign") == 0)
 			{
 				// Convert the callsign to upper case
-				for (unsigned int i = 0U; value[i] != 0; i++)
+				for (unsigned i = 0U; value[i] != 0; i++)
 					value[i] = ::toupper(value[i]);
 				m_cwIdCallsign = m_callsign = value;
 			}
 			else if (::strcmp(key, "Id") == 0)
-				m_id = m_dmrId = (unsigned int)::atoi(value);
+				m_id = m_dmrId = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Timeout") == 0)
-				m_timeout = (unsigned int)::atoi(value);
+				m_timeout = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Duplex") == 0)
 				m_duplex = ::atoi(value) == 1;
 		}
 		else if (section == SECTION_INFO)
 		{
 			if (::strcmp(key, "TXFrequency") == 0)
-				m_txFrequency = (unsigned int)::atoi(value);
+				m_txFrequency = (unsigned)::atoi(value);
 			else if (::strcmp(key, "RXFrequency") == 0)
-				m_rxFrequency = (unsigned int)::atoi(value);
+				m_rxFrequency = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Power") == 0)
-				m_power = (unsigned int)::atoi(value);
+				m_power = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Latitude") == 0)
 				m_latitude = float(::atof(value));
 			else if (::strcmp(key, "Longitude") == 0)
@@ -229,11 +229,11 @@ bool CConf::Read()
 			if (::strcmp(key, "Enable") == 0)
 				m_cwIdEnabled = ::atoi(value) == 1;
 			else if (::strcmp(key, "Time") == 0)
-				m_cwIdTime = (unsigned int)::atoi(value);
+				m_cwIdTime = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Callsign") == 0)
 			{
 				// Convert the callsign to upper case
-				for (unsigned int i = 0U; value[i] != 0; i++)
+				for (unsigned i = 0U; value[i] != 0; i++)
 					value[i] = ::toupper(value[i]);
 				m_cwIdCallsign = value;
 			}
@@ -243,7 +243,7 @@ bool CConf::Read()
 			if (::strcmp(key, "File") == 0)
 				m_dmrIdLookupFile = value;
 			else if (::strcmp(key, "Time") == 0)
-				m_dmrIdLookupTime = (unsigned int)::atoi(value);
+				m_dmrIdLookupTime = (unsigned)::atoi(value);
 		}
 		else if (section == SECTION_MODEM)
 		{
@@ -252,7 +252,7 @@ bool CConf::Read()
 			else if (::strcmp(key, "Protocol") == 0)
 				m_modemProtocol = value;
 			else if (::strcmp(key, "Address") == 0)
-				m_modemAddress = (unsigned int)::strtoul(value, NULL, 16);
+				m_modemAddress = (unsigned)::strtoul(value, NULL, 16);
 			else if (::strcmp(key, "RXInvert") == 0)
 				m_modemRXInvert = ::atoi(value) == 1;
 			else if (::strcmp(key, "TXInvert") == 0)
@@ -260,9 +260,9 @@ bool CConf::Read()
 			else if (::strcmp(key, "PTTInvert") == 0)
 				m_modemPTTInvert = ::atoi(value) == 1;
 			else if (::strcmp(key, "TXDelay") == 0)
-				m_modemTXDelay = (unsigned int)::atoi(value);
+				m_modemTXDelay = (unsigned)::atoi(value);
 			else if (::strcmp(key, "DMRDelay") == 0)
-				m_modemDMRDelay = (unsigned int)::atoi(value);
+				m_modemDMRDelay = (unsigned)::atoi(value);
 			else if (::strcmp(key, "RXOffset") == 0)
 				m_modemRXOffset = ::atoi(value);
 			else if (::strcmp(key, "TXOffset") == 0)
@@ -297,14 +297,14 @@ bool CConf::Read()
 			else if (::strcmp(key, "BeaconInterval") == 0)
 			{
 				m_dmrBeacons = m_dmrBeacons != DMR_BEACONS_OFF ? DMR_BEACONS_TIMED : DMR_BEACONS_OFF;
-				m_dmrBeaconInterval = (unsigned int)::atoi(value);
+				m_dmrBeaconInterval = (unsigned)::atoi(value);
 			}
 			else if (::strcmp(key, "BeaconDuration") == 0)
-				m_dmrBeaconDuration = (unsigned int)::atoi(value);
+				m_dmrBeaconDuration = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Id") == 0)
-				m_dmrId = (unsigned int)::atoi(value);
+				m_dmrId = (unsigned)::atoi(value);
 			else if (::strcmp(key, "ColorCode") == 0)
-				m_dmrColorCode = (unsigned int)::atoi(value);
+				m_dmrColorCode = (unsigned)::atoi(value);
 			else if (::strcmp(key, "SelfOnly") == 0)
 				m_dmrSelfOnly = ::atoi(value) == 1;
 			else if (::strcmp(key, "EmbeddedLCOnly") == 0)
@@ -313,10 +313,10 @@ bool CConf::Read()
 				m_dmrDumpTAData = ::atoi(value) == 1;
 			else if (::strcmp(key, "Prefixes") == 0)
 			{
-				char* p = ::strtok(value, ",\r\n");
+				char *p = ::strtok(value, ",\r\n");
 				while (p != NULL)
 				{
-					unsigned int prefix = (unsigned int)::atoi(p);
+					unsigned prefix = (unsigned)::atoi(p);
 					if (prefix > 0U && prefix <= 999U)
 						m_dmrPrefixes.push_back(prefix);
 					p = ::strtok(NULL, ",\r\n");
@@ -324,10 +324,10 @@ bool CConf::Read()
 			}
 			else if (::strcmp(key, "BlackList") == 0)
 			{
-				char* p = ::strtok(value, ",\r\n");
+				char *p = ::strtok(value, ",\r\n");
 				while (p != NULL)
 				{
-					unsigned int id = (unsigned int)::atoi(p);
+					unsigned id = (unsigned)::atoi(p);
 					if (id > 0U)
 						m_dmrBlackList.push_back(id);
 					p = ::strtok(NULL, ",\r\n");
@@ -335,10 +335,10 @@ bool CConf::Read()
 			}
 			else if (::strcmp(key, "WhiteList") == 0)
 			{
-				char* p = ::strtok(value, ",\r\n");
+				char *p = ::strtok(value, ",\r\n");
 				while (p != NULL)
 				{
-					unsigned int id = (unsigned int)::atoi(p);
+					unsigned id = (unsigned)::atoi(p);
 					if (id > 0U)
 						m_dmrWhiteList.push_back(id);
 					p = ::strtok(NULL, ",\r\n");
@@ -346,10 +346,10 @@ bool CConf::Read()
 			}
 			else if (::strcmp(key, "Slot1TGWhiteList") == 0)
 			{
-				char* p = ::strtok(value, ",\r\n");
+				char *p = ::strtok(value, ",\r\n");
 				while (p != NULL)
 				{
-					unsigned int id = (unsigned int)::atoi(p);
+					unsigned id = (unsigned)::atoi(p);
 					if (id > 0U)
 						m_dmrSlot1TGWhiteList.push_back(id);
 					p = ::strtok(NULL, ",\r\n");
@@ -357,21 +357,21 @@ bool CConf::Read()
 			}
 			else if (::strcmp(key, "Slot2TGWhiteList") == 0)
 			{
-				char* p = ::strtok(value, ",\r\n");
+				char *p = ::strtok(value, ",\r\n");
 				while (p != NULL)
 				{
-					unsigned int id = (unsigned int)::atoi(p);
+					unsigned id = (unsigned)::atoi(p);
 					if (id > 0U)
 						m_dmrSlot2TGWhiteList.push_back(id);
 					p = ::strtok(NULL, ",\r\n");
 				}
 			}
 			else if (::strcmp(key, "TXHang") == 0)
-				m_dmrTXHang = (unsigned int)::atoi(value);
+				m_dmrTXHang = (unsigned)::atoi(value);
 			else if (::strcmp(key, "CallHang") == 0)
-				m_dmrCallHang = (unsigned int)::atoi(value);
+				m_dmrCallHang = (unsigned)::atoi(value);
 			else if (::strcmp(key, "ModeHang") == 0)
-				m_dmrModeHang = (unsigned int)::atoi(value);
+				m_dmrModeHang = (unsigned)::atoi(value);
 			else if (::strcmp(key, "OVCM") == 0)
 				switch(::atoi(value))
 				{
@@ -396,9 +396,9 @@ bool CConf::Read()
 			else if (::strcmp(key, "Address") == 0)
 				m_dmrNetworkAddress = value;
 			else if (::strcmp(key, "Port") == 0)
-				m_dmrNetworkPort = (unsigned int)::atoi(value);
+				m_dmrNetworkPort = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Local") == 0)
-				m_dmrNetworkLocal = (unsigned int)::atoi(value);
+				m_dmrNetworkLocal = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Password") == 0)
 				m_dmrNetworkPassword = value;
 			else if (::strcmp(key, "Options") == 0)
@@ -406,13 +406,13 @@ bool CConf::Read()
 			else if (::strcmp(key, "Debug") == 0)
 				m_dmrNetworkDebug = ::atoi(value) == 1;
 			else if (::strcmp(key, "Jitter") == 0)
-				m_dmrNetworkJitter = (unsigned int)::atoi(value);
+				m_dmrNetworkJitter = (unsigned)::atoi(value);
 			else if (::strcmp(key, "Slot1") == 0)
 				m_dmrNetworkSlot1 = ::atoi(value) == 1;
 			else if (::strcmp(key, "Slot2") == 0)
 				m_dmrNetworkSlot2 = ::atoi(value) == 1;
 			else if (::strcmp(key, "ModeHang") == 0)
-				m_dmrNetworkModeHang = (unsigned int)::atoi(value);
+				m_dmrNetworkModeHang = (unsigned)::atoi(value);
 		}
 	}
 
@@ -426,12 +426,12 @@ std::string CConf::getCallsign() const
 	return m_callsign;
 }
 
-unsigned int CConf::getId() const
+unsigned CConf::getId() const
 {
 	return m_id;
 }
 
-unsigned int CConf::getTimeout() const
+unsigned CConf::getTimeout() const
 {
 	return m_timeout;
 }
@@ -441,17 +441,17 @@ bool CConf::getDuplex() const
 	return m_duplex;
 }
 
-unsigned int CConf::getRXFrequency() const
+unsigned CConf::getRXFrequency() const
 {
 	return m_rxFrequency;
 }
 
-unsigned int CConf::getTXFrequency() const
+unsigned CConf::getTXFrequency() const
 {
 	return m_txFrequency;
 }
 
-unsigned int CConf::getPower() const
+unsigned CConf::getPower() const
 {
 	return m_power;
 }
@@ -486,7 +486,7 @@ std::string CConf::getURL() const
 	return m_url;
 }
 
-unsigned int CConf::getLogLevel() const
+unsigned CConf::getLogLevel() const
 {
 	return m_logLevel;
 }
@@ -496,7 +496,7 @@ bool CConf::getCWIdEnabled() const
 	return m_cwIdEnabled;
 }
 
-unsigned int CConf::getCWIdTime() const
+unsigned CConf::getCWIdTime() const
 {
 	return m_cwIdTime;
 }
@@ -511,7 +511,7 @@ std::string CConf::getDMRIdLookupFile() const
 	return m_dmrIdLookupFile;
 }
 
-unsigned int CConf::getDMRIdLookupTime() const
+unsigned CConf::getDMRIdLookupTime() const
 {
 	return m_dmrIdLookupTime;
 }
@@ -526,7 +526,7 @@ std::string CConf::getModemProtocol() const
 	return m_modemProtocol;
 }
 
-unsigned int CConf::getModemAddress() const
+unsigned CConf::getModemAddress() const
 {
 	return m_modemAddress;
 }
@@ -546,12 +546,12 @@ bool CConf::getModemPTTInvert() const
 	return m_modemPTTInvert;
 }
 
-unsigned int CConf::getModemTXDelay() const
+unsigned CConf::getModemTXDelay() const
 {
 	return m_modemTXDelay;
 }
 
-unsigned int CConf::getModemDMRDelay() const
+unsigned CConf::getModemDMRDelay() const
 {
 	return m_modemDMRDelay;
 }
@@ -621,22 +621,22 @@ DMR_BEACONS CConf::getDMRBeacons() const
 	return m_dmrBeacons;
 }
 
-unsigned int CConf::getDMRBeaconInterval() const
+unsigned CConf::getDMRBeaconInterval() const
 {
 	return m_dmrBeaconInterval;
 }
 
-unsigned int CConf::getDMRBeaconDuration() const
+unsigned CConf::getDMRBeaconDuration() const
 {
 	return m_dmrBeaconDuration;
 }
 
-unsigned int CConf::getDMRId() const
+unsigned CConf::getDMRId() const
 {
 	return m_dmrId;
 }
 
-unsigned int CConf::getDMRColorCode() const
+unsigned CConf::getDMRColorCode() const
 {
 	return m_dmrColorCode;
 }
@@ -656,42 +656,42 @@ bool CConf::getDMRDumpTAData() const
 	return m_dmrDumpTAData;
 }
 
-std::vector<unsigned int> CConf::getDMRPrefixes() const
+std::vector<unsigned> CConf::getDMRPrefixes() const
 {
 	return m_dmrPrefixes;
 }
 
-std::vector<unsigned int> CConf::getDMRBlackList() const
+std::vector<unsigned> CConf::getDMRBlackList() const
 {
 	return m_dmrBlackList;
 }
 
-std::vector<unsigned int> CConf::getDMRWhiteList() const
+std::vector<unsigned> CConf::getDMRWhiteList() const
 {
 	return m_dmrWhiteList;
 }
 
-std::vector<unsigned int> CConf::getDMRSlot1TGWhiteList() const
+std::vector<unsigned> CConf::getDMRSlot1TGWhiteList() const
 {
 	return m_dmrSlot1TGWhiteList;
 }
 
-std::vector<unsigned int> CConf::getDMRSlot2TGWhiteList() const
+std::vector<unsigned> CConf::getDMRSlot2TGWhiteList() const
 {
 	return m_dmrSlot2TGWhiteList;
 }
 
-unsigned int CConf::getDMRCallHang() const
+unsigned CConf::getDMRCallHang() const
 {
 	return m_dmrCallHang;
 }
 
-unsigned int CConf::getDMRTXHang() const
+unsigned CConf::getDMRTXHang() const
 {
 	return m_dmrTXHang;
 }
 
-unsigned int CConf::getDMRModeHang() const
+unsigned CConf::getDMRModeHang() const
 {
 	return m_dmrModeHang;
 }
@@ -711,12 +711,12 @@ std::string CConf::getDMRNetworkAddress() const
 	return m_dmrNetworkAddress;
 }
 
-unsigned int CConf::getDMRNetworkPort() const
+unsigned CConf::getDMRNetworkPort() const
 {
 	return m_dmrNetworkPort;
 }
 
-unsigned int CConf::getDMRNetworkLocal() const
+unsigned CConf::getDMRNetworkLocal() const
 {
 	return m_dmrNetworkLocal;
 }
@@ -731,7 +731,7 @@ std::string CConf::getDMRNetworkOptions() const
 	return m_dmrNetworkOptions;
 }
 
-unsigned int CConf::getDMRNetworkModeHang() const
+unsigned CConf::getDMRNetworkModeHang() const
 {
 	return m_dmrNetworkModeHang;
 }
@@ -741,7 +741,7 @@ bool CConf::getDMRNetworkDebug() const
 	return m_dmrNetworkDebug;
 }
 
-unsigned int CConf::getDMRNetworkJitter() const
+unsigned CConf::getDMRNetworkJitter() const
 {
 	return m_dmrNetworkJitter;
 }

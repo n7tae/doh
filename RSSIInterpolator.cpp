@@ -35,7 +35,7 @@ CRSSIInterpolator::~CRSSIInterpolator()
 	m_map.clear();
 }
 
-bool CRSSIInterpolator::load(const std::string& filename)
+bool CRSSIInterpolator::load(const std::string &filename)
 {
 	FILE* fp = ::fopen(filename.c_str(), "rt");
 	if (fp == NULL)
@@ -50,8 +50,8 @@ bool CRSSIInterpolator::load(const std::string& filename)
 		if (buffer[0U] == '#')
 			continue;
 
-		char* p1 = ::strtok(buffer, " \t\r\n");
-		char* p2 = ::strtok(NULL,   " \t\r\n");
+		char *p1 = ::strtok(buffer, " \t\r\n");
+		char *p2 = ::strtok(NULL,   " \t\r\n");
 
 		if (p1 != NULL && p2 != NULL)
 		{

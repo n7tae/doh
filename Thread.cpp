@@ -54,7 +54,7 @@ DWORD CThread::helper(LPVOID arg)
 	return 0UL;
 }
 
-void CThread::sleep(unsigned int ms)
+void CThread::sleep(unsigned ms)
 {
 	::Sleep(ms);
 }
@@ -93,7 +93,7 @@ void* CThread::helper(void* arg)
 	return NULL;
 }
 
-void CThread::sleep(unsigned int ms)
+void CThread::sleep(unsigned ms)
 {
 	struct timespec ts;
 

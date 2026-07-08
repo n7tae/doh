@@ -28,7 +28,7 @@ CDMRTA::~CDMRTA()
 {
 }
 
-bool CDMRTA::add(unsigned int blockId, const unsigned char* data, unsigned int len)
+bool CDMRTA::add(unsigned blockId, const uint8_t *data, unsigned len)
 {
 	assert(data != NULL);
 	if (blockId > 3)
@@ -38,7 +38,7 @@ bool CDMRTA::add(unsigned int blockId, const unsigned char* data, unsigned int l
 		return false;
 	}
 
-	unsigned int offset = blockId * 7;
+	unsigned offset = blockId * 7;
 
 	if (offset + len >= sizeof(m_buf))
 	{
@@ -52,9 +52,9 @@ bool CDMRTA::add(unsigned int blockId, const unsigned char* data, unsigned int l
 	return decodeTA();
 }
 
-const unsigned char* CDMRTA::get()
+const uint8_t *CDMRTA::get()
 {
-	return (unsigned char*)m_TA;
+	return (uint8_t*)m_TA;
 }
 
 void CDMRTA::reset()
@@ -65,15 +65,15 @@ void CDMRTA::reset()
 
 bool CDMRTA::decodeTA()
 {
-	unsigned char *b;
-	unsigned char c;
+	uint8_t *b;
+	uint8_t c;
 	int j;
-	unsigned int i, t1, t2;
+	unsigned i, t1, t2;
 
-	unsigned char* talkerAlias = m_buf;
+	uint8_t *talkerAlias = m_buf;
 
-	unsigned int TAformat = (talkerAlias[0] >> 6U) & 0x03U;
-	unsigned int TAsize   = (talkerAlias[0] >> 1U) & 0x1FU;
+	unsigned TAformat = (talkerAlias[0] >> 6U) & 0x03U;
+	unsigned TAsize   = (talkerAlias[0] >> 1U) & 0x1FU;
 	::strcpy(m_TA, "(could not decode)");
 
 	switch (TAformat)

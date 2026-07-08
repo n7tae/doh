@@ -12,8 +12,9 @@
 *	GNU General Public License for more details.
 */
 
-#ifndef	DMRTA_H
-#define	DMRTA_H
+#pragma once
+
+#include <cstdint>
 
 class CDMRTA
 {
@@ -21,16 +22,14 @@ public:
 	CDMRTA();
 	~CDMRTA();
 
-	bool add(unsigned int blockId, const unsigned char* data, unsigned int len);
-	const unsigned char* get();
+	bool add(unsigned blockId, const uint8_t *data, unsigned len);
+	const uint8_t *get();
 	void reset();
 
 protected:
 	bool decodeTA();
 
 private:
-	char            m_TA[32];
-	unsigned char   m_buf[32];
+	char    m_TA[32];
+	uint8_t m_buf[32];
 };
-
-#endif

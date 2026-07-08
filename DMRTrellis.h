@@ -1,4 +1,5 @@
 /*
+*   Copyright (C) Thomas A. Early N7TAE
 *	Copyright (C) 2016 by Jonathan Naylor, G4KLX
 *
 *	This program is free software; you can redistribute it and/or modify
@@ -11,8 +12,9 @@
 *	GNU General Public License for more details.
 */
 
-#ifndef	DMRTrellis_H
-#define	DMRTrellis_H
+#pragma once
+
+#include <cstdint>
 
 class CDMRTrellis
 {
@@ -20,18 +22,16 @@ public:
 	CDMRTrellis();
 	~CDMRTrellis();
 
-	bool decode(const unsigned char* data, unsigned char* payload);
-	void encode(const unsigned char* payload, unsigned char* data);
+	bool decode(const uint8_t *data, uint8_t *payload);
+	void encode(const uint8_t *payload, uint8_t *data);
 
 private:
-	void deinterleave(const unsigned char* in, signed char* dibits) const;
-	void interleave(const signed char* dibits, unsigned char* out) const;
-	void dibitsToPoints(const signed char* dibits, unsigned char* points) const;
-	void pointsToDibits(const unsigned char* points, signed char* dibits) const;
-	void bitsToTribits(const unsigned char* payload, unsigned char* tribits) const;
-	void tribitsToBits(const unsigned char* tribits, unsigned char* payload) const;
-	bool fixCode(unsigned char* points, unsigned int failPos, unsigned char* payload) const;
-	unsigned int checkCode(const unsigned char* points, unsigned char* tribits) const;
+	void deinterleave(const uint8_t *in, signed char *dibits) const;
+	void interleave(const signed char *dibits, uint8_t *out) const;
+	void dibitsToPoints(const signed char *dibits, uint8_t *points) const;
+	void pointsToDibits(const uint8_t *points, signed char *dibits) const;
+	void bitsToTribits(const uint8_t *payload, uint8_t *tribits) const;
+	void tribitsToBits(const uint8_t *tribits, uint8_t *payload) const;
+	bool fixCode(uint8_t *points, unsigned failPos, uint8_t *payload) const;
+	unsigned checkCode(const uint8_t *points, uint8_t *tribits) const;
 };
-
-#endif

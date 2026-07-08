@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2009-2011,2013,2015,2016,2020 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,9 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef UDPSocket_H
-#define UDPSocket_H
-
+#pragma once
 #include <string>
 
 #include <netdb.h>
@@ -31,7 +30,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
-#if !defined(UDP_SOCKET_MAX)
+#ifndef UDP_SOCKET_MAX
 #define UDP_SOCKET_MAX	1
 #endif
 
@@ -44,25 +43,25 @@ enum IPMATCHTYPE
 class CUDPSocket
 {
 public:
-	CUDPSocket(const std::string& address, unsigned int port = 0U);
-	CUDPSocket(unsigned int port = 0U);
+	CUDPSocket(const std::string &address, unsigned port = 0U);
+	CUDPSocket(unsigned port = 0U);
 	~CUDPSocket();
 
-	bool open(unsigned int af = AF_UNSPEC);
+	bool open(unsigned af = AF_UNSPEC);
 	bool open(const sockaddr_storage& address);
-	bool open(const unsigned int index, const unsigned int af, const std::string& address, const unsigned int port);
+	bool open(const unsigned index, const unsigned af, const std::string &address, const unsigned port);
 
-	int  read(unsigned char* buffer, unsigned int length, sockaddr_storage& address, unsigned int &address_length);
-	bool write(const unsigned char* buffer, unsigned int length, const sockaddr_storage& address, unsigned int address_length);
+	int  read(uint8_t *buffer, unsigned length, sockaddr_storage& address, unsigned &address_length);
+	bool write(const uint8_t *buffer, unsigned length, const sockaddr_storage& address, unsigned address_length);
 
 	void close();
-	void close(const unsigned int index);
+	void close(const unsigned index);
 
 	static void startup();
 	static void shutdown();
 
-	static int lookup(const std::string& hostName, unsigned int port, sockaddr_storage& address, unsigned int& address_length);
-	static int lookup(const std::string& hostName, unsigned int port, sockaddr_storage& address, unsigned int& address_length, struct addrinfo& hints);
+	static int lookup(const std::string &hostName, unsigned port, sockaddr_storage& address, unsigned& address_length);
+	static int lookup(const std::string &hostName, unsigned port, sockaddr_storage& address, unsigned& address_length, struct addrinfo& hints);
 
 	static bool match(const sockaddr_storage& addr1, const sockaddr_storage& addr2, IPMATCHTYPE type = IMT_ADDRESS_AND_PORT);
 
@@ -73,9 +72,7 @@ private:
 	unsigned short m_port_save;
 	std::string    m_address[UDP_SOCKET_MAX];
 	unsigned short m_port[UDP_SOCKET_MAX];
-	unsigned int   m_af[UDP_SOCKET_MAX];
+	unsigned   m_af[UDP_SOCKET_MAX];
 	int            m_fd[UDP_SOCKET_MAX];
-	unsigned int   m_counter;
+	unsigned   m_counter;
 };
-
-#endif

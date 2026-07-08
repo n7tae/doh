@@ -21,7 +21,7 @@
 #include <cassert>
 #include <algorithm>
 
-CDMRControl::CDMRControl(unsigned int id, unsigned int colorCode, unsigned int callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned int>& prefixes, const std::vector<unsigned int>& blacklist, const std::vector<unsigned int>& whitelist, const std::vector<unsigned int>& slot1TGWhitelist, const std::vector<unsigned int>& slot2TGWhitelist, unsigned int timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned int jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB) :
+CDMRControl::CDMRControl(unsigned id, unsigned colorCode, unsigned callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned>& prefixes, const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, unsigned timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB) :
 	m_colorCode(colorCode),
 	m_modem(modem),
 	m_network(network),
@@ -44,7 +44,7 @@ CDMRControl::~CDMRControl()
 {
 }
 
-bool CDMRControl::processWakeup(const unsigned char* data)
+bool CDMRControl::processWakeup(const uint8_t *data)
 {
 	assert(data != NULL);
 
@@ -61,7 +61,7 @@ bool CDMRControl::processWakeup(const unsigned char* data)
 	if (csbko != CSBKO_BSDWNACT)
 		return false;
 
-	unsigned int srcId = csbk.getSrcId();
+	unsigned srcId = csbk.getSrcId();
 	std::string src = m_lookup->find(srcId);
 
 	bool ret = CDMRAccessControl::validateSrcId(srcId);
@@ -76,28 +76,28 @@ bool CDMRControl::processWakeup(const unsigned char* data)
 	return true;
 }
 
-bool CDMRControl::writeModemSlot1(unsigned char *data, unsigned int len)
+bool CDMRControl::writeModemSlot1(uint8_t *data, unsigned len)
 {
 	assert(data != NULL);
 
 	return m_slot1.writeModem(data, len);
 }
 
-bool CDMRControl::writeModemSlot2(unsigned char *data, unsigned int len)
+bool CDMRControl::writeModemSlot2(uint8_t *data, unsigned len)
 {
 	assert(data != NULL);
 
 	return m_slot2.writeModem(data, len);
 }
 
-unsigned int CDMRControl::readModemSlot1(unsigned char *data)
+unsigned CDMRControl::readModemSlot1(uint8_t *data)
 {
 	assert(data != NULL);
 
 	return m_slot1.readModem(data);
 }
 
-unsigned int CDMRControl::readModemSlot2(unsigned char *data)
+unsigned CDMRControl::readModemSlot2(uint8_t *data)
 {
 	assert(data != NULL);
 
@@ -112,7 +112,7 @@ void CDMRControl::clock()
 		bool ret = m_network->read(data);
 		if (ret)
 		{
-			unsigned int slotNo = data.getSlotNo();
+			unsigned slotNo = data.getSlotNo();
 			switch (slotNo)
 			{
 			case 1U:

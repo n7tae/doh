@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2009,2010,2011,2014 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,21 +17,20 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	Timer_H
-#define	Timer_H
+#pragma once
 
 class CTimer
 {
 public:
-	CTimer(unsigned int ticksPerSec, unsigned int secs = 0U, unsigned int msecs = 0U);
+	CTimer(unsigned ticksPerSec, unsigned secs = 0U, unsigned msecs = 0U);
 	~CTimer();
 
-	void setTimeout(unsigned int secs, unsigned int msecs = 0U);
+	void setTimeout(unsigned secs, unsigned msecs = 0U);
 
-	unsigned int getTimeout() const;
-	unsigned int getTimer() const;
+	unsigned getTimeout() const;
+	unsigned getTimer() const;
 
-	unsigned int getRemaining()
+	unsigned getRemaining()
 	{
 		if (m_timeout == 0U || m_timer == 0U)
 			return 0U;
@@ -46,7 +46,7 @@ public:
 		return m_timer > 0U;
 	}
 
-	void start(unsigned int secs, unsigned int msecs = 0U)
+	void start(unsigned secs, unsigned msecs = 0U)
 	{
 		setTimeout(secs, msecs);
 
@@ -75,16 +75,14 @@ public:
 		return false;
 	}
 
-	void clock(unsigned int ticks = 1U)
+	void clock(unsigned ticks = 1U)
 	{
 		if (m_timer > 0U && m_timeout > 0U)
 			m_timer += ticks;
 	}
 
 private:
-	unsigned int m_ticksPerSec;
-	unsigned int m_timeout;
-	unsigned int m_timer;
+	unsigned m_ticksPerSec;
+	unsigned m_timeout;
+	unsigned m_timer;
 };
-
-#endif

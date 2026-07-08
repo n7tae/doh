@@ -27,16 +27,16 @@
 #include <cassert>
 #include <cstring>
 
-static unsigned int m_level = 2U;
+static unsigned m_level = 2U;
 
 static char LEVELS[] = " DMIWEF";
 
-void LogInitialise(unsigned int level)
+void LogInitialise(unsigned level)
 {
 	m_level    = level;
 }
 
-void Log(unsigned int level, const char* fmt, ...)
+void Log(unsigned level, const char *fmt, ...)
 {
 	assert(fmt != NULL);
 

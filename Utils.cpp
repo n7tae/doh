@@ -17,26 +17,26 @@
 #include <cstdio>
 #include <cassert>
 
-void CUtils::dump(const std::string& title, const unsigned char* data, unsigned int length)
+void CUtils::dump(const std::string &title, const uint8_t *data, unsigned length)
 {
 	assert(data != NULL);
 
 	dump(2U, title, data, length);
 }
 
-void CUtils::dump(int level, const std::string& title, const unsigned char* data, unsigned int length)
+void CUtils::dump(int level, const std::string &title, const uint8_t *data, unsigned length)
 {
 	assert(data != NULL);
 
 	::Log(level, "%s", title.c_str());
 
-	unsigned int offset = 0U;
+	unsigned offset = 0U;
 
 	while (length > 0U)
 	{
 		std::string output;
 
-		unsigned int bytes = (length > 16U) ? 16U : length;
+		unsigned bytes = (length > 16U) ? 16U : length;
 
 		for (unsigned i = 0U; i < bytes; i++)
 		{
@@ -45,14 +45,14 @@ void CUtils::dump(int level, const std::string& title, const unsigned char* data
 			output += temp;
 		}
 
-		for (unsigned int i = bytes; i < 16U; i++)
+		for (unsigned i = bytes; i < 16U; i++)
 			output += "   ";
 
 		output += "   *";
 
 		for (unsigned i = 0U; i < bytes; i++)
 		{
-			unsigned char c = data[offset + i];
+			uint8_t c = data[offset + i];
 
 			if (::isprint(c))
 				output += c;
@@ -73,26 +73,26 @@ void CUtils::dump(int level, const std::string& title, const unsigned char* data
 	}
 }
 
-void CUtils::dump(const std::string& title, const bool* bits, unsigned int length)
+void CUtils::dump(const std::string &title, const bool *bits, unsigned length)
 {
 	assert(bits != NULL);
 
 	dump(2U, title, bits, length);
 }
 
-void CUtils::dump(int level, const std::string& title, const bool* bits, unsigned int length)
+void CUtils::dump(int level, const std::string &title, const bool *bits, unsigned length)
 {
 	assert(bits != NULL);
 
-	unsigned char bytes[100U];
-	unsigned int nBytes = 0U;
-	for (unsigned int n = 0U; n < length; n += 8U, nBytes++)
+	uint8_t bytes[100U];
+	unsigned nBytes = 0U;
+	for (unsigned n = 0U; n < length; n += 8U, nBytes++)
 		bitsToByteBE(bits + n, bytes[nBytes]);
 
 	dump(level, title, bytes, nBytes);
 }
 
-void CUtils::byteToBitsBE(unsigned char byte, bool* bits)
+void CUtils::byteToBitsBE(uint8_t byte, bool *bits)
 {
 	assert(bits != NULL);
 
@@ -106,7 +106,7 @@ void CUtils::byteToBitsBE(unsigned char byte, bool* bits)
 	bits[7U] = (byte & 0x01U) == 0x01U;
 }
 
-void CUtils::byteToBitsLE(unsigned char byte, bool* bits)
+void CUtils::byteToBitsLE(uint8_t byte, bool *bits)
 {
 	assert(bits != NULL);
 
@@ -120,7 +120,7 @@ void CUtils::byteToBitsLE(unsigned char byte, bool* bits)
 	bits[7U] = (byte & 0x80U) == 0x80U;
 }
 
-void CUtils::bitsToByteBE(const bool* bits, unsigned char& byte)
+void CUtils::bitsToByteBE(const bool *bits, uint8_t& byte)
 {
 	assert(bits != NULL);
 
@@ -134,7 +134,7 @@ void CUtils::bitsToByteBE(const bool* bits, unsigned char& byte)
 	byte |= bits[7U] ? 0x01U : 0x00U;
 }
 
-void CUtils::bitsToByteLE(const bool* bits, unsigned char& byte)
+void CUtils::bitsToByteLE(const bool *bits, uint8_t& byte)
 {
 	assert(bits != NULL);
 

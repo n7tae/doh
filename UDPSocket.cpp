@@ -26,7 +26,7 @@
 #define LogError(fmt, ...)	::fprintf(stderr, fmt "\n", ## __VA_ARGS__)
 #define LogInfo(fmt, ...)	::fprintf(stderr, fmt "\n", ## __VA_ARGS__)
 
-CUDPSocket::CUDPSocket(const std::string& address, unsigned int port) :
+CUDPSocket::CUDPSocket(const std::string &address, unsigned port) :
 	m_address_save(address),
 	m_port_save(port),
 	m_counter(0U)
@@ -40,7 +40,7 @@ CUDPSocket::CUDPSocket(const std::string& address, unsigned int port) :
 	}
 }
 
-CUDPSocket::CUDPSocket(unsigned int port) :
+CUDPSocket::CUDPSocket(unsigned port) :
 	m_address_save(),
 	m_port_save(port),
 	m_counter(0U)
@@ -66,7 +66,7 @@ void CUDPSocket::shutdown()
 {
 }
 
-int CUDPSocket::lookup(const std::string& hostname, unsigned int port, sockaddr_storage& addr, unsigned int& address_length)
+int CUDPSocket::lookup(const std::string &hostname, unsigned port, sockaddr_storage& addr, unsigned& address_length)
 {
 	struct addrinfo hints;
 	::memset(&hints, 0, sizeof(hints));
@@ -74,7 +74,7 @@ int CUDPSocket::lookup(const std::string& hostname, unsigned int port, sockaddr_
 	return lookup(hostname, port, addr, address_length, hints);
 }
 
-int CUDPSocket::lookup(const std::string& hostname, unsigned int port, sockaddr_storage& addr, unsigned int& address_length, struct addrinfo& hints)
+int CUDPSocket::lookup(const std::string &hostname, unsigned port, sockaddr_storage& addr, unsigned& address_length, struct addrinfo& hints)
 {
 	std::string portstr = std::to_string(port);
 	struct addrinfo *res;
@@ -160,15 +160,15 @@ bool CUDPSocket::open(const sockaddr_storage& address)
 	return open(address.ss_family);
 }
 
-bool CUDPSocket::open(unsigned int af)
+bool CUDPSocket::open(unsigned af)
 {
 	return open(0, af, m_address_save, m_port_save);
 }
 
-bool CUDPSocket::open(const unsigned int index, const unsigned int af, const std::string& address, const unsigned int port)
+bool CUDPSocket::open(const unsigned index, const unsigned af, const std::string &address, const unsigned port)
 {
 	sockaddr_storage addr;
-	unsigned int addrlen;
+	unsigned addrlen;
 	struct addrinfo hints;
 
 	::memset(&hints, 0, sizeof(hints));
@@ -216,7 +216,7 @@ bool CUDPSocket::open(const unsigned int index, const unsigned int af, const std
 	return true;
 }
 
-int CUDPSocket::read(unsigned char* buffer, unsigned int length, sockaddr_storage& address, unsigned int &address_length)
+int CUDPSocket::read(uint8_t *buffer, unsigned length, sockaddr_storage& address, unsigned &address_length)
 {
 	assert(buffer != NULL);
 	assert(length > 0U);
@@ -278,7 +278,7 @@ int CUDPSocket::read(unsigned char* buffer, unsigned int length, sockaddr_storag
 	return len;
 }
 
-bool CUDPSocket::write(const unsigned char* buffer, unsigned int length, const sockaddr_storage& address, unsigned int address_length)
+bool CUDPSocket::write(const uint8_t *buffer, unsigned length, const sockaddr_storage& address, unsigned address_length)
 {
 	assert(buffer != NULL);
 	assert(length > 0U);
@@ -312,7 +312,7 @@ void CUDPSocket::close()
 		close(m_fd[i]);
 }
 
-void CUDPSocket::close(const unsigned int index)
+void CUDPSocket::close(const unsigned index)
 {
 	if (m_fd[index] >= 0)
 	{

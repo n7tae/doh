@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2017,2018,2020 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRNetwork_H)
-#define	DMRNetwork_H
+#pragma once
 
 #include "DMRData.h"
 
@@ -28,9 +28,9 @@ class IDMRNetwork
 public:
 	virtual ~IDMRNetwork() = 0;
 
-	virtual void setOptions(const std::string& options) = 0;
+	virtual void setOptions(const std::string &options) = 0;
 
-	virtual void setConfig(const std::string& callsign, unsigned int rxFrequency, unsigned int txFrequency, unsigned int power, unsigned int colorCode, float latitude, float longitude, int height, const std::string& location, const std::string& description, const std::string& url) = 0;
+	virtual void setConfig(const std::string &callsign, unsigned rxFrequency, unsigned txFrequency, unsigned power, unsigned colorCode, float latitude, float longitude, int height, const std::string &location, const std::string &description, const std::string &url) = 0;
 
 	virtual bool open() = 0;
 
@@ -40,17 +40,15 @@ public:
 
 	virtual bool write(const CDMRData& data) = 0;
 
-	virtual bool writeRadioPosition(unsigned int id, const unsigned char* data) = 0;
+	virtual bool writeRadioPosition(unsigned id, const uint8_t *data) = 0;
 
-	virtual bool writeTalkerAlias(unsigned int id, unsigned char type, const unsigned char* data) = 0;
+	virtual bool writeTalkerAlias(unsigned id, uint8_t type, const uint8_t *data) = 0;
 
 	virtual bool wantsBeacon() = 0;
 
-	virtual void clock(unsigned int ms) = 0;
+	virtual void clock(unsigned ms) = 0;
 
 	virtual void close() = 0;
 
 private:
 };
-
-#endif

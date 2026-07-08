@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2017,2018,2020,2021 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRDirectNetwork_H)
-#define	DMRDirectNetwork_H
+#pragma once
 
 #include "DMRNetwork.h"
 #include "UDPSocket.h"
@@ -32,12 +32,12 @@
 class CDMRDirectNetwork : public IDMRNetwork
 {
 public:
-	CDMRDirectNetwork(const std::string& address, unsigned int port, unsigned int local, unsigned int id, const std::string& password, bool duplex, const char* version, bool slot1, bool slot2, HW_TYPE hwType, bool debug);
+	CDMRDirectNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, const std::string &password, bool duplex, const char *version, bool slot1, bool slot2, HW_TYPE hwType, bool debug);
 	virtual ~CDMRDirectNetwork();
 
-	virtual void setOptions(const std::string& options);
+	virtual void setOptions(const std::string &options);
 
-	virtual void setConfig(const std::string& callsign, unsigned int rxFrequency, unsigned int txFrequency, unsigned int power, unsigned int colorCode, float latitude, float longitude, int height, const std::string& location, const std::string& description, const std::string& url);
+	virtual void setConfig(const std::string &callsign, unsigned rxFrequency, unsigned txFrequency, unsigned power, unsigned colorCode, float latitude, float longitude, int height, const std::string &location, const std::string &description, const std::string &url);
 
 	virtual bool open();
 
@@ -47,25 +47,25 @@ public:
 
 	virtual bool write(const CDMRData& data);
 
-	virtual bool writeRadioPosition(unsigned int id, const unsigned char* data);
+	virtual bool writeRadioPosition(unsigned id, const uint8_t *data);
 
-	virtual bool writeTalkerAlias(unsigned int id, unsigned char type, const unsigned char* data);
+	virtual bool writeTalkerAlias(unsigned id, uint8_t type, const uint8_t *data);
 
 	virtual bool wantsBeacon();
 
-	virtual void clock(unsigned int ms);
+	virtual void clock(unsigned ms);
 
 	virtual void close();
 
 private:
 	std::string      m_address;
-	unsigned int     m_port;
+	unsigned     m_port;
 	sockaddr_storage m_addr;
-	unsigned int     m_addrLen;
-	uint8_t*         m_id;
+	unsigned     m_addrLen;
+	uint8_t *        m_id;
 	std::string      m_password;
 	bool             m_duplex;
-	const char*      m_version;
+	const char *     m_version;
 	bool             m_debug;
 	CUDPSocket       m_socket;
 	bool             m_enabled;
@@ -85,20 +85,20 @@ private:
 	STATUS         m_status;
 	CTimer         m_retryTimer;
 	CTimer         m_timeoutTimer;
-	unsigned char* m_buffer;
+	uint8_t       *m_buffer;
 	uint32_t*      m_streamId;
-	unsigned char* m_salt;
+	uint8_t       *m_salt;
 
-	CRingBuffer<unsigned char> m_rxData;
+	CRingBuffer<uint8_t> m_rxData;
 
 	std::string    m_options;
 
 	std::mt19937   m_random;
 	std::string    m_callsign;
-	unsigned int   m_rxFrequency;
-	unsigned int   m_txFrequency;
-	unsigned int   m_power;
-	unsigned int   m_colorCode;
+	unsigned   m_rxFrequency;
+	unsigned   m_txFrequency;
+	unsigned   m_power;
+	unsigned   m_colorCode;
 	float          m_latitude;
 	float          m_longitude;
 	int            m_height;
@@ -113,7 +113,5 @@ private:
 	bool writeConfig();
 	bool writePing();
 
-	bool write(const unsigned char* data, unsigned int length);
+	bool write(const uint8_t *data, unsigned length);
 };
-
-#endif

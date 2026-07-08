@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <cassert>
 
-const unsigned int ENCODING_TABLE_1676[] =
+const unsigned ENCODING_TABLE_1676[] =
 {
 	0x0000U, 0x0273U, 0x04E5U, 0x0696U, 0x09C9U, 0x0BBAU, 0x0D2CU, 0x0F5FU, 0x11E2U, 0x1391U, 0x1507U, 0x1774U,
 	0x182BU, 0x1A58U, 0x1CCEU, 0x1EBDU, 0x21B7U, 0x23C4U, 0x2552U, 0x2721U, 0x287EU, 0x2A0DU, 0x2C9BU, 0x2EE8U,
@@ -37,7 +37,7 @@ const unsigned int ENCODING_TABLE_1676[] =
 	0xF104U, 0xF377U, 0xF5E1U, 0xF792U, 0xF8CDU, 0xFABEU, 0xFC28U, 0xFE5BU
 };
 
-const unsigned int DECODING_TABLE_1576[] =
+const unsigned DECODING_TABLE_1576[] =
 {
 	0x0000U, 0x0001U, 0x0002U, 0x0003U, 0x0004U, 0x0005U, 0x0006U, 0x4020U, 0x0008U, 0x0009U, 0x000AU, 0x000BU,
 	0x000CU, 0x000DU, 0x2081U, 0x2080U, 0x0010U, 0x0011U, 0x0012U, 0x0013U, 0x0014U, 0x0C00U, 0x0016U, 0x0C02U,
@@ -68,7 +68,7 @@ const unsigned int DECODING_TABLE_1576[] =
 #define MASK7           0xffffff00   /* auxiliary vector for testing */
 #define GENPOL          0x00000139   /* generator polinomial, g(x) */
 
-unsigned int CQR1676::getSyndrome1576(unsigned int pattern)
+unsigned CQR1676::getSyndrome1576(unsigned pattern)
 /*
  * Compute the syndrome corresponding to the given pattern, i.e., the
  * remainder after dividing the pattern (when considering it as the vector
@@ -79,7 +79,7 @@ unsigned int CQR1676::getSyndrome1576(unsigned int pattern)
  * obtain its syndrome in decoding.
  */
 {
-	unsigned int aux = X14;
+	unsigned aux = X14;
 
 	if (pattern >= X8)
 	{
@@ -96,24 +96,24 @@ unsigned int CQR1676::getSyndrome1576(unsigned int pattern)
 }
 
 // Compute the EMB against a precomputed list of correct words
-void CQR1676::encode(unsigned char* data)
+void CQR1676::encode(uint8_t *data)
 {
 	assert(data != NULL);
 
-	unsigned int value = (data[0U] >> 1) & 0x7FU;
-	unsigned int cksum = ENCODING_TABLE_1676[value];
+	unsigned value = (data[0U] >> 1) & 0x7FU;
+	unsigned cksum = ENCODING_TABLE_1676[value];
 
 	data[0U] = cksum >> 8;
 	data[1U] = cksum & 0xFFU;
 }
 
-unsigned char CQR1676::decode(const unsigned char* data)
+uint8_t CQR1676::decode(const uint8_t *data)
 {
 	assert(data != NULL);
 
-	unsigned int code = (data[0U] << 7) + (data[1U] >> 1);
-	unsigned int syndrome = getSyndrome1576(code);
-	unsigned int error_pattern = DECODING_TABLE_1576[syndrome];
+	unsigned code = (data[0U] << 7) + (data[1U] >> 1);
+	unsigned syndrome = getSyndrome1576(code);
+	unsigned error_pattern = DECODING_TABLE_1576[syndrome];
 
 	code ^= error_pattern;
 

@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2015 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,15 +17,14 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(RS129_H)
-#define	RS129_H
+#pragma once
+
+#include <cstdint>
 
 class CRS129
 {
 public:
-	static bool check(const unsigned char* in);
+	static bool check(const uint8_t *in);
 
-	static void encode(const unsigned char* msg, unsigned int nbytes, unsigned char* parity);
+	static void encode(const uint8_t *msg, unsigned nbytes, uint8_t *parity);
 };
-
-#endif

@@ -33,7 +33,7 @@ CDMRData::CDMRData(const CDMRData& data) :
 	m_ber(data.m_ber),
 	m_rssi(data.m_rssi)
 {
-	m_data = new unsigned char[2U * DMR_FRAME_LENGTH_BYTES];
+	m_data = new uint8_t[2U * DMR_FRAME_LENGTH_BYTES];
 	::memcpy(m_data, data.m_data, 2U * DMR_FRAME_LENGTH_BYTES);
 }
 
@@ -49,7 +49,7 @@ CDMRData::CDMRData() :
 	m_ber(0U),
 	m_rssi(0U)
 {
-	m_data = new unsigned char[2U * DMR_FRAME_LENGTH_BYTES];
+	m_data = new uint8_t[2U * DMR_FRAME_LENGTH_BYTES];
 }
 
 CDMRData::~CDMRData()
@@ -77,44 +77,44 @@ CDMRData& CDMRData::operator=(const CDMRData& data)
 	return *this;
 }
 
-unsigned int CDMRData::getSlotNo() const
+unsigned CDMRData::getSlotNo() const
 {
 	return m_slotNo;
 }
 
-void CDMRData::setSlotNo(unsigned int slotNo)
+void CDMRData::setSlotNo(unsigned slotNo)
 {
 	assert(slotNo == 1U || slotNo == 2U);
 
 	m_slotNo = slotNo;
 }
 
-unsigned char CDMRData::getDataType() const
+uint8_t CDMRData::getDataType() const
 {
 	return m_dataType;
 }
 
-void CDMRData::setDataType(unsigned char dataType)
+void CDMRData::setDataType(uint8_t dataType)
 {
 	m_dataType = dataType;
 }
 
-unsigned int CDMRData::getSrcId() const
+unsigned CDMRData::getSrcId() const
 {
 	return m_srcId;
 }
 
-void CDMRData::setSrcId(unsigned int id)
+void CDMRData::setSrcId(unsigned id)
 {
 	m_srcId = id;
 }
 
-unsigned int CDMRData::getDstId() const
+unsigned CDMRData::getDstId() const
 {
 	return m_dstId;
 }
 
-void CDMRData::setDstId(unsigned int id)
+void CDMRData::setDstId(unsigned id)
 {
 	m_dstId = id;
 }
@@ -129,47 +129,47 @@ void CDMRData::setFLCO(FLCO flco)
 	m_flco = flco;
 }
 
-unsigned char CDMRData::getSeqNo() const
+uint8_t CDMRData::getSeqNo() const
 {
 	return m_seqNo;
 }
 
-void CDMRData::setSeqNo(unsigned char seqNo)
+void CDMRData::setSeqNo(uint8_t seqNo)
 {
 	m_seqNo = seqNo;
 }
 
-unsigned char CDMRData::getN() const
+uint8_t CDMRData::getN() const
 {
 	return m_n;
 }
 
-void CDMRData::setN(unsigned char n)
+void CDMRData::setN(uint8_t n)
 {
 	m_n = n;
 }
 
-unsigned char CDMRData::getBER() const
+uint8_t CDMRData::getBER() const
 {
 	return m_ber;
 }
 
-void CDMRData::setBER(unsigned char ber)
+void CDMRData::setBER(uint8_t ber)
 {
 	m_ber = ber;
 }
 
-unsigned char CDMRData::getRSSI() const
+uint8_t CDMRData::getRSSI() const
 {
 	return m_rssi;
 }
 
-void CDMRData::setRSSI(unsigned char rssi)
+void CDMRData::setRSSI(uint8_t rssi)
 {
 	m_rssi = rssi;
 }
 
-unsigned int CDMRData::getData(unsigned char* buffer) const
+unsigned CDMRData::getData(uint8_t *buffer) const
 {
 	assert(buffer != NULL);
 
@@ -178,7 +178,7 @@ unsigned int CDMRData::getData(unsigned char* buffer) const
 	return DMR_FRAME_LENGTH_BYTES;
 }
 
-void CDMRData::setData(const unsigned char* buffer)
+void CDMRData::setData(const uint8_t *buffer)
 {
 	assert(buffer != NULL);
 

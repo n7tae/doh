@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2005, 2006, 2008, 2009 Free Software Foundation, Inc.
  *   Copyright (C) 2011,2015,2016 by Jonathan Naylor G4KLX
  *
@@ -17,8 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef SHA256_H
-#define SHA256_H
+#pragma once
 
 #include <cstdint>
 
@@ -37,39 +37,38 @@ public:
 	   initialization function update the context for the next LEN bytes
 	   starting at BUFFER.
 	   It is necessary that LEN is a multiple of 64!!! */
-	void processBlock(const unsigned char* buffer, unsigned int len);
+	void processBlock(const uint8_t *buffer, unsigned len);
 
 	/* Starting with the result of former calls of this function (or the
 	   initialization function update the context for the next LEN bytes
 	   starting at BUFFER.
 	   It is NOT required that LEN is a multiple of 64.  */
-	void processBytes(const unsigned char* buffer, unsigned int len);
+	void processBytes(const uint8_t *buffer, unsigned len);
 
 	/* Process the remaining bytes in the buffer and put result from CTX
 	   in first 32 bytes following RESBUF.  The result is always in little
 	   endian byte order, so that a byte-wise output yields to the wanted
 	   ASCII representation of the message digest.  */
-	unsigned char* finish(unsigned char* resbuf);
+	uint8_t *finish(uint8_t *resbuf);
 
 	/* Put result from CTX in first 32 bytes following RESBUF.  The result is
 	   always in little endian byte order, so that a byte-wise output yields
 	   to the wanted ASCII representation of the message digest.  */
-	unsigned char* read(unsigned char* resbuf);
+	uint8_t *read(uint8_t *resbuf);
 
 	/* Compute SHA256 message digest for LEN bytes beginning at BUFFER.  The
 	   result is always in little endian byte order, so that a byte-wise
 	   output yields to the wanted ASCII representation of the message
 	   digest.  */
-	unsigned char* buffer(const unsigned char* buffer, unsigned int len, unsigned char* resblock);
+	uint8_t *buffer(const uint8_t *buffer, unsigned len, uint8_t *resblock);
 
 private:
-	uint32_t*    m_state;
-	uint32_t*    m_total;
-	unsigned int m_buflen;
-	uint32_t*    m_buffer;
+	uint32_t *m_state;
+	uint32_t *m_total;
+	unsigned  m_buflen;
+	uint32_t *m_buffer;
 
 	void init();
 	void conclude();
 };
 
-#endif

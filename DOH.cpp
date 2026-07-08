@@ -59,12 +59,12 @@ static void sigHandler2(int /*signum*/)
 	m_reload = true;
 }
 
-const char* HEADER1 = "This software is for use on amateur radio networks only,";
-const char* HEADER2 = "it is to be used for educational purposes only. Its use on";
-const char* HEADER3 = "commercial networks is strictly prohibited.";
-const char* HEADER4 = "Copyright(C) 2015-2020 by Jonathan Naylor, G4KLX and others";
+const char *HEADER1 = "This software is for use on amateur radio networks only,";
+const char *HEADER2 = "it is to be used for educational purposes only. Its use on";
+const char *HEADER3 = "commercial networks is strictly prohibited.";
+const char *HEADER4 = "Copyright(C) 2015-2020 by Jonathan Naylor, G4KLX and others";
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	printf("DOH version %s\n", VERSION);
 	if (argc != 2)
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 	return ret;
 }
 
-CDOH::CDOH(const std::string& confFile) :
+CDOH::CDOH(const std::string &confFile) :
 	m_conf(confFile),
 	m_modem(NULL),
 	m_dmr(NULL),
@@ -164,7 +164,7 @@ int CDOH::run()
 
 	if (m_conf.getCWIdEnabled())
 	{
-		unsigned int time = m_conf.getCWIdTime();
+		unsigned time = m_conf.getCWIdTime();
 		m_cwCallsign      = m_conf.getCWIdCallsign();
 
 		LogInfo("CW Id Parameters");
@@ -190,7 +190,7 @@ int CDOH::run()
 
 	// For DMR and P25 we try to map IDs to callsigns
 	std::string lookupFile  = m_conf.getDMRIdLookupFile();
-	unsigned int reloadTime = m_conf.getDMRIdLookupTime();
+	unsigned reloadTime = m_conf.getDMRIdLookupTime();
 
 	LogInfo("DMR Id Lookups");
 	LogInfo("    File: %s", lookupFile.length() > 0U ? lookupFile.c_str() : "None");
@@ -214,19 +214,19 @@ int CDOH::run()
 
 	if (true)
 	{
-		unsigned int id             = m_conf.getDMRId();
-		unsigned int colorCode      = m_conf.getDMRColorCode();
+		unsigned id             = m_conf.getDMRId();
+		unsigned colorCode      = m_conf.getDMRColorCode();
 		bool selfOnly               = m_conf.getDMRSelfOnly();
 		bool embeddedLCOnly         = m_conf.getDMREmbeddedLCOnly();
 		bool dumpTAData             = m_conf.getDMRDumpTAData();
-		std::vector<unsigned int> prefixes  = m_conf.getDMRPrefixes();
-		std::vector<unsigned int> blackList = m_conf.getDMRBlackList();
-		std::vector<unsigned int> whiteList = m_conf.getDMRWhiteList();
-		std::vector<unsigned int> slot1TGWhiteList = m_conf.getDMRSlot1TGWhiteList();
-		std::vector<unsigned int> slot2TGWhiteList = m_conf.getDMRSlot2TGWhiteList();
-		unsigned int callHang       = m_conf.getDMRCallHang();
-		unsigned int txHang         = m_conf.getDMRTXHang();
-		unsigned int jitter         = m_conf.getDMRNetworkJitter();
+		std::vector<unsigned> prefixes  = m_conf.getDMRPrefixes();
+		std::vector<unsigned> blackList = m_conf.getDMRBlackList();
+		std::vector<unsigned> whiteList = m_conf.getDMRWhiteList();
+		std::vector<unsigned> slot1TGWhiteList = m_conf.getDMRSlot1TGWhiteList();
+		std::vector<unsigned> slot2TGWhiteList = m_conf.getDMRSlot2TGWhiteList();
+		unsigned callHang       = m_conf.getDMRCallHang();
+		unsigned txHang         = m_conf.getDMRTXHang();
+		unsigned jitter         = m_conf.getDMRNetworkJitter();
 		m_dmrRFModeHang             = m_conf.getDMRModeHang();
 		dmrBeacons                  = m_conf.getDMRBeacons();
 		DMR_OVCM_TYPES ovcm         = m_conf.getDMROVCM();
@@ -277,7 +277,7 @@ int CDOH::run()
 		{
 		case DMR_BEACONS_NETWORK:
 		{
-			unsigned int dmrBeaconDuration = m_conf.getDMRBeaconDuration();
+			unsigned dmrBeaconDuration = m_conf.getDMRBeaconDuration();
 
 			LogInfo("    DMR Roaming Beacons Type: network");
 			LogInfo("    DMR Roaming Beacons Duration: %us", dmrBeaconDuration);
@@ -287,8 +287,8 @@ int CDOH::run()
 		break;
 		case DMR_BEACONS_TIMED:
 		{
-			unsigned int dmrBeaconInterval = m_conf.getDMRBeaconInterval();
-			unsigned int dmrBeaconDuration = m_conf.getDMRBeaconDuration();
+			unsigned dmrBeaconInterval = m_conf.getDMRBeaconInterval();
+			unsigned dmrBeaconDuration = m_conf.getDMRBeaconDuration();
 
 			LogInfo("    DMR Roaming Beacons Type: timed");
 			LogInfo("    DMR Roaming Beacons Interval: %us", dmrBeaconInterval);
@@ -330,14 +330,14 @@ int CDOH::run()
 		else if (!error && m_mode == MODE_ERROR)
 			setMode(MODE_IDLE);
 
-		unsigned char mode = m_modem->getMode();
+		uint8_t mode = m_modem->getMode();
 		if (mode == MODE_FM && m_mode != MODE_FM)
 			setMode(mode);
 		else if (mode != MODE_FM && m_mode == MODE_FM)
 			setMode(mode);
 
-		unsigned char data[MODEM_DATA_LEN];
-		unsigned int len;
+		uint8_t data[MODEM_DATA_LEN];
+		unsigned len;
 		bool ret;
 
 		len = m_modem->readDMRData1(data);
@@ -511,7 +511,7 @@ int CDOH::run()
 			}
 		}
 
-		unsigned int ms = stopWatch.elapsed();
+		unsigned ms = stopWatch.elapsed();
 		stopWatch.start();
 
 		m_modem->clock(ms);
@@ -620,21 +620,21 @@ bool CDOH::createModem()
 {
 	std::string port             = m_conf.getModemPort();
 	std::string protocol	     = m_conf.getModemProtocol();
-	unsigned int address	     = m_conf.getModemAddress();
+	unsigned address	     = m_conf.getModemAddress();
 	bool rxInvert                = m_conf.getModemRXInvert();
 	bool txInvert                = m_conf.getModemTXInvert();
 	bool pttInvert               = m_conf.getModemPTTInvert();
-	unsigned int txDelay         = m_conf.getModemTXDelay();
-	unsigned int dmrDelay        = m_conf.getModemDMRDelay();
+	unsigned txDelay         = m_conf.getModemTXDelay();
+	unsigned dmrDelay        = m_conf.getModemDMRDelay();
 	float rxLevel                = m_conf.getModemRXLevel();
 	float cwIdTXLevel            = m_conf.getModemCWIdTXLevel();
 	float dmrTXLevel             = m_conf.getModemDMRTXLevel();
 	bool trace                   = m_conf.getModemTrace();
 	bool debug                   = m_conf.getModemDebug();
-	unsigned int colorCode       = m_conf.getDMRColorCode();
-	unsigned int rxFrequency     = m_conf.getRXFrequency();
-	unsigned int txFrequency     = m_conf.getTXFrequency();
-	unsigned int pocsagFrequency = txFrequency;
+	unsigned colorCode       = m_conf.getDMRColorCode();
+	unsigned rxFrequency     = m_conf.getRXFrequency();
+	unsigned txFrequency     = m_conf.getTXFrequency();
+	unsigned pocsagFrequency = txFrequency;
 	int rxOffset                 = m_conf.getModemRXOffset();
 	int txOffset                 = m_conf.getModemTXOffset();
 	int rxDCOffset               = m_conf.getModemRXDCOffset();
@@ -683,12 +683,12 @@ bool CDOH::createModem()
 bool CDOH::createDMRNetwork()
 {
 	std::string address  = m_conf.getDMRNetworkAddress();
-	unsigned int port    = m_conf.getDMRNetworkPort();
-	unsigned int local   = m_conf.getDMRNetworkLocal();
-	unsigned int id      = m_conf.getDMRId();
+	unsigned port    = m_conf.getDMRNetworkPort();
+	unsigned local   = m_conf.getDMRNetworkLocal();
+	unsigned id      = m_conf.getDMRId();
 	std::string password = m_conf.getDMRNetworkPassword();
 	bool debug           = m_conf.getDMRNetworkDebug();
-	unsigned int jitter  = m_conf.getDMRNetworkJitter();
+	unsigned jitter  = m_conf.getDMRNetworkJitter();
 	bool slot1           = m_conf.getDMRNetworkSlot1();
 	bool slot2           = m_conf.getDMRNetworkSlot2();
 	HW_TYPE hwType       = m_modem->getHWType();
@@ -715,10 +715,10 @@ bool CDOH::createDMRNetwork()
 	else
 		m_dmrNetwork = new CDMRGatewayNetwork(address, port, local, id, m_duplex, VERSION, slot1, slot2, hwType, debug);
 
-	unsigned int rxFrequency = m_conf.getRXFrequency();
-	unsigned int txFrequency = m_conf.getTXFrequency();
-	unsigned int power       = m_conf.getPower();
-	unsigned int colorCode   = m_conf.getDMRColorCode();
+	unsigned rxFrequency = m_conf.getRXFrequency();
+	unsigned txFrequency = m_conf.getTXFrequency();
+	unsigned power       = m_conf.getPower();
+	unsigned colorCode   = m_conf.getDMRColorCode();
 
 	LogInfo("Info Parameters");
 	LogInfo("    Callsign: %s", m_callsign.c_str());
@@ -784,7 +784,7 @@ void CDOH::readParams()
 	LogInfo("    DMR: enabled");
 }
 
-void CDOH::setMode(unsigned char mode)
+void CDOH::setMode(uint8_t mode)
 {
 	assert(m_modem != NULL);
 
@@ -870,7 +870,7 @@ void CDOH::setMode(unsigned char mode)
 	}
 }
 
-void  CDOH::createLockFile(const char* mode) const
+void  CDOH::createLockFile(const char *mode) const
 {
 	if (m_lockFileEnabled)
 	{

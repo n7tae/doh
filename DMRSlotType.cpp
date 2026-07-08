@@ -33,11 +33,11 @@ CDMRSlotType::~CDMRSlotType()
 {
 }
 
-void CDMRSlotType::putData(const unsigned char* data)
+void CDMRSlotType::putData(const uint8_t *data)
 {
 	assert(data != NULL);
 
-	unsigned char DMRSlotType[3U];
+	uint8_t DMRSlotType[3U];
 	DMRSlotType[0U]  = (data[12U] << 2) & 0xFCU;
 	DMRSlotType[0U] |= (data[13U] >> 6) & 0x03U;
 
@@ -47,17 +47,17 @@ void CDMRSlotType::putData(const unsigned char* data)
 
 	DMRSlotType[2U]  = (data[20U] << 2) & 0xF0U;
 
-	unsigned char code = CGolay2087::decode(DMRSlotType);
+	uint8_t code = CGolay2087::decode(DMRSlotType);
 
 	m_colorCode = (code >> 4) & 0x0FU;
 	m_dataType  = (code >> 0) & 0x0FU;
 }
 
-void CDMRSlotType::getData(unsigned char* data) const
+void CDMRSlotType::getData(uint8_t *data) const
 {
 	assert(data != NULL);
 
-	unsigned char DMRSlotType[3U];
+	uint8_t DMRSlotType[3U];
 	DMRSlotType[0U]  = (m_colorCode << 4) & 0xF0U;
 	DMRSlotType[0U] |= (m_dataType  << 0) & 0x0FU;
 	DMRSlotType[1U]  = 0x00U;
@@ -71,22 +71,22 @@ void CDMRSlotType::getData(unsigned char* data) const
 	data[20U] = (data[20U] & 0x03U) | ((DMRSlotType[1U] << 6) & 0xC0U) | ((DMRSlotType[2U] >> 2) & 0x3CU);
 }
 
-unsigned char CDMRSlotType::getColorCode() const
+uint8_t CDMRSlotType::getColorCode() const
 {
 	return m_colorCode;
 }
 
-void CDMRSlotType::setColorCode(unsigned char code)
+void CDMRSlotType::setColorCode(uint8_t code)
 {
 	m_colorCode = code;
 }
 
-unsigned char CDMRSlotType::getDataType() const
+uint8_t CDMRSlotType::getDataType() const
 {
 	return m_dataType;
 }
 
-void CDMRSlotType::setDataType(unsigned char type)
+void CDMRSlotType::setDataType(uint8_t type)
 {
 	m_dataType = type;
 }

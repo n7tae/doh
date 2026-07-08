@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(BPTC19696_H)
-#define	BPTC19696_H
+#pragma once
+
+#include <cstdint>
 
 class CBPTC19696
 {
@@ -25,23 +27,21 @@ public:
 	CBPTC19696();
 	~CBPTC19696();
 
-	void decode(const unsigned char* in, unsigned char* out);
+	void decode(const uint8_t *in, uint8_t *out);
 
-	void encode(const unsigned char* in, unsigned char* out);
+	void encode(const uint8_t *in, uint8_t *out);
 
 private:
-	bool* m_rawData;
-	bool* m_deInterData;
+	bool *m_rawData;
+	bool *m_deInterData;
 
-	void decodeExtractBinary(const unsigned char* in);
+	void decodeExtractBinary(const uint8_t *in);
 	void decodeErrorCheck();
 	void decodeDeInterleave();
-	void decodeExtractData(unsigned char* data) const;
+	void decodeExtractData(uint8_t *data) const;
 
-	void encodeExtractData(const unsigned char* in) const;
+	void encodeExtractData(const uint8_t *in) const;
 	void encodeInterleave();
 	void encodeErrorCheck();
-	void encodeExtractBinary(unsigned char* data);
+	void encodeExtractBinary(uint8_t *data);
 };
-
-#endif

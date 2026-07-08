@@ -49,7 +49,7 @@ unsigned long long CStopWatch::start()
 	return (unsigned long long)(m_start.QuadPart / m_frequencyS.QuadPart);
 }
 
-unsigned int CStopWatch::elapsed()
+unsigned CStopWatch::elapsed()
 {
 	LARGE_INTEGER now;
 	::QueryPerformanceCounter(&now);
@@ -57,7 +57,7 @@ unsigned int CStopWatch::elapsed()
 	LARGE_INTEGER temp;
 	temp.QuadPart = (now.QuadPart - m_start.QuadPart) * 1000;
 
-	return (unsigned int)(temp.QuadPart / m_frequencyS.QuadPart);
+	return (unsigned)(temp.QuadPart / m_frequencyS.QuadPart);
 }
 
 #else
@@ -92,7 +92,7 @@ unsigned long long CStopWatch::start()
 	return m_startMS;
 }
 
-unsigned int CStopWatch::elapsed()
+unsigned CStopWatch::elapsed()
 {
 	struct timespec now;
 	::clock_gettime(CLOCK_MONOTONIC, &now);

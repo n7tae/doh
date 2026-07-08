@@ -36,7 +36,7 @@ CDMRCSBK::CDMRCSBK() :
 	m_dataContent(false),
 	m_CBF(0U)
 {
-	m_data = new unsigned char[12U];
+	m_data = new uint8_t[12U];
 }
 
 CDMRCSBK::~CDMRCSBK()
@@ -44,7 +44,7 @@ CDMRCSBK::~CDMRCSBK()
 	delete[] m_data;
 }
 
-bool CDMRCSBK::put(const unsigned char* bytes)
+bool CDMRCSBK::put(const uint8_t *bytes)
 {
 	assert(bytes != NULL);
 
@@ -143,7 +143,7 @@ bool CDMRCSBK::put(const unsigned char* bytes)
 	return true;
 }
 
-void CDMRCSBK::get(unsigned char* bytes) const
+void CDMRCSBK::get(uint8_t *bytes) const
 {
 	assert(bytes != NULL);
 
@@ -164,7 +164,7 @@ CSBKO CDMRCSBK::getCSBKO() const
 	return m_CSBKO;
 }
 
-unsigned char CDMRCSBK::getFID() const
+uint8_t CDMRCSBK::getFID() const
 {
 	return m_FID;
 }
@@ -196,17 +196,17 @@ bool CDMRCSBK::getGI() const
 	return m_GI;
 }
 
-unsigned int CDMRCSBK::getBSId() const
+unsigned CDMRCSBK::getBSId() const
 {
 	return m_bsId;
 }
 
-unsigned int CDMRCSBK::getSrcId() const
+unsigned CDMRCSBK::getSrcId() const
 {
 	return m_srcId;
 }
 
-unsigned int CDMRCSBK::getDstId() const
+unsigned CDMRCSBK::getDstId() const
 {
 	return m_dstId;
 }
@@ -216,12 +216,12 @@ bool CDMRCSBK::getDataContent() const
 	return m_dataContent;
 }
 
-unsigned char CDMRCSBK::getCBF() const
+uint8_t CDMRCSBK::getCBF() const
 {
 	return m_CBF;
 }
 
-void CDMRCSBK::setCBF(unsigned char cbf)
+void CDMRCSBK::setCBF(uint8_t cbf)
 {
 	m_CBF = m_data[3U] = cbf;
 }

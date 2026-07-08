@@ -1,4 +1,5 @@
 /*
+*   Copyright (C) Thomas A. Early N7TAE
 *   Copyright (C) 2016 by Jonathan Naylor G4KLX
 *
 *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef SerialPort_H
-#define SerialPort_H
+#pragma once
+
+#include <cstdint>
 
 class ISerialPort
 {
@@ -26,13 +28,11 @@ public:
 
 	virtual bool open() = 0;
 
-	virtual int read(unsigned char* buffer, unsigned int length) = 0;
+	virtual int read(uint8_t *buffer, unsigned length) = 0;
 
-	virtual int write(const unsigned char* buffer, unsigned int length) = 0;
+	virtual int write(const uint8_t *buffer, unsigned length) = 0;
 
 	virtual void close() = 0;
 
 private:
 };
-
-#endif

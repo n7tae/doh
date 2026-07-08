@@ -40,7 +40,7 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
-CSerialController::CSerialController(const std::string& device, SERIAL_SPEED speed, bool assertRTS) :
+CSerialController::CSerialController(const std::string &device, SERIAL_SPEED speed, bool assertRTS) :
 	m_device(device),
 	m_speed(speed),
 	m_assertRTS(assertRTS),
@@ -140,12 +140,12 @@ bool CSerialController::open()
 	return true;
 }
 
-int CSerialController::read(unsigned char* buffer, unsigned int length)
+int CSerialController::read(uint8_t *buffer, unsigned length)
 {
 	assert(m_handle != INVALID_HANDLE_VALUE);
 	assert(buffer != NULL);
 
-	unsigned int ptr = 0U;
+	unsigned ptr = 0U;
 
 	while (ptr < length)
 	{
@@ -168,7 +168,7 @@ int CSerialController::read(unsigned char* buffer, unsigned int length)
 	return int(length);
 }
 
-int CSerialController::readNonblock(unsigned char* buffer, unsigned int length)
+int CSerialController::readNonblock(uint8_t *buffer, unsigned length)
 {
 	assert(m_handle != INVALID_HANDLE_VALUE);
 	assert(buffer != NULL);
@@ -202,7 +202,7 @@ int CSerialController::readNonblock(unsigned char* buffer, unsigned int length)
 	return int(bytes);
 }
 
-int CSerialController::write(const unsigned char* buffer, unsigned int length)
+int CSerialController::write(const uint8_t *buffer, unsigned length)
 {
 	assert(m_handle != INVALID_HANDLE_VALUE);
 	assert(buffer != NULL);
@@ -210,7 +210,7 @@ int CSerialController::write(const unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int ptr = 0U;
+	unsigned ptr = 0U;
 
 	while (ptr < length)
 	{
@@ -238,7 +238,7 @@ void CSerialController::close()
 
 #else
 
-CSerialController::CSerialController(const std::string& device, SERIAL_SPEED speed, bool assertRTS) :
+CSerialController::CSerialController(const std::string &device, SERIAL_SPEED speed, bool assertRTS) :
 	m_device(device),
 	m_speed(speed),
 	m_assertRTS(assertRTS),
@@ -341,7 +341,7 @@ bool CSerialController::open()
 
 		if (m_assertRTS)
 		{
-			unsigned int y;
+			unsigned y;
 			if (::ioctl(m_fd, TIOCMGET, &y) < 0)
 			{
 				LogError("Cannot get the control attributes for %s", m_device.c_str());
@@ -381,7 +381,7 @@ int CSerialController::setNonblock(bool nonblock)
 }
 #endif
 
-int CSerialController::read(unsigned char* buffer, unsigned int length)
+int CSerialController::read(uint8_t *buffer, unsigned length)
 {
 	assert(buffer != NULL);
 	assert(m_fd != -1);
@@ -389,7 +389,7 @@ int CSerialController::read(unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int offset = 0U;
+	unsigned offset = 0U;
 
 	while (offset < length)
 	{
@@ -458,7 +458,7 @@ bool CSerialController::canWrite()
 #endif
 }
 
-int CSerialController::write(const unsigned char* buffer, unsigned int length)
+int CSerialController::write(const uint8_t *buffer, unsigned length)
 {
 	assert(buffer != NULL);
 	assert(m_fd != -1);
@@ -466,7 +466,7 @@ int CSerialController::write(const unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int ptr = 0U;
+	unsigned ptr = 0U;
 	while (ptr < length)
 	{
 		ssize_t n = 0U;

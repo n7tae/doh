@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2017 by Lieven De Samblanx ON7LDS
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(NETWORKINFO_H)
-#define	NETWORKINFO_H
+#pragma once
+
+#include <cstdint>
 
 class CNetworkInfo
 {
@@ -25,9 +27,5 @@ public:
 	CNetworkInfo();
 	~CNetworkInfo();
 
-	void getNetworkInterface(unsigned char* info);
-
-private:
+	void getNetworkInterface(uint8_t *info);
 };
-
-#endif

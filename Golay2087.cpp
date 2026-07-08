@@ -21,7 +21,7 @@
 #include <cstdio>
 #include <cassert>
 
-const unsigned int ENCODING_TABLE_2087[] =
+const unsigned ENCODING_TABLE_2087[] =
 {
 	0x0000U, 0xB08EU, 0xE093U, 0x501DU, 0x70A9U, 0xC027U, 0x903AU, 0x20B4U, 0x60DCU, 0xD052U, 0x804FU, 0x30C1U,
 	0x1075U, 0xA0FBU, 0xF0E6U, 0x4068U, 0x7036U, 0xC0B8U, 0x90A5U, 0x202BU, 0x009FU, 0xB011U, 0xE00CU, 0x5082U,
@@ -47,7 +47,7 @@ const unsigned int ENCODING_TABLE_2087[] =
 	0x80CBU, 0x3045U, 0x6058U, 0xD0D6U
 };
 
-const unsigned int DECODING_TABLE_1987[] =
+const unsigned DECODING_TABLE_1987[] =
 {
 	0x00000U, 0x00001U, 0x00002U, 0x00003U, 0x00004U, 0x00005U, 0x00006U, 0x00007U, 0x00008U, 0x00009U, 0x0000AU, 0x0000BU, 0x0000CU,
 	0x0000DU, 0x0000EU, 0x24020U, 0x00010U, 0x00011U, 0x00012U, 0x00013U, 0x00014U, 0x00015U, 0x00016U, 0x00017U, 0x00018U, 0x00019U,
@@ -214,7 +214,7 @@ const unsigned int DECODING_TABLE_1987[] =
 #define MASK8           0xfffff800   /* auxiliary vector for testing */
 #define GENPOL          0x00000c75   /* generator polinomial, g(x) */
 
-unsigned int CGolay2087::getSyndrome1987(unsigned int pattern)
+unsigned CGolay2087::getSyndrome1987(unsigned pattern)
 /*
  * Compute the syndrome corresponding to the given pattern, i.e., the
  * remainder after dividing the pattern (when considering it as the vector
@@ -225,7 +225,7 @@ unsigned int CGolay2087::getSyndrome1987(unsigned int pattern)
  * obtain its syndrome in decoding.
  */
 {
-	unsigned int aux = X18;
+	unsigned aux = X18;
 
 	if (pattern >= X11)
 	{
@@ -241,13 +241,13 @@ unsigned int CGolay2087::getSyndrome1987(unsigned int pattern)
 	return pattern;
 }
 
-unsigned char CGolay2087::decode(const unsigned char* data)
+uint8_t CGolay2087::decode(const uint8_t *data)
 {
 	assert(data != NULL);
 
-	unsigned int code = (data[0U] << 11) + (data[1U] << 3) + (data[2U] >> 5);
-	unsigned int syndrome = getSyndrome1987(code);
-	unsigned int error_pattern = DECODING_TABLE_1987[syndrome];
+	unsigned code = (data[0U] << 11) + (data[1U] << 3) + (data[2U] >> 5);
+	unsigned syndrome = getSyndrome1987(code);
+	unsigned error_pattern = DECODING_TABLE_1987[syndrome];
 
 	if (error_pattern != 0x00U)
 		code ^= error_pattern;
@@ -255,13 +255,13 @@ unsigned char CGolay2087::decode(const unsigned char* data)
 	return code >> 11;
 }
 
-void CGolay2087::encode(unsigned char* data)
+void CGolay2087::encode(uint8_t *data)
 {
 	assert(data != NULL);
 
-	unsigned int value = data[0U];
+	unsigned value = data[0U];
 
-	unsigned int cksum = ENCODING_TABLE_2087[value];
+	unsigned cksum = ENCODING_TABLE_2087[value];
 
 	data[1U] = cksum & 0xFFU;
 	data[2U] = cksum >> 8;

@@ -23,19 +23,19 @@
 #include <vector>
 #include <cstring>
 
-std::vector<unsigned int> CDMRAccessControl::m_blackList;
-std::vector<unsigned int> CDMRAccessControl::m_whiteList;
+std::vector<unsigned> CDMRAccessControl::m_blackList;
+std::vector<unsigned> CDMRAccessControl::m_whiteList;
 
-std::vector<unsigned int> CDMRAccessControl::m_prefixes;
+std::vector<unsigned> CDMRAccessControl::m_prefixes;
 
-std::vector<unsigned int> CDMRAccessControl::m_slot1TGWhiteList;
-std::vector<unsigned int> CDMRAccessControl::m_slot2TGWhiteList;
+std::vector<unsigned> CDMRAccessControl::m_slot1TGWhiteList;
+std::vector<unsigned> CDMRAccessControl::m_slot2TGWhiteList;
 
 bool CDMRAccessControl::m_selfOnly = false;
 
-unsigned int CDMRAccessControl::m_id = 0U;
+unsigned CDMRAccessControl::m_id = 0U;
 
-void CDMRAccessControl::init(const std::vector<unsigned int>& blacklist, const std::vector<unsigned int>& whitelist, const std::vector<unsigned int>& slot1TGWhitelist, const std::vector<unsigned int>& slot2TGWhitelist, bool selfOnly, const std::vector<unsigned int>& prefixes, unsigned int id)
+void CDMRAccessControl::init(const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, bool selfOnly, const std::vector<unsigned>& prefixes, unsigned id)
 {
 	m_slot1TGWhiteList = slot1TGWhitelist;
 	m_slot2TGWhiteList = slot2TGWhitelist;
@@ -46,7 +46,7 @@ void CDMRAccessControl::init(const std::vector<unsigned int>& blacklist, const s
 	m_id               = id;
 }
 
-bool CDMRAccessControl::validateSrcId(unsigned int id)
+bool CDMRAccessControl::validateSrcId(unsigned id)
 {
 	if (m_selfOnly)
 	{
@@ -61,7 +61,7 @@ bool CDMRAccessControl::validateSrcId(unsigned int id)
 	if (std::find(m_blackList.begin(), m_blackList.end(), id) != m_blackList.end())
 		return false;
 
-	unsigned int prefix = id / 10000U;
+	unsigned prefix = id / 10000U;
 	if (prefix == 0U || prefix > 999U)
 		return false;
 
@@ -78,7 +78,7 @@ bool CDMRAccessControl::validateSrcId(unsigned int id)
 	return true;
 }
 
-bool CDMRAccessControl::validateTGId(unsigned int slotNo, bool group, unsigned int id)
+bool CDMRAccessControl::validateTGId(unsigned slotNo, bool group, unsigned id)
 {
 	if (!group)
 		return true;

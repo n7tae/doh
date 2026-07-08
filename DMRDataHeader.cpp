@@ -29,7 +29,7 @@
 #include <cassert>
 #include <cstring>
 
-const unsigned char UDTF_NMEA = 0x05U;
+const uint8_t UDTF_NMEA = 0x05U;
 
 CDMRDataHeader::CDMRDataHeader() :
 	m_data(NULL),
@@ -42,7 +42,7 @@ CDMRDataHeader::CDMRDataHeader() :
 	m_S(false),
 	m_Ns(0U)
 {
-	m_data = new unsigned char[12U];
+	m_data = new uint8_t[12U];
 }
 
 CDMRDataHeader::~CDMRDataHeader()
@@ -50,7 +50,7 @@ CDMRDataHeader::~CDMRDataHeader()
 	delete[] m_data;
 }
 
-bool CDMRDataHeader::put(const unsigned char* bytes)
+bool CDMRDataHeader::put(const uint8_t *bytes)
 {
 	assert(bytes != NULL);
 
@@ -71,7 +71,7 @@ bool CDMRDataHeader::put(const unsigned char* bytes)
 	m_GI = (m_data[0U] & 0x80U) == 0x80U;
 	m_A  = (m_data[0U] & 0x40U) == 0x40U;
 
-	unsigned char dpf = m_data[0U] & 0x0FU;
+	uint8_t dpf = m_data[0U] & 0x0FU;
 	if (dpf == DPF_PROPRIETARY)
 		return true;
 
@@ -130,7 +130,7 @@ bool CDMRDataHeader::put(const unsigned char* bytes)
 	return true;
 }
 
-void CDMRDataHeader::get(unsigned char* bytes) const
+void CDMRDataHeader::get(uint8_t *bytes) const
 {
 	assert(bytes != NULL);
 
@@ -143,17 +143,17 @@ bool CDMRDataHeader::getGI() const
 	return m_GI;
 }
 
-unsigned int CDMRDataHeader::getSrcId() const
+unsigned CDMRDataHeader::getSrcId() const
 {
 	return m_srcId;
 }
 
-unsigned int CDMRDataHeader::getDstId() const
+unsigned CDMRDataHeader::getDstId() const
 {
 	return m_dstId;
 }
 
-unsigned int CDMRDataHeader::getBlocks() const
+unsigned CDMRDataHeader::getBlocks() const
 {
 	return m_blocks;
 }

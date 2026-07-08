@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2002-2004,2007-2009,2011-2013,2015-2017 by Jonathan Naylor G4KLX
  *   Copyright (C) 1999-2001 by Thomas Sailor HB9JNX
  *
@@ -17,8 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef SerialController_H
-#define SerialController_H
+#pragma once
 
 #include "SerialPort.h"
 
@@ -44,14 +44,14 @@ enum SERIAL_SPEED
 class CSerialController : public ISerialPort
 {
 public:
-	CSerialController(const std::string& device, SERIAL_SPEED speed, bool assertRTS = false);
+	CSerialController(const std::string &device, SERIAL_SPEED speed, bool assertRTS = false);
 	virtual ~CSerialController();
 
 	virtual bool open();
 
-	virtual int read(unsigned char* buffer, unsigned int length);
+	virtual int read(uint8_t *buffer, unsigned length);
 
-	virtual int write(const unsigned char* buffer, unsigned int length);
+	virtual int write(const uint8_t *buffer, unsigned length);
 
 	virtual void close();
 
@@ -70,10 +70,8 @@ protected:
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-	int readNonblock(unsigned char* buffer, unsigned int length);
+	int readNonblock(uint8_t *buffer, unsigned length);
 #else
 	bool canWrite();
 #endif
 };
-
-#endif

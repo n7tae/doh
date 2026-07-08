@@ -21,7 +21,7 @@
 #include <cstdio>
 #include <cassert>
 
-CTimer::CTimer(unsigned int ticksPerSec, unsigned int secs, unsigned int msecs) :
+CTimer::CTimer(unsigned ticksPerSec, unsigned secs, unsigned msecs) :
 	m_ticksPerSec(ticksPerSec),
 	m_timeout(0U),
 	m_timer(0U)
@@ -32,7 +32,7 @@ CTimer::CTimer(unsigned int ticksPerSec, unsigned int secs, unsigned int msecs) 
 	{
 		// m_timeout = ((secs * 1000U + msecs) * m_ticksPerSec) / 1000U + 1U;
 		unsigned long long temp = (secs * 1000ULL + msecs) * m_ticksPerSec;
-		m_timeout = (unsigned int)(temp / 1000ULL + 1ULL);
+		m_timeout = (unsigned)(temp / 1000ULL + 1ULL);
 	}
 }
 
@@ -40,13 +40,13 @@ CTimer::~CTimer()
 {
 }
 
-void CTimer::setTimeout(unsigned int secs, unsigned int msecs)
+void CTimer::setTimeout(unsigned secs, unsigned msecs)
 {
 	if (secs > 0U || msecs > 0U)
 	{
 		// m_timeout = ((secs * 1000U + msecs) * m_ticksPerSec) / 1000U + 1U;
 		unsigned long long temp = (secs * 1000ULL + msecs) * m_ticksPerSec;
-		m_timeout = (unsigned int)(temp / 1000ULL + 1ULL);
+		m_timeout = (unsigned)(temp / 1000ULL + 1ULL);
 	}
 	else
 	{
@@ -55,7 +55,7 @@ void CTimer::setTimeout(unsigned int secs, unsigned int msecs)
 	}
 }
 
-unsigned int CTimer::getTimeout() const
+unsigned CTimer::getTimeout() const
 {
 	if (m_timeout == 0U)
 		return 0U;
@@ -63,7 +63,7 @@ unsigned int CTimer::getTimeout() const
 	return (m_timeout - 1U) / m_ticksPerSec;
 }
 
-unsigned int CTimer::getTimer() const
+unsigned CTimer::getTimer() const
 {
 	if (m_timer == 0U)
 		return 0U;

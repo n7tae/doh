@@ -32,7 +32,7 @@ CUserDB::~CUserDB()
 {
 }
 
-bool CUserDB::lookup(unsigned int id, class CUserDBentry *entry)
+bool CUserDB::lookup(unsigned id, class CUserDBentry *entry)
 {
 	bool rv;
 
@@ -106,7 +106,7 @@ bool CUserDB::load(std::string const& filename)
 	return size != 0U;
 }
 
-bool CUserDB::makeindex(char* buf, std::unordered_map<std::string, int>& index)
+bool CUserDB::makeindex(char *buf, std::unordered_map<std::string, int>& index)
 {
 	int i;
 	char *p1, *p2;
@@ -135,12 +135,12 @@ bool CUserDB::makeindex(char* buf, std::unordered_map<std::string, int>& index)
 	}
 }
 
-void CUserDB::parse(char* buf, std::unordered_map<std::string, int>& index)
+void CUserDB::parse(char *buf, std::unordered_map<std::string, int>& index)
 {
 	int i;
 	char *p1, *p2;
 	std::unordered_map<std::string, char*> ptr;
-	unsigned int id;
+	unsigned id;
 
 	for (i = 0, p1 = tokenize(buf, &p2); p1 != NULL;
 			i++, p1 = tokenize(p2, &p2))
@@ -167,7 +167,7 @@ void CUserDB::parse(char* buf, std::unordered_map<std::string, int>& index)
 		return;
 	}
 
-	id = (unsigned int)::atoi(ptr[keyRADIO_ID]);
+	id = (unsigned)::atoi(ptr[keyRADIO_ID]);
 	toupper_string(ptr[keyCALLSIGN]);
 
 	for (auto it = ptr.begin(); it != ptr.end(); it++)
@@ -180,7 +180,7 @@ void CUserDB::parse(char* buf, std::unordered_map<std::string, int>& index)
 	}
 }
 
-void CUserDB::toupper_string(char* str)
+void CUserDB::toupper_string(char *str)
 {
 	while (*str != '\0')
 	{
@@ -189,12 +189,12 @@ void CUserDB::toupper_string(char* str)
 	}
 }
 
-char* CUserDB::tokenize(char* str, char** next)
+char *CUserDB::tokenize(char *str, char **next)
 {
 	if (*str == '\0')
 		return NULL;
 
-	char* p = ::strpbrk(str, ",\t\r\n");
+	char *p = ::strpbrk(str, ",\t\r\n");
 	if (p == NULL)
 	{
 		*next = str + ::strlen(str);

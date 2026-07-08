@@ -40,7 +40,7 @@ CDMRShortLC::~CDMRShortLC()
 }
 
 // The main decode function
-bool CDMRShortLC::decode(const unsigned char* in, unsigned char* out)
+bool CDMRShortLC::decode(const uint8_t *in, uint8_t *out)
 {
 	assert(in != NULL);
 	assert(out != NULL);
@@ -63,7 +63,7 @@ bool CDMRShortLC::decode(const unsigned char* in, unsigned char* out)
 }
 
 // The main encode function
-void CDMRShortLC::encode(const unsigned char* in, unsigned char* out)
+void CDMRShortLC::encode(const uint8_t *in, uint8_t *out)
 {
 	assert(in != NULL);
 	assert(out != NULL);
@@ -81,7 +81,7 @@ void CDMRShortLC::encode(const unsigned char* in, unsigned char* out)
 	encodeExtractBinary(out);
 }
 
-void CDMRShortLC::decodeExtractBinary(const unsigned char* in)
+void CDMRShortLC::decodeExtractBinary(const uint8_t *in)
 {
 	assert(in != NULL);
 
@@ -99,13 +99,13 @@ void CDMRShortLC::decodeExtractBinary(const unsigned char* in)
 // Deinterleave the raw data
 void CDMRShortLC::decodeDeInterleave()
 {
-	for (unsigned int i = 0U; i < 68U; i++)
+	for (unsigned i = 0U; i < 68U; i++)
 		m_deInterData[i] = false;
 
-	for (unsigned int a = 0U; a < 67U; a++)
+	for (unsigned a = 0U; a < 67U; a++)
 	{
 		// Calculate the interleave sequence
-		unsigned int interleaveSequence = (a * 4U) % 67U;
+		unsigned interleaveSequence = (a * 4U) % 67U;
 		// Shuffle the data
 		m_deInterData[a] = m_rawData[interleaveSequence];
 	}
@@ -122,7 +122,7 @@ bool CDMRShortLC::decodeErrorCheck()
 	CHamming::decode17123(m_deInterData + 34U);
 
 	// Run through each of the 17 columns
-	for (unsigned int c = 0U; c < 17U; c++)
+	for (unsigned c = 0U; c < 17U; c++)
 	{
 		bool bit = m_deInterData[c + 0U] ^ m_deInterData[c + 17U] ^ m_deInterData[c + 34U];
 		if (bit != m_deInterData[c + 51U])
@@ -133,23 +133,23 @@ bool CDMRShortLC::decodeErrorCheck()
 }
 
 // Extract the 36 bits of payload
-void CDMRShortLC::decodeExtractData(unsigned char* data) const
+void CDMRShortLC::decodeExtractData(uint8_t *data) const
 {
 	assert(data != NULL);
 
 	bool bData[40U];
 
-	for (unsigned int i = 0U; i < 40U; i++)
+	for (unsigned i = 0U; i < 40U; i++)
 		bData[i] = false;
 
-	unsigned int pos = 4U;
-	for (unsigned int a = 0U; a < 12U; a++, pos++)
+	unsigned pos = 4U;
+	for (unsigned a = 0U; a < 12U; a++, pos++)
 		bData[pos] = m_deInterData[a];
 
-	for (unsigned int a = 17U; a < 29U; a++, pos++)
+	for (unsigned a = 17U; a < 29U; a++, pos++)
 		bData[pos] = m_deInterData[a];
 
-	for (unsigned int a = 34U; a < 46U; a++, pos++)
+	for (unsigned a = 34U; a < 46U; a++, pos++)
 		bData[pos] = m_deInterData[a];
 
 	CUtils::bitsToByteBE(bData + 0U,  data[0U]);
@@ -160,7 +160,7 @@ void CDMRShortLC::decodeExtractData(unsigned char* data) const
 }
 
 // Extract the 36 bits of payload
-void CDMRShortLC::encodeExtractData(const unsigned char* in) const
+void CDMRShortLC::encodeExtractData(const uint8_t *in) const
 {
 	assert(in != NULL);
 
@@ -171,17 +171,17 @@ void CDMRShortLC::encodeExtractData(const unsigned char* in) const
 	CUtils::byteToBitsBE(in[3U], bData + 24U);
 	CUtils::byteToBitsBE(in[4U], bData + 32U);
 
-	for (unsigned int i = 0U; i < 68U; i++)
+	for (unsigned i = 0U; i < 68U; i++)
 		m_deInterData[i] = false;
 
-	unsigned int pos = 4U;
-	for (unsigned int a = 0U; a < 12U; a++, pos++)
+	unsigned pos = 4U;
+	for (unsigned a = 0U; a < 12U; a++, pos++)
 		m_deInterData[a] = bData[pos];
 
-	for (unsigned int a = 17U; a < 29U; a++, pos++)
+	for (unsigned a = 17U; a < 29U; a++, pos++)
 		m_deInterData[a] = bData[pos];
 
-	for (unsigned int a = 34U; a < 46U; a++, pos++)
+	for (unsigned a = 34U; a < 46U; a++, pos++)
 		m_deInterData[a] = bData[pos];
 }
 
@@ -194,20 +194,20 @@ void CDMRShortLC::encodeErrorCheck()
 	CHamming::encode17123(m_deInterData + 34U);
 
 	// Run through each of the 17 columns
-	for (unsigned int c = 0U; c < 17U; c++)
+	for (unsigned c = 0U; c < 17U; c++)
 		m_deInterData[c + 51U] = m_deInterData[c + 0U] ^ m_deInterData[c + 17U] ^ m_deInterData[c + 34U];
 }
 
 // Interleave the raw data
 void CDMRShortLC::encodeInterleave()
 {
-	for (unsigned int i = 0U; i < 72U; i++)
+	for (unsigned i = 0U; i < 72U; i++)
 		m_rawData[i] = false;
 
-	for (unsigned int a = 0U; a < 67U; a++)
+	for (unsigned a = 0U; a < 67U; a++)
 	{
 		// Calculate the interleave sequence
-		unsigned int interleaveSequence = (a * 4U) % 67U;
+		unsigned interleaveSequence = (a * 4U) % 67U;
 		// Unshuffle the data
 		m_rawData[interleaveSequence] = m_deInterData[a];
 	}
@@ -215,7 +215,7 @@ void CDMRShortLC::encodeInterleave()
 	m_rawData[67U] = m_deInterData[67U];
 }
 
-void CDMRShortLC::encodeExtractBinary(unsigned char* data)
+void CDMRShortLC::encodeExtractBinary(uint8_t *data)
 {
 	assert(data != NULL);
 

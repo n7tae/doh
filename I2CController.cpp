@@ -30,7 +30,7 @@
 #include <setupapi.h>
 #include <winioctl.h>
 
-CI2CController::CI2CController(const std::string& device, SERIAL_SPEED speed, unsigned int address, bool assertRTS) :
+CI2CController::CI2CController(const std::string &device, SERIAL_SPEED speed, unsigned address, bool assertRTS) :
 	CSerialController(device, speed, assertRTS),
 	m_address(address)
 {
@@ -45,12 +45,12 @@ bool CI2CController::open()
 	return CSerialController::open();
 }
 
-int CI2CController::read(unsigned char* buffer, unsigned int length)
+int CI2CController::read(uint8_t *buffer, unsigned length)
 {
 	return CSerialController::read(buffer, length);
 }
 
-int CI2CController::write(const unsigned char* buffer, unsigned int length)
+int CI2CController::write(const uint8_t *buffer, unsigned length)
 {
 	return CSerialController::write(buffer, length);
 }
@@ -67,7 +67,7 @@ int CI2CController::write(const unsigned char* buffer, unsigned int length)
 #include <linux/i2c-dev.h>
 #endif
 
-CI2CController::CI2CController(const std::string& device, SERIAL_SPEED speed, unsigned int address, bool assertRTS) :
+CI2CController::CI2CController(const std::string &device, SERIAL_SPEED speed, unsigned address, bool assertRTS) :
 	CSerialController(device, speed, assertRTS),
 	m_address(address)
 {
@@ -109,7 +109,7 @@ bool CI2CController::open()
 	return true;
 }
 
-int CI2CController::read(unsigned char* buffer, unsigned int length)
+int CI2CController::read(uint8_t *buffer, unsigned length)
 {
 	assert(buffer != NULL);
 	assert(m_fd != -1);
@@ -117,7 +117,7 @@ int CI2CController::read(unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int offset = 0U;
+	unsigned offset = 0U;
 
 	while (offset < length)
 	{
@@ -140,7 +140,7 @@ int CI2CController::read(unsigned char* buffer, unsigned int length)
 	return length;
 }
 
-int CI2CController::write(const unsigned char* buffer, unsigned int length)
+int CI2CController::write(const uint8_t *buffer, unsigned length)
 {
 	assert(buffer != NULL);
 	assert(m_fd != -1);
@@ -148,7 +148,7 @@ int CI2CController::write(const unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int ptr = 0U;
+	unsigned ptr = 0U;
 	while (ptr < length)
 	{
 		ssize_t n = 0U;

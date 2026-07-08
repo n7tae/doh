@@ -25,12 +25,12 @@
 #include <cstdio>
 #include <cassert>
 
-const unsigned int BUFFER_LENGTH = 500U;
+const unsigned BUFFER_LENGTH = 500U;
 
-const unsigned int HOMEBREW_DATA_PACKET_LENGTH = 55U;
+const unsigned HOMEBREW_DATA_PACKET_LENGTH = 55U;
 
 
-CDMRDirectNetwork::CDMRDirectNetwork(const std::string& address, unsigned int port, unsigned int local, unsigned int id, const std::string& password, bool duplex, const char* version, bool slot1, bool slot2, HW_TYPE hwType, bool debug) :
+CDMRDirectNetwork::CDMRDirectNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, const std::string &password, bool duplex, const char *version, bool slot1, bool slot2, HW_TYPE hwType, bool debug) :
 m_address(address),
 m_port(port),
 m_addr(),
@@ -72,8 +72,8 @@ m_beacon(false)
 	assert(id > 1000U);
 	assert(!password.empty());
 
-	m_buffer   = new unsigned char[BUFFER_LENGTH];
-	m_salt     = new unsigned char[sizeof(uint32_t)];
+	m_buffer   = new uint8_t[BUFFER_LENGTH];
+	m_salt     = new uint8_t[sizeof(uint32_t)];
 	m_id       = new uint8_t[4U];
 	m_streamId = new uint32_t[2U];
 
@@ -99,12 +99,12 @@ CDMRDirectNetwork::~CDMRDirectNetwork()
 	delete[] m_id;
 }
 
-void CDMRDirectNetwork::setOptions(const std::string& options)
+void CDMRDirectNetwork::setOptions(const std::string &options)
 {
 	m_options = options;
 }
 
-void CDMRDirectNetwork::setConfig(const std::string& callsign, unsigned int rxFrequency, unsigned int txFrequency, unsigned int power, unsigned int colorCode, float latitude, float longitude, int height, const std::string& location, const std::string& description, const std::string& url)
+void CDMRDirectNetwork::setConfig(const std::string &callsign, unsigned rxFrequency, unsigned txFrequency, unsigned power, unsigned colorCode, float latitude, float longitude, int height, const std::string &location, const std::string &description, const std::string &url)
 {
 	m_callsign    = callsign;
 	m_rxFrequency = rxFrequency;
@@ -151,7 +151,7 @@ bool CDMRDirectNetwork::read(CDMRData& data)
 	if (m_rxData.isEmpty())
 		return false;
 
-	unsigned char length = 0U;
+	uint8_t length = 0U;
 	m_rxData.getData(&length, 1U);
 	m_rxData.getData(m_buffer, length);
 
@@ -159,13 +159,13 @@ bool CDMRDirectNetwork::read(CDMRData& data)
 	if (::memcmp(m_buffer, "DMRD", 4U) != 0)
 		return false;
 
-	unsigned char seqNo = m_buffer[4U];
+	uint8_t seqNo = m_buffer[4U];
 
-	unsigned int srcId = (m_buffer[5U] << 16) | (m_buffer[6U] << 8) | (m_buffer[7U] << 0);
+	unsigned srcId = (m_buffer[5U] << 16) | (m_buffer[6U] << 8) | (m_buffer[7U] << 0);
 
-	unsigned int dstId = (m_buffer[8U] << 16) | (m_buffer[9U] << 8) | (m_buffer[10U] << 0);
+	unsigned dstId = (m_buffer[8U] << 16) | (m_buffer[9U] << 8) | (m_buffer[10U] << 0);
 
-	unsigned int slotNo = (m_buffer[15U] & 0x80U) == 0x80U ? 2U : 1U;
+	unsigned slotNo = (m_buffer[15U] & 0x80U) == 0x80U ? 2U : 1U;
 
 	// DMO mode slot disabling
 	if (slotNo == 1U && !m_duplex)
@@ -189,7 +189,7 @@ bool CDMRDirectNetwork::read(CDMRData& data)
 	bool voiceSync = (m_buffer[15U] & 0x10U) == 0x10U;
 
 	if (dataSync) {
-		unsigned char dataType = m_buffer[15U] & 0x0FU;
+		uint8_t dataType = m_buffer[15U] & 0x0FU;
 		data.setData(m_buffer + 20U);
 		data.setDataType(dataType);
 		data.setN(0U);
@@ -198,7 +198,7 @@ bool CDMRDirectNetwork::read(CDMRData& data)
 		data.setDataType(DT_VOICE_SYNC);
 		data.setN(0U);
 	} else {
-		unsigned char n = m_buffer[15U] & 0x0FU;
+		uint8_t n = m_buffer[15U] & 0x0FU;
 		data.setData(m_buffer + 20U);
 		data.setDataType(DT_VOICE);
 		data.setN(n);
@@ -212,7 +212,7 @@ bool CDMRDirectNetwork::write(const CDMRData& data)
 	if (m_status != RUNNING)
 		return false;
 
-	unsigned char buffer[HOMEBREW_DATA_PACKET_LENGTH];
+	uint8_t buffer[HOMEBREW_DATA_PACKET_LENGTH];
 	::memset(buffer, 0x00U, HOMEBREW_DATA_PACKET_LENGTH);
 
 	buffer[0U] = 'D';
@@ -220,19 +220,19 @@ bool CDMRDirectNetwork::write(const CDMRData& data)
 	buffer[2U] = 'R';
 	buffer[3U] = 'D';
 
-	unsigned int srcId = data.getSrcId();
+	unsigned srcId = data.getSrcId();
 	buffer[5U] = srcId >> 16;
 	buffer[6U] = srcId >> 8;
 	buffer[7U] = srcId >> 0;
 
-	unsigned int dstId = data.getDstId();
+	unsigned dstId = data.getDstId();
 	buffer[8U] = dstId >> 16;
 	buffer[9U] = dstId >> 8;
 	buffer[10U] = dstId >> 0;
 
 	::memcpy(buffer + 11U, m_id, 4U);
 
-	unsigned int slotNo = data.getSlotNo();
+	unsigned slotNo = data.getSlotNo();
 
 	// Individual slot disabling
 	if (slotNo == 1U && !m_slot1)
@@ -245,10 +245,10 @@ bool CDMRDirectNetwork::write(const CDMRData& data)
 	FLCO flco = data.getFLCO();
 	buffer[15U] |= flco == FLCO_GROUP ? 0x00U : 0x40U;
 
-	unsigned int slotIndex = slotNo - 1U;
+	unsigned slotIndex = slotNo - 1U;
 
 	std::uniform_int_distribution<uint32_t> dist(0x00000001, 0xfffffffe);
-	unsigned char dataType = data.getDataType();
+	uint8_t dataType = data.getDataType();
 	if (dataType == DT_VOICE_SYNC) {
 		buffer[15U] |= 0x10U;
 	} else if (dataType == DT_VOICE) {
@@ -278,12 +278,12 @@ bool CDMRDirectNetwork::write(const CDMRData& data)
 	return true;
 }
 
-bool CDMRDirectNetwork::writeRadioPosition(unsigned int id, const unsigned char* data)
+bool CDMRDirectNetwork::writeRadioPosition(unsigned id, const uint8_t *data)
 {
 	if (m_status != RUNNING)
 		return false;
 
-	unsigned char buffer[20U];
+	uint8_t buffer[20U];
 
 	::memcpy(buffer + 0U, "DMRG", 4U);
 
@@ -296,12 +296,12 @@ bool CDMRDirectNetwork::writeRadioPosition(unsigned int id, const unsigned char*
 	return write(buffer, 14U);
 }
 
-bool CDMRDirectNetwork::writeTalkerAlias(unsigned int id, unsigned char type, const unsigned char* data)
+bool CDMRDirectNetwork::writeTalkerAlias(unsigned id, uint8_t type, const uint8_t *data)
 {
 	if (m_status != RUNNING)
 		return false;
 
-	unsigned char buffer[20U];
+	uint8_t buffer[20U];
 
 	::memcpy(buffer + 0U, "DMRA", 4U);
 
@@ -321,7 +321,7 @@ void CDMRDirectNetwork::close()
 	LogMessage("Closing DMR Network");
 
 	if (m_status == RUNNING) {
-		unsigned char buffer[9U];
+		uint8_t buffer[9U];
 		::memcpy(buffer + 0U, "RPTCL", 5U);
 		::memcpy(buffer + 5U, m_id, 4U);
 		write(buffer, 9U);
@@ -333,7 +333,7 @@ void CDMRDirectNetwork::close()
 	m_timeoutTimer.stop();
 }
 
-void CDMRDirectNetwork::clock(unsigned int ms)
+void CDMRDirectNetwork::clock(unsigned ms)
 {
 	m_retryTimer.clock(ms);
 	if (m_retryTimer.isRunning() && m_retryTimer.hasExpired()) {
@@ -368,7 +368,7 @@ void CDMRDirectNetwork::clock(unsigned int ms)
 	}
 
 	sockaddr_storage address;
-	unsigned int addrlen;
+	unsigned addrlen;
 	int length = m_socket.read(m_buffer, BUFFER_LENGTH, address, addrlen);
 	if (length < 0) {
 		LogError("DMR, Socket has failed, retrying connection to the master");
@@ -388,7 +388,7 @@ void CDMRDirectNetwork::clock(unsigned int ms)
 
 		if (::memcmp(m_buffer, "DMRD", 4U) == 0) {
 			if (m_enabled) {
-				unsigned char len = length;
+				uint8_t len = length;
 				m_rxData.addData(&len, 1U);
 				m_rxData.addData(m_buffer, len);
 			}
@@ -468,7 +468,7 @@ void CDMRDirectNetwork::clock(unsigned int ms)
 
 bool CDMRDirectNetwork::writeLogin()
 {
-	unsigned char buffer[8U];
+	uint8_t buffer[8U];
 
 	::memcpy(buffer + 0U, "RPTL", 4U);
 	::memcpy(buffer + 4U, m_id, 4U);
@@ -480,17 +480,17 @@ bool CDMRDirectNetwork::writeAuthorisation()
 {
 	size_t size = m_password.size();
 
-	unsigned char* in = new unsigned char[size + sizeof(uint32_t)];
+	uint8_t *in = new uint8_t[size + sizeof(uint32_t)];
 	::memcpy(in, m_salt, sizeof(uint32_t));
 	for (size_t i = 0U; i < size; i++)
 		in[i + sizeof(uint32_t)] = m_password.at(i);
 
-	unsigned char out[40U];
+	uint8_t out[40U];
 	::memcpy(out + 0U, "RPTK", 4U);
 	::memcpy(out + 4U, m_id, 4U);
 
 	CSHA256 sha256;
-	sha256.buffer(in, (unsigned int)(size + sizeof(uint32_t)), out + 8U);
+	sha256.buffer(in, (unsigned)(size + sizeof(uint32_t)), out + 8U);
 
 	delete[] in;
 
@@ -505,12 +505,12 @@ bool CDMRDirectNetwork::writeOptions()
 	::memcpy(buffer + 4U, m_id, 4U);
 	::strcpy(buffer + 8U, m_options.c_str());
 
-	return write((unsigned char*)buffer, (unsigned int)m_options.length() + 8U);
+	return write((uint8_t*)buffer, (unsigned)m_options.length() + 8U);
 }
 
 bool CDMRDirectNetwork::writeConfig()
 {
-	const char* software;
+	const char *software;
 	char slots = '0';
 	if (m_duplex) {
 		if (m_slot1 && m_slot2)
@@ -585,7 +585,7 @@ bool CDMRDirectNetwork::writeConfig()
 	char longitude[20U];
 	::sprintf(longitude, "%09f", m_longitude);
 
-	unsigned int power = m_power;
+	unsigned power = m_power;
 	if (power > 99U)
 		power = 99U;
 
@@ -597,12 +597,12 @@ bool CDMRDirectNetwork::writeConfig()
 		m_rxFrequency, m_txFrequency, power, m_colorCode, latitude, longitude, height, m_location.c_str(),
 		m_description.c_str(), slots, m_url.c_str(), m_version, software);
 
-	return write((unsigned char*)buffer, 302U);
+	return write((uint8_t*)buffer, 302U);
 }
 
 bool CDMRDirectNetwork::writePing()
 {
-	unsigned char buffer[11U];
+	uint8_t buffer[11U];
 
 	::memcpy(buffer + 0U, "RPTPING", 7U);
 	::memcpy(buffer + 7U, m_id, 4U);
@@ -619,7 +619,7 @@ bool CDMRDirectNetwork::wantsBeacon()
 	return beacon;
 }
 
-bool CDMRDirectNetwork::write(const unsigned char* data, unsigned int length)
+bool CDMRDirectNetwork::write(const uint8_t *data, unsigned length)
 {
 	assert(data != NULL);
 	assert(length > 0U);

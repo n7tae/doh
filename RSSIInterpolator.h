@@ -29,7 +29,7 @@ public:
 	CRSSIInterpolator();
 	~CRSSIInterpolator();
 
-	bool load(const std::string& filename);
+	bool load(const std::string &filename);
 
 	int interpolate(uint16_t raw) const;
 

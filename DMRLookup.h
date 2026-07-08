@@ -27,7 +27,7 @@
 class CDMRLookup : public CThread
 {
 public:
-	CDMRLookup(const std::string& filename, unsigned int reloadTime);
+	CDMRLookup(const std::string &filename, unsigned reloadTime);
 	virtual ~CDMRLookup();
 
 	bool read();
@@ -36,16 +36,16 @@ public:
 
 	virtual void entry();
 
-	std::string find(unsigned int id);
-	void findWithName(unsigned int id, class CUserDBentry *entry);
+	std::string find(unsigned id);
+	void findWithName(unsigned id, class CUserDBentry *entry);
 
-	bool exists(unsigned int id);
+	bool exists(unsigned id);
 
 	void stop();
 
 private:
 	std::string     m_filename;
-	unsigned int    m_reloadTime;
+	unsigned    m_reloadTime;
 	class CUserDB   m_table;
 	bool            m_stop;
 	bool            m_reload;

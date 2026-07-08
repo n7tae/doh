@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,30 +17,31 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(Defines_H)
-#define	Defines_H
+#pragma once
 
-const unsigned char MODE_IDLE    = 0U;
-const unsigned char MODE_DSTAR   = 1U;
-const unsigned char MODE_DMR     = 2U;
-const unsigned char MODE_YSF     = 3U;
-const unsigned char MODE_P25     = 4U;
-const unsigned char MODE_NXDN    = 5U;
-const unsigned char MODE_POCSAG  = 6U;
+#include <cstdint>
 
-const unsigned char MODE_FM      = 10U;
+const uint8_t MODE_IDLE    = 0U;
+const uint8_t MODE_DSTAR   = 1U;
+const uint8_t MODE_DMR     = 2U;
+const uint8_t MODE_YSF     = 3U;
+const uint8_t MODE_P25     = 4U;
+const uint8_t MODE_NXDN    = 5U;
+const uint8_t MODE_POCSAG  = 6U;
 
-const unsigned char MODE_CW      = 98U;
-const unsigned char MODE_LOCKOUT = 99U;
-const unsigned char MODE_ERROR   = 100U;
-const unsigned char MODE_QUIT    = 110U;
+const uint8_t MODE_FM      = 10U;
 
-const unsigned char TAG_HEADER = 0x00U;
-const unsigned char TAG_DATA   = 0x01U;
-const unsigned char TAG_LOST   = 0x02U;
-const unsigned char TAG_EOT    = 0x03U;
+const uint8_t MODE_CW      = 98U;
+const uint8_t MODE_LOCKOUT = 99U;
+const uint8_t MODE_ERROR   = 100U;
+const uint8_t MODE_QUIT    = 110U;
 
-const unsigned int  MODEM_DATA_LEN = 220U;
+const uint8_t TAG_HEADER = 0x00U;
+const uint8_t TAG_DATA   = 0x01U;
+const uint8_t TAG_LOST   = 0x02U;
+const uint8_t TAG_EOT    = 0x03U;
+
+const unsigned  MODEM_DATA_LEN = 220U;
 
 enum HW_TYPE
 {
@@ -88,5 +90,3 @@ enum DMR_OVCM_TYPES
 	DMR_OVCM_TX_ON,
 	DMR_OVCM_ON
 };
-
-#endif

@@ -36,65 +36,65 @@
 #include <unistd.h>
 #endif
 
-const unsigned char MMDVM_FRAME_START = 0xE0U;
+const uint8_t MMDVM_FRAME_START = 0xE0U;
 
-const unsigned char MMDVM_GET_VERSION = 0x00U;
-const unsigned char MMDVM_GET_STATUS  = 0x01U;
-const unsigned char MMDVM_SET_CONFIG  = 0x02U;
-const unsigned char MMDVM_SET_MODE    = 0x03U;
-const unsigned char MMDVM_SET_FREQ    = 0x04U;
+const uint8_t MMDVM_GET_VERSION = 0x00U;
+const uint8_t MMDVM_GET_STATUS  = 0x01U;
+const uint8_t MMDVM_SET_CONFIG  = 0x02U;
+const uint8_t MMDVM_SET_MODE    = 0x03U;
+const uint8_t MMDVM_SET_FREQ    = 0x04U;
 
-const unsigned char MMDVM_SEND_CWID   = 0x0AU;
+const uint8_t MMDVM_SEND_CWID   = 0x0AU;
 
-const unsigned char MMDVM_DSTAR_HEADER = 0x10U;
-const unsigned char MMDVM_DSTAR_DATA   = 0x11U;
-const unsigned char MMDVM_DSTAR_LOST   = 0x12U;
-const unsigned char MMDVM_DSTAR_EOT    = 0x13U;
+const uint8_t MMDVM_DSTAR_HEADER = 0x10U;
+const uint8_t MMDVM_DSTAR_DATA   = 0x11U;
+const uint8_t MMDVM_DSTAR_LOST   = 0x12U;
+const uint8_t MMDVM_DSTAR_EOT    = 0x13U;
 
-const unsigned char MMDVM_DMR_DATA1   = 0x18U;
-const unsigned char MMDVM_DMR_LOST1   = 0x19U;
-const unsigned char MMDVM_DMR_DATA2   = 0x1AU;
-const unsigned char MMDVM_DMR_LOST2   = 0x1BU;
-const unsigned char MMDVM_DMR_SHORTLC = 0x1CU;
-const unsigned char MMDVM_DMR_START   = 0x1DU;
-const unsigned char MMDVM_DMR_ABORT   = 0x1EU;
+const uint8_t MMDVM_DMR_DATA1   = 0x18U;
+const uint8_t MMDVM_DMR_LOST1   = 0x19U;
+const uint8_t MMDVM_DMR_DATA2   = 0x1AU;
+const uint8_t MMDVM_DMR_LOST2   = 0x1BU;
+const uint8_t MMDVM_DMR_SHORTLC = 0x1CU;
+const uint8_t MMDVM_DMR_START   = 0x1DU;
+const uint8_t MMDVM_DMR_ABORT   = 0x1EU;
 
-const unsigned char MMDVM_YSF_DATA    = 0x20U;
-const unsigned char MMDVM_YSF_LOST    = 0x21U;
+const uint8_t MMDVM_YSF_DATA    = 0x20U;
+const uint8_t MMDVM_YSF_LOST    = 0x21U;
 
-const unsigned char MMDVM_P25_HDR     = 0x30U;
-const unsigned char MMDVM_P25_LDU     = 0x31U;
-const unsigned char MMDVM_P25_LOST    = 0x32U;
+const uint8_t MMDVM_P25_HDR     = 0x30U;
+const uint8_t MMDVM_P25_LDU     = 0x31U;
+const uint8_t MMDVM_P25_LOST    = 0x32U;
 
-const unsigned char MMDVM_NXDN_DATA   = 0x40U;
-const unsigned char MMDVM_NXDN_LOST   = 0x41U;
+const uint8_t MMDVM_NXDN_DATA   = 0x40U;
+const uint8_t MMDVM_NXDN_LOST   = 0x41U;
 
-const unsigned char MMDVM_POCSAG_DATA = 0x50U;
+const uint8_t MMDVM_POCSAG_DATA = 0x50U;
 
-const unsigned char MMDVM_FM_PARAMS1  = 0x60U;
-const unsigned char MMDVM_FM_PARAMS2  = 0x61U;
-const unsigned char MMDVM_FM_PARAMS3  = 0x62U;
+const uint8_t MMDVM_FM_PARAMS1  = 0x60U;
+const uint8_t MMDVM_FM_PARAMS2  = 0x61U;
+const uint8_t MMDVM_FM_PARAMS3  = 0x62U;
 
-const unsigned char MMDVM_ACK         = 0x70U;
-const unsigned char MMDVM_NAK         = 0x7FU;
+const uint8_t MMDVM_ACK         = 0x70U;
+const uint8_t MMDVM_NAK         = 0x7FU;
 
-const unsigned char MMDVM_SERIAL      = 0x80U;
+const uint8_t MMDVM_SERIAL      = 0x80U;
 
-const unsigned char MMDVM_TRANSPARENT = 0x90U;
-const unsigned char MMDVM_QSO_INFO    = 0x91U;
+const uint8_t MMDVM_TRANSPARENT = 0x90U;
+const uint8_t MMDVM_QSO_INFO    = 0x91U;
 
-const unsigned char MMDVM_DEBUG1      = 0xF1U;
-const unsigned char MMDVM_DEBUG2      = 0xF2U;
-const unsigned char MMDVM_DEBUG3      = 0xF3U;
-const unsigned char MMDVM_DEBUG4      = 0xF4U;
-const unsigned char MMDVM_DEBUG5      = 0xF5U;
+const uint8_t MMDVM_DEBUG1      = 0xF1U;
+const uint8_t MMDVM_DEBUG2      = 0xF2U;
+const uint8_t MMDVM_DEBUG3      = 0xF3U;
+const uint8_t MMDVM_DEBUG4      = 0xF4U;
+const uint8_t MMDVM_DEBUG5      = 0xF5U;
 
-const unsigned int MAX_RESPONSES = 30U;
+const unsigned MAX_RESPONSES = 30U;
 
-const unsigned int BUFFER_LENGTH = 2000U;
+const unsigned BUFFER_LENGTH = 2000U;
 
 
-CModem::CModem(const std::string& port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned int txDelay, unsigned int dmrDelay, bool useCOSAsLockout, bool trace, bool debug) :
+CModem::CModem(const std::string &port, bool duplex, bool rxInvert, bool txInvert, bool pttInvert, unsigned txDelay, unsigned dmrDelay, bool useCOSAsLockout, bool trace, bool debug) :
 	m_port(port),
 	m_dmrColorCode(0U),
 	m_ysfLoDev(false),
@@ -144,7 +144,7 @@ CModem::CModem(const std::string& port, bool duplex, bool rxInvert, bool txInver
 	m_mode(MODE_IDLE),
 	m_hwType(HWT_UNKNOWN)
 {
-	m_buffer = new unsigned char[BUFFER_LENGTH];
+	m_buffer = new uint8_t[BUFFER_LENGTH];
 
 	assert(!port.empty());
 }
@@ -155,7 +155,7 @@ CModem::~CModem()
 	delete[] m_buffer;
 }
 
-void CModem::setSerialParams(const std::string& protocol, unsigned int address)
+void CModem::setSerialParams(const std::string &protocol, unsigned address)
 {
 	// Create the serial controller instance according the protocol specified in conf.
 	if (protocol == "i2c")
@@ -164,7 +164,7 @@ void CModem::setSerialParams(const std::string& protocol, unsigned int address)
 		m_serial = new CSerialController(m_port, SERIAL_115200, true);
 }
 
-void CModem::setRFParams(unsigned int rxFrequency, int rxOffset, unsigned int txFrequency, int txOffset, int txDCOffset, int rxDCOffset, float rfLevel, unsigned int pocsagFrequency)
+void CModem::setRFParams(unsigned rxFrequency, int rxOffset, unsigned txFrequency, int txOffset, int txDCOffset, int rxDCOffset, float rfLevel, unsigned pocsagFrequency)
 {
 	m_rxFrequency     = rxFrequency + rxOffset;
 	m_txFrequency     = txFrequency + txOffset;
@@ -186,7 +186,7 @@ void CModem::setLevels(float rxLevel, float cwIdTXLevel, float dstarTXLevel, flo
 	m_pocsagTXLevel = pocsagTXLevel;
 }
 
-void CModem::setDMRParams(unsigned int colorCode)
+void CModem::setDMRParams(unsigned colorCode)
 {
 	assert(colorCode < 16U);
 
@@ -242,7 +242,7 @@ bool CModem::open()
 	return true;
 }
 
-void CModem::clock(unsigned int ms)
+void CModem::clock(unsigned ms)
 {
 	assert(m_serial != NULL);
 
@@ -292,7 +292,7 @@ void CModem::clock(unsigned int ms)
 			if (m_trace)
 				CUtils::dump(1U, "RX DMR Data 1", m_buffer, m_length);
 
-			unsigned char data = m_length - 2U;
+			uint8_t data = m_length - 2U;
 			m_rxDMRData1.addData(&data, 1U);
 
 			if (m_buffer[3U] == (DMR_SYNC_DATA | DT_TERMINATOR_WITH_LC))
@@ -310,7 +310,7 @@ void CModem::clock(unsigned int ms)
 			if (m_trace)
 				CUtils::dump(1U, "RX DMR Data 2", m_buffer, m_length);
 
-			unsigned char data = m_length - 2U;
+			uint8_t data = m_length - 2U;
 			m_rxDMRData2.addData(&data, 1U);
 
 			if (m_buffer[3U] == (DMR_SYNC_DATA | DT_TERMINATOR_WITH_LC))
@@ -328,7 +328,7 @@ void CModem::clock(unsigned int ms)
 			if (m_trace)
 				CUtils::dump(1U, "RX DMR Lost 1", m_buffer, m_length);
 
-			unsigned char data = 1U;
+			uint8_t data = 1U;
 			m_rxDMRData1.addData(&data, 1U);
 
 			data = TAG_LOST;
@@ -341,7 +341,7 @@ void CModem::clock(unsigned int ms)
 			if (m_trace)
 				CUtils::dump(1U, "RX DMR Lost 2", m_buffer, m_length);
 
-			unsigned char data = 1U;
+			uint8_t data = 1U;
 			m_rxDMRData2.addData(&data, 1U);
 
 			data = TAG_LOST;
@@ -429,7 +429,7 @@ void CModem::clock(unsigned int ms)
 
 	if (m_dmrSpace1 > 1U && !m_txDMRData1.isEmpty())
 	{
-		unsigned char len = 0U;
+		uint8_t len = 0U;
 		m_txDMRData1.getData(&len, 1U);
 		m_txDMRData1.getData(m_buffer, len);
 
@@ -447,7 +447,7 @@ void CModem::clock(unsigned int ms)
 
 	if (m_dmrSpace2 > 1U && !m_txDMRData2.isEmpty())
 	{
-		unsigned char len = 0U;
+		uint8_t len = 0U;
 		m_txDMRData2.getData(&len, 1U);
 		m_txDMRData2.getData(m_buffer, len);
 
@@ -473,28 +473,28 @@ void CModem::close()
 	m_serial->close();
 }
 
-unsigned int CModem::readDMRData1(unsigned char* data)
+unsigned CModem::readDMRData1(uint8_t *data)
 {
 	assert(data != NULL);
 
 	if (m_rxDMRData1.isEmpty())
 		return 0U;
 
-	unsigned char len = 0U;
+	uint8_t len = 0U;
 	m_rxDMRData1.getData(&len, 1U);
 	m_rxDMRData1.getData(data, len);
 
 	return len;
 }
 
-unsigned int CModem::readDMRData2(unsigned char* data)
+unsigned CModem::readDMRData2(uint8_t *data)
 {
 	assert(data != NULL);
 
 	if (m_rxDMRData2.isEmpty())
 		return 0U;
 
-	unsigned char len = 0U;
+	uint8_t len = 0U;
 	m_rxDMRData2.getData(&len, 1U);
 	m_rxDMRData2.getData(data, len);
 
@@ -503,19 +503,19 @@ unsigned int CModem::readDMRData2(unsigned char* data)
 
 bool CModem::hasDMRSpace1() const
 {
-	unsigned int space = m_txDMRData1.freeSpace() / (DMR_FRAME_LENGTH_BYTES + 4U);
+	unsigned space = m_txDMRData1.freeSpace() / (DMR_FRAME_LENGTH_BYTES + 4U);
 
 	return space > 1U;
 }
 
 bool CModem::hasDMRSpace2() const
 {
-	unsigned int space = m_txDMRData2.freeSpace() / (DMR_FRAME_LENGTH_BYTES + 4U);
+	unsigned space = m_txDMRData2.freeSpace() / (DMR_FRAME_LENGTH_BYTES + 4U);
 
 	return space > 1U;
 }
 
-bool CModem::writeDMRData1(const unsigned char* data, unsigned int length)
+bool CModem::writeDMRData1(const uint8_t *data, unsigned length)
 {
 	assert(data != NULL);
 	assert(length > 0U);
@@ -523,7 +523,7 @@ bool CModem::writeDMRData1(const unsigned char* data, unsigned int length)
 	if (data[0U] != TAG_DATA && data[0U] != TAG_EOT)
 		return false;
 
-	unsigned char buffer[40U];
+	uint8_t buffer[40U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = length + 2U;
@@ -531,14 +531,14 @@ bool CModem::writeDMRData1(const unsigned char* data, unsigned int length)
 
 	::memcpy(buffer + 3U, data + 1U, length - 1U);
 
-	unsigned char len = length + 2U;
+	uint8_t len = length + 2U;
 	m_txDMRData1.addData(&len, 1U);
 	m_txDMRData1.addData(buffer, len);
 
 	return true;
 }
 
-bool CModem::writeDMRData2(const unsigned char* data, unsigned int length)
+bool CModem::writeDMRData2(const uint8_t *data, unsigned length)
 {
 	assert(data != NULL);
 	assert(length > 0U);
@@ -546,7 +546,7 @@ bool CModem::writeDMRData2(const unsigned char* data, unsigned int length)
 	if (data[0U] != TAG_DATA && data[0U] != TAG_EOT)
 		return false;
 
-	unsigned char buffer[40U];
+	uint8_t buffer[40U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = length + 2U;
@@ -554,19 +554,19 @@ bool CModem::writeDMRData2(const unsigned char* data, unsigned int length)
 
 	::memcpy(buffer + 3U, data + 1U, length - 1U);
 
-	unsigned char len = length + 2U;
+	uint8_t len = length + 2U;
 	m_txDMRData2.addData(&len, 1U);
 	m_txDMRData2.addData(buffer, len);
 
 	return true;
 }
 
-bool CModem::writeDMRInfo(unsigned int slotNo, const std::string& src, bool group, const std::string& dest, const char* type)
+bool CModem::writeDMRInfo(unsigned slotNo, const std::string &src, bool group, const std::string &dest, const char *type)
 {
 	assert(m_serial != NULL);
 	assert(type != NULL);
 
-	unsigned char buffer[50U];
+	uint8_t buffer[50U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = 47U;
@@ -587,13 +587,13 @@ bool CModem::writeDMRInfo(unsigned int slotNo, const std::string& src, bool grou
 	return m_serial->write(buffer, 47U) != 47;
 }
 
-bool CModem::writeSerial(const unsigned char* data, unsigned int length)
+bool CModem::writeSerial(const uint8_t *data, unsigned length)
 {
 	assert(m_serial != NULL);
 	assert(data != NULL);
 	assert(length > 0U);
 
-	unsigned char buffer[250U];
+	uint8_t buffer[250U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = length + 3U;
@@ -632,9 +632,9 @@ bool CModem::readVersion()
 
 	CThread::sleep(2000U);	// 2s
 
-	for (unsigned int i = 0U; i < 6U; i++)
+	for (unsigned i = 0U; i < 6U; i++)
 	{
-		unsigned char buffer[3U];
+		uint8_t buffer[3U];
 
 		buffer[0U] = MMDVM_FRAME_START;
 		buffer[1U] = 3U;
@@ -650,7 +650,7 @@ bool CModem::readVersion()
 		m_serial->setNonblock(true);
 #endif
 
-		for (unsigned int count = 0U; count < MAX_RESPONSES; count++)
+		for (unsigned count = 0U; count < MAX_RESPONSES; count++)
 		{
 			CThread::sleep(10U);
 			RESP_TYPE_MMDVM resp = getResponse();
@@ -696,7 +696,7 @@ bool CModem::readStatus()
 {
 	assert(m_serial != NULL);
 
-	unsigned char buffer[3U];
+	uint8_t buffer[3U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = 3U;
@@ -716,7 +716,7 @@ bool CModem::setConfig()
 {
 	assert(m_serial != NULL);
 
-	unsigned char buffer[30U];
+	uint8_t buffer[30U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 
@@ -746,9 +746,9 @@ bool CModem::setConfig()
 
 	buffer[6U] = MODE_IDLE;
 
-	buffer[7U] = (unsigned char)(m_rxLevel * 2.55F + 0.5F);
+	buffer[7U] = (uint8_t)(m_rxLevel * 2.55F + 0.5F);
 
-	buffer[8U] = (unsigned char)(m_cwIdTXLevel * 2.55F + 0.5F);
+	buffer[8U] = (uint8_t)(m_cwIdTXLevel * 2.55F + 0.5F);
 
 	buffer[9U] = m_dmrColorCode;
 
@@ -756,25 +756,25 @@ bool CModem::setConfig()
 
 	buffer[11U] = 128U;           // Was OscOffset
 
-	buffer[12U] = (unsigned char)(m_dstarTXLevel * 2.55F + 0.5F);
-	buffer[13U] = (unsigned char)(m_dmrTXLevel * 2.55F + 0.5F);
-	buffer[14U] = (unsigned char)(m_ysfTXLevel * 2.55F + 0.5F);
-	buffer[15U] = (unsigned char)(m_p25TXLevel * 2.55F + 0.5F);
+	buffer[12U] = (uint8_t)(m_dstarTXLevel * 2.55F + 0.5F);
+	buffer[13U] = (uint8_t)(m_dmrTXLevel * 2.55F + 0.5F);
+	buffer[14U] = (uint8_t)(m_ysfTXLevel * 2.55F + 0.5F);
+	buffer[15U] = (uint8_t)(m_p25TXLevel * 2.55F + 0.5F);
 
-	buffer[16U] = (unsigned char)(m_txDCOffset + 128);
-	buffer[17U] = (unsigned char)(m_rxDCOffset + 128);
+	buffer[16U] = (uint8_t)(m_txDCOffset + 128);
+	buffer[17U] = (uint8_t)(m_rxDCOffset + 128);
 
-	buffer[18U] = (unsigned char)(m_nxdnTXLevel * 2.55F + 0.5F);
+	buffer[18U] = (uint8_t)(m_nxdnTXLevel * 2.55F + 0.5F);
 
-	buffer[19U] = (unsigned char)m_ysfTXHang;
+	buffer[19U] = (uint8_t)m_ysfTXHang;
 
-	buffer[20U] = (unsigned char)(m_pocsagTXLevel * 2.55F + 0.5F);
+	buffer[20U] = (uint8_t)(m_pocsagTXLevel * 2.55F + 0.5F);
 
 	buffer[21U] = 0U;
 
-	buffer[22U] = (unsigned char)m_p25TXHang;
+	buffer[22U] = (uint8_t)m_p25TXHang;
 
-	buffer[23U] = (unsigned char)m_nxdnTXHang;
+	buffer[23U] = (uint8_t)m_nxdnTXHang;
 
 	// CUtils::dump(1U, "Written", buffer, 24U);
 
@@ -782,7 +782,7 @@ bool CModem::setConfig()
 	if (ret != 24)
 		return false;
 
-	unsigned int count = 0U;
+	unsigned count = 0U;
 	RESP_TYPE_MMDVM resp;
 	do
 	{
@@ -818,15 +818,15 @@ bool CModem::setFrequency()
 {
 	assert(m_serial != NULL);
 
-	unsigned char buffer[20U];
-	unsigned char len;
-	unsigned int  pocsagFrequency = 433000000U;
+	uint8_t buffer[20U];
+	uint8_t len;
+	unsigned  pocsagFrequency = 433000000U;
 
 	if (m_hwType == HWT_DVMEGA)
 		len = 12U;
 	else
 	{
-		buffer[12U]  = (unsigned char)(m_rfLevel * 2.55F + 0.5F);
+		buffer[12U]  = (uint8_t)(m_rfLevel * 2.55F + 0.5F);
 
 		buffer[13U] = (pocsagFrequency >> 0)  & 0xFFU;
 		buffer[14U] = (pocsagFrequency >> 8)  & 0xFFU;
@@ -860,7 +860,7 @@ bool CModem::setFrequency()
 	if (ret != len)
 		return false;
 
-	unsigned int count = 0U;
+	unsigned count = 0U;
 	RESP_TYPE_MMDVM resp;
 	do
 	{
@@ -1005,16 +1005,16 @@ HW_TYPE CModem::getHWType() const
 	return m_hwType;
 }
 
-unsigned char CModem::getMode() const
+uint8_t CModem::getMode() const
 {
 	return m_mode;
 }
 
-bool CModem::setMode(unsigned char mode)
+bool CModem::setMode(uint8_t mode)
 {
 	assert(m_serial != NULL);
 
-	unsigned char buffer[4U];
+	uint8_t buffer[4U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = 4U;
@@ -1026,21 +1026,21 @@ bool CModem::setMode(unsigned char mode)
 	return m_serial->write(buffer, 4U) == 4;
 }
 
-bool CModem::sendCWId(const std::string& callsign)
+bool CModem::sendCWId(const std::string &callsign)
 {
 	assert(m_serial != NULL);
 
-	unsigned int length = callsign.length();
+	unsigned length = callsign.length();
 	if (length > 200U)
 		length = 200U;
 
-	unsigned char buffer[205U];
+	uint8_t buffer[205U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = length + 3U;
 	buffer[2U] = MMDVM_SEND_CWID;
 
-	for (unsigned int i = 0U; i < length; i++)
+	for (unsigned i = 0U; i < length; i++)
 		buffer[i + 3U] = callsign.at(i);
 
 	// CUtils::dump(1U, "Written", buffer, length + 3U);
@@ -1057,7 +1057,7 @@ bool CModem::writeDMRStart(bool tx)
 	if (!tx && !m_tx)
 		return true;
 
-	unsigned char buffer[4U];
+	uint8_t buffer[4U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = 4U;
@@ -1069,7 +1069,7 @@ bool CModem::writeDMRStart(bool tx)
 	return m_serial->write(buffer, 4U) == 4;
 }
 
-bool CModem::writeDMRAbort(unsigned int slotNo)
+bool CModem::writeDMRAbort(unsigned slotNo)
 {
 	assert(m_serial != NULL);
 
@@ -1078,7 +1078,7 @@ bool CModem::writeDMRAbort(unsigned int slotNo)
 	else
 		m_txDMRData2.clear();
 
-	unsigned char buffer[4U];
+	uint8_t buffer[4U];
 
 	buffer[0U] = MMDVM_FRAME_START;
 	buffer[1U] = 4U;
@@ -1090,12 +1090,12 @@ bool CModem::writeDMRAbort(unsigned int slotNo)
 	return m_serial->write(buffer, 4U) == 4;
 }
 
-bool CModem::writeDMRShortLC(const unsigned char* lc)
+bool CModem::writeDMRShortLC(const uint8_t *lc)
 {
 	assert(m_serial != NULL);
 	assert(lc != NULL);
 
-	unsigned char buffer[12U];
+	uint8_t buffer[12U];
 
 	buffer[0U]  = MMDVM_FRAME_START;
 	buffer[1U]  = 12U;

@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef DMRFullLC_H
-#define DMRFullLC_H
+#pragma once
 
 #include "DMRLC.h"
 #include "DMRSlotType.h"
@@ -30,13 +30,10 @@ public:
 	CDMRFullLC();
 	~CDMRFullLC();
 
-	CDMRLC* decode(const unsigned char* data, unsigned char type);
+	CDMRLC* decode(const uint8_t *data, uint8_t type);
 
-	void encode(const CDMRLC& lc, unsigned char* data, unsigned char type);
+	void encode(const CDMRLC& lc, uint8_t *data, uint8_t type);
 
 private:
 	CBPTC19696 m_bptc;
 };
-
-#endif
-

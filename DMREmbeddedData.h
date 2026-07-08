@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2017 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef DMREmbeddedData_H
-#define DMREmbeddedData_H
+#pragma once
+
+#include <cstdint>
 
 #include "DMRDefines.h"
 #include "DMRLC.h"
@@ -36,14 +38,14 @@ public:
 	CDMREmbeddedData();
 	~CDMREmbeddedData();
 
-	bool addData(const unsigned char* data, unsigned char lcss);
+	bool addData(const uint8_t *data, uint8_t lcss);
 
 	CDMRLC* getLC() const;
 	void setLC(const CDMRLC& lc);
 
-	unsigned char getData(unsigned char* data, unsigned char n) const;
+	uint8_t getData(uint8_t *data, uint8_t n) const;
 
-	bool getRawData(unsigned char* data) const;
+	bool getRawData(uint8_t *data) const;
 
 	bool isValid() const;
 	FLCO getFLCO() const;
@@ -51,14 +53,12 @@ public:
 	void reset();
 
 private:
-	bool*        m_raw;
+	bool *       m_raw;
 	LC_STATE     m_state;
-	bool*        m_data;
+	bool *       m_data;
 	FLCO         m_FLCO;
 	bool         m_valid;
 
 	void decodeEmbeddedData();
 	void encodeEmbeddedData();
 };
-
-#endif

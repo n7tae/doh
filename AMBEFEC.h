@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2010,2014,2016,2018 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(AMBEFEC_H)
-#define	AMBEFEC_H
+#pragma once
+
+#include <cstdint>
 
 class CAMBEFEC
 {
@@ -25,10 +27,8 @@ public:
 	CAMBEFEC();
 	~CAMBEFEC();
 
-	unsigned int regenerateDMR(unsigned char* bytes) const;
+	unsigned regenerateDMR(uint8_t *bytes) const;
 
 private:
-	unsigned int regenerateDMR(unsigned int& a, unsigned int& b,unsigned int& c) const;
+	unsigned regenerateDMR(unsigned& a, unsigned& b,unsigned& c) const;
 };
-
-#endif

@@ -89,24 +89,24 @@ const uint16_t CCITT16_TABLE2[] =
 };
 
 
-bool CCRC::checkFiveBit(bool* in, unsigned int tcrc)
+bool CCRC::checkFiveBit(bool *in, unsigned tcrc)
 {
 	assert(in != NULL);
 
-	unsigned int crc;
+	unsigned crc;
 	encodeFiveBit(in, crc);
 
 	return crc == tcrc;
 }
 
-void CCRC::encodeFiveBit(const bool* in, unsigned int& tcrc)
+void CCRC::encodeFiveBit(const bool *in, unsigned& tcrc)
 {
 	assert(in != NULL);
 
 	unsigned short total = 0U;
-	for (unsigned int i = 0U; i < 72U; i += 8U)
+	for (unsigned i = 0U; i < 72U; i += 8U)
 	{
-		unsigned char c;
+		uint8_t c;
 		CUtils::bitsToByteBE(in + i, c);
 		total += c;
 	}
@@ -116,7 +116,7 @@ void CCRC::encodeFiveBit(const bool* in, unsigned int& tcrc)
 	tcrc = total;
 }
 
-void CCRC::addCCITT162(unsigned char *in, unsigned int length)
+void CCRC::addCCITT162(uint8_t *in, unsigned length)
 {
 	assert(in != NULL);
 	assert(length > 2U);
@@ -138,7 +138,7 @@ void CCRC::addCCITT162(unsigned char *in, unsigned int length)
 	in[length - 2U] = crc8[1U];
 }
 
-bool CCRC::checkCCITT162(const unsigned char *in, unsigned int length)
+bool CCRC::checkCCITT162(const uint8_t *in, unsigned length)
 {
 	assert(in != NULL);
 	assert(length > 2U);
@@ -159,13 +159,13 @@ bool CCRC::checkCCITT162(const unsigned char *in, unsigned int length)
 	return crc8[0U] == in[length - 1U] && crc8[1U] == in[length - 2U];
 }
 
-unsigned char CCRC::crc8(const unsigned char *in, unsigned int length)
+uint8_t CCRC::crc8(const uint8_t *in, unsigned length)
 {
 	assert(in != NULL);
 
 	uint8_t crc = 0U;
 
-	for (unsigned int i = 0U; i < length; i++)
+	for (unsigned i = 0U; i < length; i++)
 		crc = CRC8_TABLE[crc ^ in[i]];
 
 	return crc;

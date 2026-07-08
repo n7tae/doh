@@ -1,4 +1,5 @@
 /*
+ *  Copyright (C) 2026 by Thomas A. Early N7TAE
  *	Copyright (C) 2015,2016,2017 by Jonathan Naylor, G4KLX
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -11,8 +12,9 @@
  *	GNU General Public License for more details.
  */
 
-#ifndef DMRData_H
-#define	DMRData_H
+#pragma once
+
+#include <cstdint>
 
 #include "DMRDefines.h"
 
@@ -25,47 +27,45 @@ public:
 
 	CDMRData& operator=(const CDMRData& data);
 
-	unsigned int getSlotNo() const;
-	void setSlotNo(unsigned int slotNo);
+	unsigned getSlotNo() const;
+	void setSlotNo(unsigned slotNo);
 
-	unsigned int getSrcId() const;
-	void setSrcId(unsigned int id);
+	unsigned getSrcId() const;
+	void setSrcId(unsigned id);
 
-	unsigned int getDstId() const;
-	void setDstId(unsigned int id);
+	unsigned getDstId() const;
+	void setDstId(unsigned id);
 
 	FLCO getFLCO() const;
 	void setFLCO(FLCO flco);
 
-	unsigned char getN() const;
-	void setN(unsigned char n);
+	uint8_t getN() const;
+	void setN(uint8_t n);
 
-	unsigned char getSeqNo() const;
-	void setSeqNo(unsigned char seqNo);
+	uint8_t getSeqNo() const;
+	void setSeqNo(uint8_t seqNo);
 
-	unsigned char getDataType() const;
-	void setDataType(unsigned char dataType);
+	uint8_t getDataType() const;
+	void setDataType(uint8_t dataType);
 
-	unsigned char getBER() const;
-	void setBER(unsigned char ber);
+	uint8_t getBER() const;
+	void setBER(uint8_t ber);
 
-	unsigned char getRSSI() const;
-	void setRSSI(unsigned char rssi);
+	uint8_t getRSSI() const;
+	void setRSSI(uint8_t rssi);
 
-	void setData(const unsigned char* buffer);
-	unsigned int getData(unsigned char* buffer) const;
+	void setData(const uint8_t *buffer);
+	unsigned getData(uint8_t *buffer) const;
 
 private:
-	unsigned int   m_slotNo;
-	unsigned char* m_data;
-	unsigned int   m_srcId;
-	unsigned int   m_dstId;
+	unsigned   m_slotNo;
+	uint8_t *m_data;
+	unsigned   m_srcId;
+	unsigned   m_dstId;
 	FLCO           m_flco;
-	unsigned char  m_dataType;
-	unsigned char  m_seqNo;
-	unsigned char  m_n;
-	unsigned char  m_ber;
-	unsigned char  m_rssi;
+	uint8_t  m_dataType;
+	uint8_t  m_seqNo;
+	uint8_t  m_n;
+	uint8_t  m_ber;
+	uint8_t  m_rssi;
 };
-
-#endif

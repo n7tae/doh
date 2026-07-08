@@ -27,20 +27,20 @@
 class CConf
 {
 public:
-	CConf(const std::string& file);
+	CConf(const std::string &file);
 
 	bool Read();
 
 	// The General section
 	std::string  getCallsign() const;
-	unsigned int getId() const;
-	unsigned int getTimeout() const;
+	unsigned getId() const;
+	unsigned getTimeout() const;
 	bool         getDuplex() const;
 
 	// The Info section
-	unsigned int getRXFrequency() const;
-	unsigned int getTXFrequency() const;
-	unsigned int getPower() const;
+	unsigned getRXFrequency() const;
+	unsigned getTXFrequency() const;
+	unsigned getPower() const;
 	float        getLatitude() const;
 	float        getLongitude() const;
 	int          getHeight() const;
@@ -49,26 +49,26 @@ public:
 	std::string  getURL() const;
 
 	// The Log section
-	unsigned int getLogLevel() const;
+	unsigned getLogLevel() const;
 
 	// The CW ID section
 	bool         getCWIdEnabled() const;
-	unsigned int getCWIdTime() const;
+	unsigned getCWIdTime() const;
 	std::string  getCWIdCallsign() const;
 
 	// The DMR Id section
 	std::string  getDMRIdLookupFile() const;
-	unsigned int getDMRIdLookupTime() const;
+	unsigned getDMRIdLookupTime() const;
 
 	// The Modem section
 	std::string  getModemPort() const;
 	std::string  getModemProtocol() const;
-	unsigned int getModemAddress() const;
+	unsigned getModemAddress() const;
 	bool         getModemRXInvert() const;
 	bool         getModemTXInvert() const;
 	bool         getModemPTTInvert() const;
-	unsigned int getModemTXDelay() const;
-	unsigned int getModemDMRDelay() const;
+	unsigned getModemTXDelay() const;
+	unsigned getModemDMRDelay() const;
 	int          getModemTXOffset() const;
 	int          getModemRXOffset() const;
 	int          getModemRXDCOffset() const;
@@ -85,46 +85,46 @@ public:
 	// The DMR section
 	bool         getDMREnabled() const;
 	DMR_BEACONS  getDMRBeacons() const;
-	unsigned int getDMRBeaconInterval() const;
-	unsigned int getDMRBeaconDuration() const;
-	unsigned int getDMRId() const;
-	unsigned int getDMRColorCode() const;
+	unsigned getDMRBeaconInterval() const;
+	unsigned getDMRBeaconDuration() const;
+	unsigned getDMRId() const;
+	unsigned getDMRColorCode() const;
 	bool         getDMREmbeddedLCOnly() const;
 	bool         getDMRDumpTAData() const;
 	bool         getDMRSelfOnly() const;
-	std::vector<unsigned int> getDMRPrefixes() const;
-	std::vector<unsigned int> getDMRBlackList() const;
-	std::vector<unsigned int> getDMRWhiteList() const;
-	std::vector<unsigned int> getDMRSlot1TGWhiteList() const;
-	std::vector<unsigned int> getDMRSlot2TGWhiteList() const;
-	unsigned int getDMRCallHang() const;
-	unsigned int getDMRTXHang() const;
-	unsigned int getDMRModeHang() const;
+	std::vector<unsigned> getDMRPrefixes() const;
+	std::vector<unsigned> getDMRBlackList() const;
+	std::vector<unsigned> getDMRWhiteList() const;
+	std::vector<unsigned> getDMRSlot1TGWhiteList() const;
+	std::vector<unsigned> getDMRSlot2TGWhiteList() const;
+	unsigned getDMRCallHang() const;
+	unsigned getDMRTXHang() const;
+	unsigned getDMRModeHang() const;
 	DMR_OVCM_TYPES getDMROVCM() const;
 
 	// The DMR Network section
 	std::string  getDMRNetworkType() const;
 	std::string  getDMRNetworkAddress() const;
-	unsigned int getDMRNetworkPort() const;
-	unsigned int getDMRNetworkLocal() const;
+	unsigned getDMRNetworkPort() const;
+	unsigned getDMRNetworkLocal() const;
 	std::string  getDMRNetworkPassword() const;
 	std::string  getDMRNetworkOptions() const;
 	bool         getDMRNetworkDebug() const;
-	unsigned int getDMRNetworkJitter() const;
+	unsigned getDMRNetworkJitter() const;
 	bool         getDMRNetworkSlot1() const;
 	bool         getDMRNetworkSlot2() const;
-	unsigned int getDMRNetworkModeHang() const;
+	unsigned getDMRNetworkModeHang() const;
 
 private:
 	std::string  m_file;
 	std::string  m_callsign;
-	unsigned int m_id;
-	unsigned int m_timeout;
+	unsigned m_id;
+	unsigned m_timeout;
 	bool         m_duplex;
 
-	unsigned int m_rxFrequency;
-	unsigned int m_txFrequency;
-	unsigned int m_power;
+	unsigned m_rxFrequency;
+	unsigned m_txFrequency;
+	unsigned m_power;
 	float        m_latitude;
 	float        m_longitude;
 	int          m_height;
@@ -132,23 +132,23 @@ private:
 	std::string  m_description;
 	std::string  m_url;
 
-	unsigned int m_logLevel;
+	unsigned m_logLevel;
 
 	bool         m_cwIdEnabled;
-	unsigned int m_cwIdTime;
+	unsigned m_cwIdTime;
 	std::string  m_cwIdCallsign;
 
 	std::string  m_dmrIdLookupFile;
-	unsigned int m_dmrIdLookupTime;
+	unsigned m_dmrIdLookupTime;
 
 	std::string  m_modemPort;
 	std::string  m_modemProtocol;
-	unsigned int m_modemAddress;
+	unsigned m_modemAddress;
 	bool         m_modemRXInvert;
 	bool         m_modemTXInvert;
 	bool         m_modemPTTInvert;
-	unsigned int m_modemTXDelay;
-	unsigned int m_modemDMRDelay;
+	unsigned m_modemTXDelay;
+	unsigned m_modemDMRDelay;
 	int          m_modemTXOffset;
 	int          m_modemRXOffset;
 	int          m_modemRXDCOffset;
@@ -163,32 +163,32 @@ private:
 	bool         m_modemDebug;
 
 	DMR_BEACONS  m_dmrBeacons;
-	unsigned int m_dmrBeaconInterval;
-	unsigned int m_dmrBeaconDuration;
-	unsigned int m_dmrId;
-	unsigned int m_dmrColorCode;
+	unsigned m_dmrBeaconInterval;
+	unsigned m_dmrBeaconDuration;
+	unsigned m_dmrId;
+	unsigned m_dmrColorCode;
 	bool         m_dmrSelfOnly;
 	bool         m_dmrEmbeddedLCOnly;
 	bool         m_dmrDumpTAData;
-	std::vector<unsigned int> m_dmrPrefixes;
-	std::vector<unsigned int> m_dmrBlackList;
-	std::vector<unsigned int> m_dmrWhiteList;
-	std::vector<unsigned int> m_dmrSlot1TGWhiteList;
-	std::vector<unsigned int> m_dmrSlot2TGWhiteList;
-	unsigned int m_dmrCallHang;
-	unsigned int m_dmrTXHang;
-	unsigned int m_dmrModeHang;
+	std::vector<unsigned> m_dmrPrefixes;
+	std::vector<unsigned> m_dmrBlackList;
+	std::vector<unsigned> m_dmrWhiteList;
+	std::vector<unsigned> m_dmrSlot1TGWhiteList;
+	std::vector<unsigned> m_dmrSlot2TGWhiteList;
+	unsigned m_dmrCallHang;
+	unsigned m_dmrTXHang;
+	unsigned m_dmrModeHang;
 	DMR_OVCM_TYPES m_dmrOVCM;
 
 	std::string  m_dmrNetworkType;
 	std::string  m_dmrNetworkAddress;
-	unsigned int m_dmrNetworkPort;
-	unsigned int m_dmrNetworkLocal;
+	unsigned m_dmrNetworkPort;
+	unsigned m_dmrNetworkLocal;
 	std::string  m_dmrNetworkPassword;
 	std::string  m_dmrNetworkOptions;
 	bool         m_dmrNetworkDebug;
-	unsigned int m_dmrNetworkJitter;
+	unsigned m_dmrNetworkJitter;
 	bool         m_dmrNetworkSlot1;
 	bool         m_dmrNetworkSlot2;
-	unsigned int m_dmrNetworkModeHang;
+	unsigned m_dmrNetworkModeHang;
 };

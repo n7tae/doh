@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRSLOTTYPE_H)
-#define DMRSLOTTYPE_H
+#pragma once
+#include <cstdint>
 
 class CDMRSlotType
 {
@@ -25,18 +26,16 @@ public:
 	CDMRSlotType();
 	~CDMRSlotType();
 
-	void putData(const unsigned char* data);
-	void getData(unsigned char* data) const;
+	void putData(const uint8_t *data);
+	void getData(uint8_t *data) const;
 
-	unsigned char getColorCode() const;
-	void setColorCode(unsigned char code);
+	uint8_t getColorCode() const;
+	void setColorCode(uint8_t code);
 
-	unsigned char getDataType() const;
-	void setDataType(unsigned char type);
+	uint8_t getDataType() const;
+	void setDataType(uint8_t type);
 
 private:
-	unsigned char m_colorCode;
-	unsigned char m_dataType;
+	uint8_t m_colorCode;
+	uint8_t m_dataType;
 };
-
-#endif

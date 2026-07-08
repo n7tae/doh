@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRCSBK_H)
-#define DMRCSBK_H
+#pragma once
+
+#include <cstdint>
 
 #include "DMRDefines.h"
 
@@ -40,42 +42,40 @@ public:
 	CDMRCSBK();
 	~CDMRCSBK();
 
-	bool put(const unsigned char* bytes);
+	bool put(const uint8_t *bytes);
 
-	void get(unsigned char* bytes) const;
+	void get(uint8_t *bytes) const;
 
 	// Generic fields
-	CSBKO         getCSBKO() const;
-	unsigned char getFID() const;
+	CSBKO   getCSBKO() const;
+	uint8_t getFID() const;
 
 	// Set/Get the OVCM bit in the supported CSBKs
 	bool getOVCM() const;
 	void setOVCM(bool ovcm);
 
 	// For BS Dwn Act
-	unsigned int  getBSId() const;
+	unsigned  getBSId() const;
 
 	// For Pre
 	bool getGI() const;
 
-	unsigned int  getSrcId() const;
-	unsigned int  getDstId() const;
+	unsigned  getSrcId() const;
+	unsigned  getDstId() const;
 
 	bool          getDataContent() const;
-	unsigned char getCBF() const;
+	uint8_t getCBF() const;
 
-	void          setCBF(unsigned char cbf);
+	void          setCBF(uint8_t cbf);
 
 private:
-	unsigned char* m_data;
+	uint8_t       *m_data;
 	CSBKO          m_CSBKO;
-	unsigned char  m_FID;
+	uint8_t        m_FID;
 	bool           m_GI;
-	unsigned int   m_bsId;
-	unsigned int   m_srcId;
-	unsigned int   m_dstId;
+	unsigned   m_bsId;
+	unsigned   m_srcId;
+	unsigned   m_dstId;
 	bool           m_dataContent;
-	unsigned char  m_CBF;
+	uint8_t        m_CBF;
 };
-
-#endif

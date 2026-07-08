@@ -25,7 +25,7 @@
 #include <cstring>
 #include <cctype>
 
-CDMRLookup::CDMRLookup(const std::string& filename, unsigned int reloadTime) :
+CDMRLookup::CDMRLookup(const std::string &filename, unsigned reloadTime) :
 	CThread(),
 	m_filename(filename),
 	m_reloadTime(reloadTime),
@@ -93,7 +93,7 @@ void CDMRLookup::stop()
 	wait();
 }
 
-void CDMRLookup::findWithName(unsigned int id, class CUserDBentry *entry)
+void CDMRLookup::findWithName(unsigned id, class CUserDBentry *entry)
 {
 	if (id == 0xFFFFFFU)
 	{
@@ -118,7 +118,7 @@ void CDMRLookup::findWithName(unsigned int id, class CUserDBentry *entry)
 	return;
 }
 
-std::string CDMRLookup::find(unsigned int id)
+std::string CDMRLookup::find(unsigned id)
 {
 	std::string callsign;
 
@@ -140,7 +140,7 @@ std::string CDMRLookup::find(unsigned int id)
 	return callsign;
 }
 
-bool CDMRLookup::exists(unsigned int id)
+bool CDMRLookup::exists(unsigned id)
 {
 	return m_table.lookup(id, NULL);
 }

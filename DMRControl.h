@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015-2020 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRControl_H)
-#define	DMRControl_H
+#pragma once
 
 #include "RSSIInterpolator.h"
 #include "DMRNetwork.h"
@@ -28,20 +28,21 @@
 #include "Modem.h"
 
 #include <vector>
+#include <cstdint>
 
 class CDMRControl
 {
 public:
-	CDMRControl(unsigned int id, unsigned int colorCode, unsigned int callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned int>& prefixes, const std::vector<unsigned int>& blacklist, const std::vector<unsigned int>& whitelist, const std::vector<unsigned int>& slot1TGWhitelist, const std::vector<unsigned int>& slot2TGWhitelist, unsigned int timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned int jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB);
+	CDMRControl(unsigned id, unsigned colorCode, unsigned callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned>& prefixes, const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, unsigned timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB);
 	~CDMRControl();
 
-	bool processWakeup(const unsigned char* data);
+	bool processWakeup(const uint8_t *data);
 
-	bool writeModemSlot1(unsigned char* data, unsigned int len);
-	bool writeModemSlot2(unsigned char* data, unsigned int len);
+	bool writeModemSlot1(uint8_t *data, unsigned len);
+	bool writeModemSlot2(uint8_t *data, unsigned len);
 
-	unsigned int readModemSlot1(unsigned char* data);
-	unsigned int readModemSlot2(unsigned char* data);
+	unsigned readModemSlot1(uint8_t *data);
+	unsigned readModemSlot2(uint8_t *data);
 
 	void clock();
 
@@ -50,7 +51,7 @@ public:
 	void enable(bool enabled);
 
 private:
-	unsigned int m_colorCode;
+	unsigned m_colorCode;
 	CModem*      m_modem;
 	IDMRNetwork* m_network;
 	CDMRSlot     m_slot1;
@@ -58,5 +59,3 @@ private:
 	CDMRLookup*  m_lookup;
 	CDashDB*     m_dashDB;
 };
-
-#endif

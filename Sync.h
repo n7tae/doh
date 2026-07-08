@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016,2018 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,14 +17,14 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(SYNC_H)
-#define	SYNC_H
+#pragma once
+
+#include <cstdint>
 
 class CSync
 {
 public:
-	static void addDMRDataSync(unsigned char* data, bool duplex);
-	static void addDMRAudioSync(unsigned char* data, bool duplex);
+	static void addDMRDataSync(uint8_t *data, bool duplex);
+	static void addDMRAudioSync(uint8_t *data, bool duplex);
 };
 
-#endif

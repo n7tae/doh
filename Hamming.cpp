@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -18,11 +19,13 @@
 
 #include "Hamming.h"
 
+#include <cstdint>
+
 #include <cstdio>
 #include <cassert>
 
 // Hamming (15,11,3) check a boolean data array
-bool CHamming::decode15113_1(bool* d)
+bool CHamming::decode15113_1(bool *d)
 {
 	assert(d != NULL);
 
@@ -32,7 +35,7 @@ bool CHamming::decode15113_1(bool* d)
 	bool c2 = d[0] ^ d[1] ^ d[4] ^ d[5] ^ d[7] ^ d[8] ^ d[10];
 	bool c3 = d[0] ^ d[2] ^ d[4] ^ d[6] ^ d[7] ^ d[9] ^ d[10];
 
-	unsigned char n = 0U;
+	uint8_t n = 0U;
 	n |= (c0 != d[11]) ? 0x01U : 0x00U;
 	n |= (c1 != d[12]) ? 0x02U : 0x00U;
 	n |= (c2 != d[13]) ? 0x04U : 0x00U;
@@ -95,7 +98,7 @@ bool CHamming::decode15113_1(bool* d)
 	}
 }
 
-void CHamming::encode15113_1(bool* d)
+void CHamming::encode15113_1(bool *d)
 {
 	assert(d != NULL);
 
@@ -107,7 +110,7 @@ void CHamming::encode15113_1(bool* d)
 }
 
 // Hamming (15,11,3) check a boolean data array
-bool CHamming::decode15113_2(bool* d)
+bool CHamming::decode15113_2(bool *d)
 {
 	assert(d != NULL);
 
@@ -117,7 +120,7 @@ bool CHamming::decode15113_2(bool* d)
 	bool c2 = d[2] ^ d[3] ^ d[4] ^ d[5] ^ d[7] ^ d[9] ^ d[10];
 	bool c3 = d[0] ^ d[1] ^ d[2] ^ d[4] ^ d[6] ^ d[7] ^ d[10];
 
-	unsigned char n = 0x00U;
+	uint8_t n = 0x00U;
 	n |= (c0 != d[11]) ? 0x01U : 0x00U;
 	n |= (c1 != d[12]) ? 0x02U : 0x00U;
 	n |= (c2 != d[13]) ? 0x04U : 0x00U;
@@ -180,7 +183,7 @@ bool CHamming::decode15113_2(bool* d)
 	}
 }
 
-void CHamming::encode15113_2(bool* d)
+void CHamming::encode15113_2(bool *d)
 {
 	assert(d != NULL);
 
@@ -192,7 +195,7 @@ void CHamming::encode15113_2(bool* d)
 }
 
 // Hamming (13,9,3) check a boolean data array
-bool CHamming::decode1393(bool* d)
+bool CHamming::decode1393(bool *d)
 {
 	assert(d != NULL);
 
@@ -202,7 +205,7 @@ bool CHamming::decode1393(bool* d)
 	bool c2 = d[0] ^ d[1] ^ d[2] ^ d[3] ^ d[5] ^ d[7] ^ d[8];
 	bool c3 = d[0] ^ d[2] ^ d[4] ^ d[5] ^ d[8];
 
-	unsigned char n = 0x00U;
+	uint8_t n = 0x00U;
 	n |= (c0 != d[9])  ? 0x01U : 0x00U;
 	n |= (c1 != d[10]) ? 0x02U : 0x00U;
 	n |= (c2 != d[11]) ? 0x04U : 0x00U;
@@ -259,7 +262,7 @@ bool CHamming::decode1393(bool* d)
 	}
 }
 
-void CHamming::encode1393(bool* d)
+void CHamming::encode1393(bool *d)
 {
 	assert(d != NULL);
 
@@ -271,7 +274,7 @@ void CHamming::encode1393(bool* d)
 }
 
 // Hamming (10,6,3) check a boolean data array
-bool CHamming::decode1063(bool* d)
+bool CHamming::decode1063(bool *d)
 {
 	assert(d != NULL);
 
@@ -281,7 +284,7 @@ bool CHamming::decode1063(bool* d)
 	bool c2 = d[0] ^ d[2] ^ d[3] ^ d[4];
 	bool c3 = d[1] ^ d[2] ^ d[3] ^ d[4];
 
-	unsigned char n = 0x00U;
+	uint8_t n = 0x00U;
 	n |= (c0 != d[6]) ? 0x01U : 0x00U;
 	n |= (c1 != d[7]) ? 0x02U : 0x00U;
 	n |= (c2 != d[8]) ? 0x04U : 0x00U;
@@ -329,7 +332,7 @@ bool CHamming::decode1063(bool* d)
 	}
 }
 
-void CHamming::encode1063(bool* d)
+void CHamming::encode1063(bool *d)
 {
 	assert(d != NULL);
 
@@ -341,7 +344,7 @@ void CHamming::encode1063(bool* d)
 }
 
 // A Hamming (16,11,4) Check
-bool CHamming::decode16114(bool* d)
+bool CHamming::decode16114(bool *d)
 {
 	assert(d != NULL);
 
@@ -353,7 +356,7 @@ bool CHamming::decode16114(bool* d)
 	bool c4 = d[0] ^ d[2] ^ d[5] ^ d[6] ^ d[8] ^ d[9] ^ d[10];
 
 	// Compare these with the actual bits
-	unsigned char n = 0x00U;
+	uint8_t n = 0x00U;
 	n |= (c0 != d[11]) ? 0x01U : 0x00U;
 	n |= (c1 != d[12]) ? 0x02U : 0x00U;
 	n |= (c2 != d[13]) ? 0x04U : 0x00U;
@@ -424,7 +427,7 @@ bool CHamming::decode16114(bool* d)
 	}
 }
 
-void CHamming::encode16114(bool* d)
+void CHamming::encode16114(bool *d)
 {
 	assert(d != NULL);
 
@@ -436,7 +439,7 @@ void CHamming::encode16114(bool* d)
 }
 
 // A Hamming (17,12,3) Check
-bool CHamming::decode17123(bool* d)
+bool CHamming::decode17123(bool *d)
 {
 	assert(d != NULL);
 
@@ -448,7 +451,7 @@ bool CHamming::decode17123(bool* d)
 	bool c4 = d[0] ^ d[1] ^ d[2] ^ d[5] ^ d[6] ^ d[8] ^ d[11];
 
 	// Compare these with the actual bits
-	unsigned char n = 0x00U;
+	uint8_t n = 0x00U;
 	n |= (c0 != d[12]) ? 0x01U : 0x00U;
 	n |= (c1 != d[13]) ? 0x02U : 0x00U;
 	n |= (c2 != d[14]) ? 0x04U : 0x00U;
@@ -522,7 +525,7 @@ bool CHamming::decode17123(bool* d)
 	}
 }
 
-void CHamming::encode17123(bool* d)
+void CHamming::encode17123(bool *d)
 {
 	assert(d != NULL);
 

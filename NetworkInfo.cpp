@@ -60,14 +60,14 @@ CNetworkInfo::~CNetworkInfo()
 {
 }
 
-void CNetworkInfo::getNetworkInterface(unsigned char* info)
+void CNetworkInfo::getNetworkInterface(uint8_t *info)
 {
 	LogInfo("Interfaces Info");
 
 	::strcpy((char*)info, "(address unknown)");
 
 #if defined(__linux__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
-	char* dflt = NULL;
+	char *dflt = NULL;
 
 #if defined(__linux__)
 	FILE* fp = ::fopen("/proc/net/route", "r");	// IPv4 routing
@@ -80,8 +80,8 @@ void CNetworkInfo::getNetworkInterface(unsigned char* info)
 	char line[100U];
 	while (::fgets(line, 100U, fp))
 	{
-		char* p1 = strtok(line, " \t");
-		char* p2 = strtok(NULL, " \t");
+		char *p1 = strtok(line, " \t");
+		char *p2 = strtok(NULL, " \t");
 
 		if (p1 != NULL && p2 != NULL)
 		{
@@ -154,9 +154,9 @@ void CNetworkInfo::getNetworkInterface(unsigned char* info)
 		return;
 	}
 
-	const unsigned int IFLISTSIZ = 25U;
+	const unsigned IFLISTSIZ = 25U;
 	char interfacelist[IFLISTSIZ][50+INET6_ADDRSTRLEN];
-	for (unsigned int n = 0U; n < IFLISTSIZ; n++)
+	for (unsigned n = 0U; n < IFLISTSIZ; n++)
 		interfacelist[n][0] = 0;
 
 	struct ifaddrs* ifaddr;
@@ -166,7 +166,7 @@ void CNetworkInfo::getNetworkInterface(unsigned char* info)
 		return;
 	}
 
-	unsigned int ifnr = 0U;
+	unsigned ifnr = 0U;
 	for (struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
 	{
 		if (ifa->ifa_addr == NULL)
@@ -203,9 +203,9 @@ void CNetworkInfo::getNetworkInterface(unsigned char* info)
 
 	LogInfo("    Default interface is : %s", dflt);
 
-	for (unsigned int n = 0U; n < ifnr; n++)
+	for (unsigned n = 0U; n < ifnr; n++)
 	{
-		char* p = ::strchr(interfacelist[n], '%');
+		char *p = ::strchr(interfacelist[n], '%');
 		if (p != NULL)
 			*p = 0;
 

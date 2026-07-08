@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2010,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,18 +17,17 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef Golay24128_H
-#define Golay24128_H
+#pragma once
+
+#include <cstdint>
 
 class CGolay24128
 {
 public:
-	static unsigned int encode23127(unsigned int data);
-	static unsigned int encode24128(unsigned int data);
+	static unsigned encode23127(unsigned data);
+	static unsigned encode24128(unsigned data);
 
-	static unsigned int decode23127(unsigned int code);
-	static unsigned int decode24128(unsigned int code);
-	static unsigned int decode24128(unsigned char* bytes);
+	static unsigned decode23127(unsigned code);
+	static unsigned decode24128(unsigned code);
+	static unsigned decode24128(uint8_t *bytes);
 };
-
-#endif

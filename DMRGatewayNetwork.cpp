@@ -27,12 +27,12 @@
 #include <cstring>
 #include <cstdlib>
 
-const unsigned int BUFFER_LENGTH = 500U;
+const unsigned BUFFER_LENGTH = 500U;
 
-const unsigned int HOMEBREW_DATA_PACKET_LENGTH = 55U;
+const unsigned HOMEBREW_DATA_PACKET_LENGTH = 55U;
 
 
-CDMRGatewayNetwork::CDMRGatewayNetwork(const std::string& address, unsigned int port, unsigned int local, unsigned int id, bool duplex, const char* version, bool slot1, bool slot2, HW_TYPE hwType, bool debug) :
+CDMRGatewayNetwork::CDMRGatewayNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, bool duplex, const char *version, bool slot1, bool slot2, HW_TYPE hwType, bool debug) :
 	m_addressStr(address),
 	m_addr(),
 	m_addrLen(0U),
@@ -65,7 +65,7 @@ CDMRGatewayNetwork::CDMRGatewayNetwork(const std::string& address, unsigned int 
 	if (CUDPSocket::lookup(m_addressStr, m_port, m_addr, m_addrLen) != 0)
 		m_addrLen = 0U;
 
-	m_buffer   = new unsigned char[BUFFER_LENGTH];
+	m_buffer   = new uint8_t[BUFFER_LENGTH];
 	m_id       = new uint8_t[4U];
 	m_streamId = new uint32_t[2U];
 
@@ -90,7 +90,7 @@ CDMRGatewayNetwork::~CDMRGatewayNetwork()
 	delete[] m_id;
 }
 
-void CDMRGatewayNetwork::setConfig(const std::string & callsign, unsigned int rxFrequency, unsigned int txFrequency, unsigned int power, unsigned int colorCode, float /*latitude*/, float /*longitude*/, int /*height*/, const std::string& /*location*/, const std::string& /*description*/, const std::string& /*url*/)
+void CDMRGatewayNetwork::setConfig(const std::string & callsign, unsigned rxFrequency, unsigned txFrequency, unsigned power, unsigned colorCode, float /*latitude*/, float /*longitude*/, int /*height*/, const std::string &/*location*/, const std::string &/*description*/, const std::string &/*url*/)
 {
 	m_callsign    = callsign;
 	m_rxFrequency = rxFrequency;
@@ -99,7 +99,7 @@ void CDMRGatewayNetwork::setConfig(const std::string & callsign, unsigned int rx
 	m_colorCode   = colorCode;
 }
 
-void CDMRGatewayNetwork::setOptions(const std::string& /*options*/)
+void CDMRGatewayNetwork::setOptions(const std::string &/*options*/)
 {
 }
 
@@ -133,7 +133,7 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 	if (m_rxData.isEmpty())
 		return false;
 
-	unsigned char length = 0U;
+	uint8_t length = 0U;
 	m_rxData.getData(&length, 1U);
 	m_rxData.getData(m_buffer, length);
 
@@ -141,13 +141,13 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 	if (::memcmp(m_buffer, "DMRD", 4U) != 0)
 		return false;
 
-	unsigned char seqNo = m_buffer[4U];
+	uint8_t seqNo = m_buffer[4U];
 
-	unsigned int srcId = (m_buffer[5U] << 16) | (m_buffer[6U] << 8) | (m_buffer[7U] << 0);
+	unsigned srcId = (m_buffer[5U] << 16) | (m_buffer[6U] << 8) | (m_buffer[7U] << 0);
 
-	unsigned int dstId = (m_buffer[8U] << 16) | (m_buffer[9U] << 8) | (m_buffer[10U] << 0);
+	unsigned dstId = (m_buffer[8U] << 16) | (m_buffer[9U] << 8) | (m_buffer[10U] << 0);
 
-	unsigned int slotNo = (m_buffer[15U] & 0x80U) == 0x80U ? 2U : 1U;
+	unsigned slotNo = (m_buffer[15U] & 0x80U) == 0x80U ? 2U : 1U;
 
 	// DMO mode slot disabling
 	if (slotNo == 1U && !m_duplex)
@@ -172,7 +172,7 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 
 	if (dataSync)
 	{
-		unsigned char dataType = m_buffer[15U] & 0x0FU;
+		uint8_t dataType = m_buffer[15U] & 0x0FU;
 		data.setData(m_buffer + 20U);
 		data.setDataType(dataType);
 		data.setN(0U);
@@ -185,7 +185,7 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 	}
 	else
 	{
-		unsigned char n = m_buffer[15U] & 0x0FU;
+		uint8_t n = m_buffer[15U] & 0x0FU;
 		data.setData(m_buffer + 20U);
 		data.setDataType(DT_VOICE);
 		data.setN(n);
@@ -196,7 +196,7 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 
 bool CDMRGatewayNetwork::write(const CDMRData& data)
 {
-	unsigned char buffer[HOMEBREW_DATA_PACKET_LENGTH];
+	uint8_t buffer[HOMEBREW_DATA_PACKET_LENGTH];
 	::memset(buffer, 0x00U, HOMEBREW_DATA_PACKET_LENGTH);
 
 	buffer[0U]  = 'D';
@@ -204,19 +204,19 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 	buffer[2U]  = 'R';
 	buffer[3U]  = 'D';
 
-	unsigned int srcId = data.getSrcId();
+	unsigned srcId = data.getSrcId();
 	buffer[5U]  = srcId >> 16;
 	buffer[6U]  = srcId >> 8;
 	buffer[7U]  = srcId >> 0;
 
-	unsigned int dstId = data.getDstId();
+	unsigned dstId = data.getDstId();
 	buffer[8U]  = dstId >> 16;
 	buffer[9U]  = dstId >> 8;
 	buffer[10U] = dstId >> 0;
 
 	::memcpy(buffer + 11U, m_id, 4U);
 
-	unsigned int slotNo = data.getSlotNo();
+	unsigned slotNo = data.getSlotNo();
 
 	// Individual slot disabling
 	if (slotNo == 1U && !m_slot1)
@@ -229,10 +229,10 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 	FLCO flco = data.getFLCO();
 	buffer[15U] |= flco == FLCO_GROUP ? 0x00U : 0x40U;
 
-	unsigned int slotIndex = slotNo - 1U;
+	unsigned slotIndex = slotNo - 1U;
 
 	std::uniform_int_distribution<uint32_t> dist(0x00000001, 0xfffffffe);
-	unsigned char dataType = data.getDataType();
+	uint8_t dataType = data.getDataType();
 	if (dataType == DT_VOICE_SYNC)
 	{
 		buffer[15U] |= 0x10U;
@@ -267,9 +267,9 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 	return true;
 }
 
-bool CDMRGatewayNetwork::writeRadioPosition(unsigned int id, const unsigned char* data)
+bool CDMRGatewayNetwork::writeRadioPosition(unsigned id, const uint8_t *data)
 {
-	unsigned char buffer[20U];
+	uint8_t buffer[20U];
 
 	::memcpy(buffer + 0U, "DMRG", 4U);
 
@@ -282,9 +282,9 @@ bool CDMRGatewayNetwork::writeRadioPosition(unsigned int id, const unsigned char
 	return write(buffer, 14U);
 }
 
-bool CDMRGatewayNetwork::writeTalkerAlias(unsigned int id, unsigned char type, const unsigned char* data)
+bool CDMRGatewayNetwork::writeTalkerAlias(unsigned id, uint8_t type, const uint8_t *data)
 {
-	unsigned char buffer[20U];
+	uint8_t buffer[20U];
 
 	::memcpy(buffer + 0U, "DMRA", 4U);
 
@@ -306,7 +306,7 @@ void CDMRGatewayNetwork::close()
 	m_socket.close();
 }
 
-void CDMRGatewayNetwork::clock(unsigned int ms)
+void CDMRGatewayNetwork::clock(unsigned ms)
 {
 	m_pingTimer.clock(ms);
 	if (m_pingTimer.isRunning() && m_pingTimer.hasExpired())
@@ -316,7 +316,7 @@ void CDMRGatewayNetwork::clock(unsigned int ms)
 	}
 
 	sockaddr_storage address;
-	unsigned int addrLen;
+	unsigned addrLen;
 	int length = m_socket.read(m_buffer, BUFFER_LENGTH, address, addrLen);
 	if (length <= 0)
 		return;
@@ -334,7 +334,7 @@ void CDMRGatewayNetwork::clock(unsigned int ms)
 	{
 		if (m_enabled)
 		{
-			unsigned char len = length;
+			uint8_t len = length;
 			m_rxData.addData(&len, 1U);
 			m_rxData.addData(m_buffer, len);
 		}
@@ -355,7 +355,7 @@ void CDMRGatewayNetwork::clock(unsigned int ms)
 
 bool CDMRGatewayNetwork::writeConfig()
 {
-	const char* software;
+	const char *software;
 	char slots = '0';
 	if (m_duplex)
 	{
@@ -430,7 +430,7 @@ bool CDMRGatewayNetwork::writeConfig()
 		}
 	}
 
-	unsigned int power = m_power;
+	unsigned power = m_power;
 	if (power > 99U)
 		power = 99U;
 
@@ -442,7 +442,7 @@ bool CDMRGatewayNetwork::writeConfig()
 			  m_callsign.c_str(), m_rxFrequency, m_txFrequency, power, m_colorCode, slots, m_version,
 			  software);
 
-	return write((unsigned char*)buffer, 119U);
+	return write((uint8_t*)buffer, 119U);
 }
 
 bool CDMRGatewayNetwork::wantsBeacon()
@@ -454,7 +454,7 @@ bool CDMRGatewayNetwork::wantsBeacon()
 	return beacon;
 }
 
-bool CDMRGatewayNetwork::write(const unsigned char* data, unsigned int length)
+bool CDMRGatewayNetwork::write(const uint8_t *data, unsigned length)
 {
 	assert(data != NULL);
 	assert(length > 0U);

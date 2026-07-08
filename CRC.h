@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,20 +17,19 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(CRC_H)
-#define	CRC_H
+#pragma once
+
+#include <cstdint>
 
 class CCRC
 {
 public:
-	static bool checkFiveBit(bool* in, unsigned int tcrc);
-	static void encodeFiveBit(const bool* in, unsigned int& tcrc);
+	static bool checkFiveBit(bool *in, unsigned tcrc);
+	static void encodeFiveBit(const bool *in, unsigned& tcrc);
 
-	static void addCCITT162(unsigned char* in, unsigned int length);
+	static void addCCITT162(uint8_t *in, unsigned length);
 
-	static bool checkCCITT162(const unsigned char* in, unsigned int length);
+	static bool checkCCITT162(const uint8_t *in, unsigned length);
 
-	static unsigned char crc8(const unsigned char* in, unsigned int length);
+	static uint8_t crc8(const uint8_t *in, unsigned length);
 };
-
-#endif

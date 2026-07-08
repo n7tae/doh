@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2010,2014,2016,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 Mathias Weyland, HB9FRV
  *
@@ -24,12 +25,12 @@
 #include <cstdio>
 #include <cassert>
 
-const unsigned char BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
+const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
 
 #define WRITE_BIT(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
 #define READ_BIT(p,i)    (p[(i)>>3] & BIT_MASK_TABLE[(i)&7])
 
-const unsigned int PRNG_TABLE[] =
+const unsigned PRNG_TABLE[] =
 {
 	0x42CC47U, 0x19D6FEU, 0x304729U, 0x6B2CD0U, 0x60BF47U, 0x39650EU, 0x7354F1U, 0xEACF60U, 0x819C9FU, 0xDE25CEU,
 	0xD7B745U, 0x8CC8B8U, 0x8D592BU, 0xF71257U, 0xBCA084U, 0xA5B329U, 0xEE6AFAU, 0xF7D9A7U, 0xBCC21CU, 0x4712D9U,
@@ -443,27 +444,27 @@ const unsigned int PRNG_TABLE[] =
 	0xF9A540U, 0x205ED9U, 0x634EB6U, 0x5A9567U, 0x11A6D8U, 0x0B3F09U
 };
 
-const unsigned int DMR_A_TABLE[] = { 0U,  4U,  8U, 12U, 16U, 20U, 24U, 28U, 32U, 36U, 40U, 44U,
+const unsigned DMR_A_TABLE[] = { 0U,  4U,  8U, 12U, 16U, 20U, 24U, 28U, 32U, 36U, 40U, 44U,
 									 48U, 52U, 56U, 60U, 64U, 68U,  1U,  5U,  9U, 13U, 17U, 21U
 								   };
-const unsigned int DMR_B_TABLE[] = {25U, 29U, 33U, 37U, 41U, 45U, 49U, 53U, 57U, 61U, 65U, 69U,
+const unsigned DMR_B_TABLE[] = {25U, 29U, 33U, 37U, 41U, 45U, 49U, 53U, 57U, 61U, 65U, 69U,
 									2U,  6U, 10U, 14U, 18U, 22U, 26U, 30U, 34U, 38U, 42U
 								   };
-const unsigned int DMR_C_TABLE[] = {46U, 50U, 54U, 58U, 62U, 66U, 70U,  3U,  7U, 11U, 15U, 19U,
+const unsigned DMR_C_TABLE[] = {46U, 50U, 54U, 58U, 62U, 66U, 70U,  3U,  7U, 11U, 15U, 19U,
 									23U, 27U, 31U, 35U, 39U, 43U, 47U, 51U, 55U, 59U, 63U, 67U, 71U
 								   };
 
-const unsigned int DSTAR_A_TABLE[] = {0U,  6U, 12U, 18U, 24U, 30U, 36U, 42U, 48U, 54U, 60U, 66U,
+const unsigned DSTAR_A_TABLE[] = {0U,  6U, 12U, 18U, 24U, 30U, 36U, 42U, 48U, 54U, 60U, 66U,
 									  1U,  7U, 13U, 19U, 25U, 31U, 37U, 43U, 49U, 55U, 61U, 67U
 									 };
-const unsigned int DSTAR_B_TABLE[] = {2U,  8U, 14U, 20U, 26U, 32U, 38U, 44U, 50U, 56U, 62U, 68U,
+const unsigned DSTAR_B_TABLE[] = {2U,  8U, 14U, 20U, 26U, 32U, 38U, 44U, 50U, 56U, 62U, 68U,
 									  3U,  9U, 15U, 21U, 27U, 33U, 39U, 45U, 51U, 57U, 63U, 69U
 									 };
-const unsigned int DSTAR_C_TABLE[] = {4U, 10U, 16U, 22U, 28U, 34U, 40U, 46U, 52U, 58U, 64U, 70U,
+const unsigned DSTAR_C_TABLE[] = {4U, 10U, 16U, 22U, 28U, 34U, 40U, 46U, 52U, 58U, 64U, 70U,
 									  5U, 11U, 17U, 23U, 29U, 35U, 41U, 47U, 53U, 59U, 65U, 71U
 									 };
 
-const unsigned int IMBE_INTERLEAVE[] =
+const unsigned IMBE_INTERLEAVE[] =
 {
 	0,  7, 12, 19, 24, 31, 36, 43, 48, 55, 60, 67, 72, 79, 84, 91,  96, 103, 108, 115, 120, 127, 132, 139,
 	1,  6, 13, 18, 25, 30, 37, 42, 49, 54, 61, 66, 73, 78, 85, 90,  97, 102, 109, 114, 121, 126, 133, 138,
@@ -481,19 +482,19 @@ CAMBEFEC::~CAMBEFEC()
 {
 }
 
-unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
+unsigned CAMBEFEC::regenerateDMR(uint8_t *bytes) const
 {
 	assert(bytes != NULL);
 
-	unsigned int a1 = 0U, a2 = 0U, a3 = 0U;
-	unsigned int MASK = 0x800000U;
-	for (unsigned int i = 0U; i < 24U; i++, MASK >>= 1)
+	unsigned a1 = 0U, a2 = 0U, a3 = 0U;
+	unsigned MASK = 0x800000U;
+	for (unsigned i = 0U; i < 24U; i++, MASK >>= 1)
 	{
-		unsigned int a1Pos = DMR_A_TABLE[i];
-		unsigned int a2Pos = a1Pos + 72U;
+		unsigned a1Pos = DMR_A_TABLE[i];
+		unsigned a2Pos = a1Pos + 72U;
 		if (a2Pos >= 108U)
 			a2Pos += 48U;
-		unsigned int a3Pos = a1Pos + 192U;
+		unsigned a3Pos = a1Pos + 192U;
 
 		if (READ_BIT(bytes, a1Pos))
 			a1 |= MASK;
@@ -503,15 +504,15 @@ unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
 			a3 |= MASK;
 	}
 
-	unsigned int b1 = 0U, b2 = 0U, b3 = 0U;
+	unsigned b1 = 0U, b2 = 0U, b3 = 0U;
 	MASK = 0x400000U;
-	for (unsigned int i = 0U; i < 23U; i++, MASK >>= 1)
+	for (unsigned i = 0U; i < 23U; i++, MASK >>= 1)
 	{
-		unsigned int b1Pos = DMR_B_TABLE[i];
-		unsigned int b2Pos = b1Pos + 72U;
+		unsigned b1Pos = DMR_B_TABLE[i];
+		unsigned b2Pos = b1Pos + 72U;
 		if (b2Pos >= 108U)
 			b2Pos += 48U;
-		unsigned int b3Pos = b1Pos + 192U;
+		unsigned b3Pos = b1Pos + 192U;
 
 		if (READ_BIT(bytes, b1Pos))
 			b1 |= MASK;
@@ -521,15 +522,15 @@ unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
 			b3 |= MASK;
 	}
 
-	unsigned int c1 = 0U, c2 = 0U, c3 = 0U;
+	unsigned c1 = 0U, c2 = 0U, c3 = 0U;
 	MASK = 0x1000000U;
-	for (unsigned int i = 0U; i < 25U; i++, MASK >>= 1)
+	for (unsigned i = 0U; i < 25U; i++, MASK >>= 1)
 	{
-		unsigned int c1Pos = DMR_C_TABLE[i];
-		unsigned int c2Pos = c1Pos + 72U;
+		unsigned c1Pos = DMR_C_TABLE[i];
+		unsigned c2Pos = c1Pos + 72U;
 		if (c2Pos >= 108U)
 			c2Pos += 48U;
-		unsigned int c3Pos = c1Pos + 192U;
+		unsigned c3Pos = c1Pos + 192U;
 
 		if (READ_BIT(bytes, c1Pos))
 			c1 |= MASK;
@@ -539,18 +540,18 @@ unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
 			c3 |= MASK;
 	}
 
-	unsigned int errors = regenerateDMR(a1, b1, c1);
+	unsigned errors = regenerateDMR(a1, b1, c1);
 	errors += regenerateDMR(a2, b2, c2);
 	errors += regenerateDMR(a3, b3, c3);
 
 	MASK = 0x800000U;
-	for (unsigned int i = 0U; i < 24U; i++, MASK >>= 1)
+	for (unsigned i = 0U; i < 24U; i++, MASK >>= 1)
 	{
-		unsigned int a1Pos = DMR_A_TABLE[i];
-		unsigned int a2Pos = a1Pos + 72U;
+		unsigned a1Pos = DMR_A_TABLE[i];
+		unsigned a2Pos = a1Pos + 72U;
 		if (a2Pos >= 108U)
 			a2Pos += 48U;
-		unsigned int a3Pos = a1Pos + 192U;
+		unsigned a3Pos = a1Pos + 192U;
 
 		WRITE_BIT(bytes, a1Pos, a1 & MASK);
 		WRITE_BIT(bytes, a2Pos, a2 & MASK);
@@ -558,13 +559,13 @@ unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
 	}
 
 	MASK = 0x400000U;
-	for (unsigned int i = 0U; i < 23U; i++, MASK >>= 1)
+	for (unsigned i = 0U; i < 23U; i++, MASK >>= 1)
 	{
-		unsigned int b1Pos = DMR_B_TABLE[i];
-		unsigned int b2Pos = b1Pos + 72U;
+		unsigned b1Pos = DMR_B_TABLE[i];
+		unsigned b2Pos = b1Pos + 72U;
 		if (b2Pos >= 108U)
 			b2Pos += 48U;
-		unsigned int b3Pos = b1Pos + 192U;
+		unsigned b3Pos = b1Pos + 192U;
 
 		WRITE_BIT(bytes, b1Pos, b1 & MASK);
 		WRITE_BIT(bytes, b2Pos, b2 & MASK);
@@ -572,13 +573,13 @@ unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
 	}
 
 	MASK = 0x1000000U;
-	for (unsigned int i = 0U; i < 25U; i++, MASK >>= 1)
+	for (unsigned i = 0U; i < 25U; i++, MASK >>= 1)
 	{
-		unsigned int c1Pos = DMR_C_TABLE[i];
-		unsigned int c2Pos = c1Pos + 72U;
+		unsigned c1Pos = DMR_C_TABLE[i];
+		unsigned c2Pos = c1Pos + 72U;
 		if (c2Pos >= 108U)
 			c2Pos += 48U;
-		unsigned int c3Pos = c1Pos + 192U;
+		unsigned c3Pos = c1Pos + 192U;
 
 		WRITE_BIT(bytes, c1Pos, c1 & MASK);
 		WRITE_BIT(bytes, c2Pos, c2 & MASK);
@@ -588,29 +589,29 @@ unsigned int CAMBEFEC::regenerateDMR(unsigned char* bytes) const
 	return errors;
 }
 
-unsigned int CAMBEFEC::regenerateDMR(unsigned int& a, unsigned int& b, unsigned int& c) const
+unsigned CAMBEFEC::regenerateDMR(unsigned& a, unsigned& b, unsigned& c) const
 {
-	unsigned int orig_a = a;
-	unsigned int orig_b = b;
+	unsigned orig_a = a;
+	unsigned orig_b = b;
 
-	unsigned int data = CGolay24128::decode24128(a);
+	unsigned data = CGolay24128::decode24128(a);
 
 	a = CGolay24128::encode24128(data);
 
 	// The PRNG
-	unsigned int p = PRNG_TABLE[data] >> 1;
+	unsigned p = PRNG_TABLE[data] >> 1;
 
 	b ^= p;
 
-	unsigned int datb = CGolay24128::decode23127(b);
+	unsigned datb = CGolay24128::decode23127(b);
 
 	b = CGolay24128::encode23127(datb) >> 1;
 
 	b ^= p;
 
-	unsigned int errsA = 0U, errsB = 0U;
+	unsigned errsA = 0U, errsB = 0U;
 
-	unsigned int v = a ^ orig_a;
+	unsigned v = a ^ orig_a;
 	while (v != 0U)
 	{
 		v &= v - 1U;

@@ -34,28 +34,28 @@ CDMREMB::~CDMREMB()
 {
 }
 
-void CDMREMB::putData(const unsigned char* data)
+void CDMREMB::putData(const uint8_t *data)
 {
 	assert(data != NULL);
 
-	unsigned char DMREMB[2U];
+	uint8_t DMREMB[2U];
 	DMREMB[0U]  = (data[13U] << 4) & 0xF0U;
 	DMREMB[0U] |= (data[14U] >> 4) & 0x0FU;
 	DMREMB[1U]  = (data[18U] << 4) & 0xF0U;
 	DMREMB[1U] |= (data[19U] >> 4) & 0x0FU;
 
-	unsigned char code = CQR1676::decode(DMREMB);
+	uint8_t code = CQR1676::decode(DMREMB);
 
 	m_colorCode = (code >> 4) & 0x0FU;
 	m_PI        = (code & 0x08U) == 0x08U;
 	m_LCSS      = (code >> 1) & 0x03U;
 }
 
-void CDMREMB::getData(unsigned char* data) const
+void CDMREMB::getData(uint8_t *data) const
 {
 	assert(data != NULL);
 
-	unsigned char DMREMB[2U];
+	uint8_t DMREMB[2U];
 	DMREMB[0U]  = (m_colorCode << 4) & 0xF0U;
 	DMREMB[0U] |= m_PI ? 0x08U : 0x00U;
 	DMREMB[0U] |= (m_LCSS << 1) & 0x06U;
@@ -69,12 +69,12 @@ void CDMREMB::getData(unsigned char* data) const
 	data[19U] = (data[19U] & 0x0FU) | ((DMREMB[1U] << 4U) & 0xF0U);
 }
 
-unsigned char CDMREMB::getColorCode() const
+uint8_t CDMREMB::getColorCode() const
 {
 	return m_colorCode;
 }
 
-void CDMREMB::setColorCode(unsigned char code)
+void CDMREMB::setColorCode(uint8_t code)
 {
 	m_colorCode = code;
 }
@@ -89,12 +89,12 @@ void CDMREMB::setPI(bool pi)
 	m_PI = pi;
 }
 
-unsigned char CDMREMB::getLCSS() const
+uint8_t CDMREMB::getLCSS() const
 {
 	return m_LCSS;
 }
 
-void CDMREMB::setLCSS(unsigned char lcss)
+void CDMREMB::setLCSS(uint8_t lcss)
 {
 	m_LCSS = lcss;
 }

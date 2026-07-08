@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) Thomas A. Early N7TAE
  *   Copyright (C) 2015 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,18 +17,17 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef QR1676_H
-#define QR1676_H
+#pragma once
+
+#include <cstdint>
 
 class CQR1676
 {
 public:
-	static void encode(unsigned char* data);
+	static void encode(uint8_t *data);
 
-	static unsigned char decode(const unsigned char* data);
+	static uint8_t decode(const uint8_t *data);
 
 private:
-	static unsigned int getSyndrome1576(unsigned int pattern);
+	static unsigned getSyndrome1576(unsigned pattern);
 };
-
-#endif

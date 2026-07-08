@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2026 by Thomas A. Early N7TAE
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,8 +17,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMREMB_H)
-#define DMREMB_H
+#pragma once
+
+#include <cstdint>
 
 class CDMREMB
 {
@@ -25,22 +27,20 @@ public:
 	CDMREMB();
 	~CDMREMB();
 
-	void putData(const unsigned char* data);
-	void getData(unsigned char* data) const;
+	void putData(const uint8_t *data);
+	void getData(uint8_t *data) const;
 
-	unsigned char getColorCode() const;
-	void setColorCode(unsigned char code);
+	uint8_t getColorCode() const;
+	void setColorCode(uint8_t code);
 
 	bool getPI() const;
 	void setPI(bool pi);
 
-	unsigned char getLCSS() const;
-	void setLCSS(unsigned char lcss);
+	uint8_t getLCSS() const;
+	void setLCSS(uint8_t lcss);
 
 private:
-	unsigned char m_colorCode;
+	uint8_t m_colorCode;
 	bool          m_PI;
-	unsigned char m_LCSS;
+	uint8_t m_LCSS;
 };
-
-#endif
