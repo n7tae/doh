@@ -45,7 +45,7 @@ public:
 
 private:
 	std::string     m_filename;
-	unsigned    m_reloadTime;
+	unsigned        m_reloadTime;
 	class CUserDB   m_table;
 	bool            m_stop;
 	bool            m_reload;

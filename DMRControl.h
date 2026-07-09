@@ -51,11 +51,11 @@ public:
 	void enable(bool enabled);
 
 private:
-	unsigned m_colorCode;
-	CModem*      m_modem;
-	IDMRNetwork* m_network;
+	unsigned     m_colorCode;
+	CModem      *m_modem;
+	IDMRNetwork *m_network;
 	CDMRSlot     m_slot1;
 	CDMRSlot     m_slot2;
-	CDMRLookup*  m_lookup;
-	CDashDB*     m_dashDB;
+	CDMRLookup  *m_lookup;
+	CDashDB     *m_dashDB;
 };

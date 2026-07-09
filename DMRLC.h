@@ -52,11 +52,11 @@ public:
 	void setDstId(unsigned id);
 
 private:
-	bool          m_PF;
-	bool          m_R;
-	 EFLCO           m_FLCO;
-	uint8_t       m_FID;
-	uint8_t       m_options;
+	bool      m_PF;
+	bool      m_R;
+	EFLCO     m_FLCO;
+	uint8_t   m_FID;
+	uint8_t   m_options;
 	unsigned  m_srcId;
 	unsigned  m_dstId;
 };

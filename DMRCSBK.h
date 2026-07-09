@@ -63,19 +63,19 @@ public:
 	unsigned  getSrcId() const;
 	unsigned  getDstId() const;
 
-	bool          getDataContent() const;
-	uint8_t getCBF() const;
+	bool      getDataContent() const;
+	uint8_t   getCBF() const;
 
-	void          setCBF(uint8_t cbf);
+	void      setCBF(uint8_t cbf);
 
 private:
-	uint8_t       *m_data;
-	ECSBKO          m_CSBKO;
-	uint8_t        m_FID;
-	bool           m_GI;
-	unsigned   m_bsId;
-	unsigned   m_srcId;
-	unsigned   m_dstId;
-	bool           m_dataContent;
-	uint8_t        m_CBF;
+	uint8_t  *m_data;
+	ECSBKO    m_CSBKO;
+	uint8_t   m_FID;
+	bool      m_GI;
+	unsigned m_bsId;
+	unsigned m_srcId;
+	unsigned m_dstId;
+	bool     m_dataContent;
+	uint8_t  m_CBF;
 };

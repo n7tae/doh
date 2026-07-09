@@ -47,10 +47,10 @@ public:
 	void reset();
 
 private:
-	bool *       m_raw;
+	bool        *m_raw;
 	ELCState     m_state;
-	bool *       m_data;
-	 EFLCO          m_FLCO;
+	bool        *m_data;
+	EFLCO        m_FLCO;
 	bool         m_valid;
 
 	void decodeEmbeddedData();

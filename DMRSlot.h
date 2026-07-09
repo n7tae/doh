@@ -61,79 +61,79 @@ public:
 
 private:
 	unsigned               m_slotNo;
-	CRingBuffer<uint8_t>       m_queue;
+	CRingBuffer<uint8_t>   m_queue;
 	ERFState               m_rfState;
 	ENetState              m_netState;
-	CDMREmbeddedData           m_rfEmbeddedLC;
-	CDMREmbeddedData*          m_rfEmbeddedData;
+	CDMREmbeddedData       m_rfEmbeddedLC;
+	CDMREmbeddedData      *m_rfEmbeddedData;
 	unsigned               m_rfEmbeddedReadN;
 	unsigned               m_rfEmbeddedWriteN;
-	uint8_t                    m_rfTalkerId;
-	CDMRTA                     m_rfTalkerAlias;
-	CDMREmbeddedData           m_netEmbeddedLC;
-	CDMREmbeddedData*          m_netEmbeddedData;
+	uint8_t                m_rfTalkerId;
+	CDMRTA                 m_rfTalkerAlias;
+	CDMREmbeddedData       m_netEmbeddedLC;
+	CDMREmbeddedData      *m_netEmbeddedData;
 	unsigned               m_netEmbeddedReadN;
 	unsigned               m_netEmbeddedWriteN;
-	uint8_t                    m_netTalkerId;
-	CDMRLC*                    m_rfLC;
-	CDMRLC*                    m_netLC;
-	uint8_t                    m_rfSeqNo;
-	uint8_t                    m_rfN;
-	uint8_t                    m_lastrfN;
-	uint8_t                    m_netN;
-	CTimer                     m_networkWatchdog;
-	CTimer                     m_rfTimeoutTimer;
-	CTimer                     m_netTimeoutTimer;
-	CTimer                     m_packetTimer;
-	CStopWatch                 m_interval;
-	CStopWatch                 m_elapsed;
+	uint8_t                m_netTalkerId;
+	CDMRLC                *m_rfLC;
+	CDMRLC                *m_netLC;
+	uint8_t                m_rfSeqNo;
+	uint8_t                m_rfN;
+	uint8_t                m_lastrfN;
+	uint8_t                m_netN;
+	CTimer                 m_networkWatchdog;
+	CTimer                 m_rfTimeoutTimer;
+	CTimer                 m_netTimeoutTimer;
+	CTimer                 m_packetTimer;
+	CStopWatch             m_interval;
+	CStopWatch             m_elapsed;
 	unsigned               m_rfFrames;
 	unsigned               m_netFrames;
 	unsigned               m_netLost;
-	CAMBEFEC                   m_fec;
+	CAMBEFEC               m_fec;
 	unsigned               m_rfBits;
 	unsigned               m_netBits;
 	unsigned               m_rfErrs;
 	unsigned               m_netErrs;
-	bool                       m_rfTimeout;
-	bool                       m_netTimeout;
-	uint8_t                   *m_lastFrame;
-	bool                       m_lastFrameValid;
-	uint8_t                    m_rssi;
-	uint8_t                    m_maxRSSI;
-	uint8_t                    m_minRSSI;
+	bool                   m_rfTimeout;
+	bool                   m_netTimeout;
+	uint8_t               *m_lastFrame;
+	bool                   m_lastFrameValid;
+	uint8_t                m_rssi;
+	uint8_t                m_maxRSSI;
+	uint8_t                m_minRSSI;
 	unsigned               m_aveRSSI;
 	unsigned               m_rssiCount;
-	bool                       m_enabled;
-	FILE*                      m_fp;
+	bool                   m_enabled;
+	FILE                  *m_fp;
 
-	static CDashDB            *m_dashDB;
+	static CDashDB        *m_dashDB;
 
 	static unsigned        m_colorCode;
 
-	static bool                m_embeddedLCOnly;
-	static bool                m_dumpTAData;
+	static bool            m_embeddedLCOnly;
+	static bool            m_dumpTAData;
 
-	static CModem             *m_modem;
-	static IDMRNetwork        *m_network;
-	static bool                m_duplex;
-	static CDMRLookup         *m_lookup;
+	static CModem         *m_modem;
+	static IDMRNetwork    *m_network;
+	static bool            m_duplex;
+	static CDMRLookup     *m_lookup;
 	static unsigned        m_hangCount;
-	static EOVCMType      m_ovcm;
+	static EOVCMType       m_ovcm;
 
-	static CRSSIInterpolator  *m_rssiMapper;
+	static CRSSIInterpolator *m_rssiMapper;
 
 	static unsigned        m_jitterTime;
 	static unsigned        m_jitterSlots;
 
-	static uint8_t            *m_idle;
+	static uint8_t        *m_idle;
 
-	static  EFLCO                 m_flco1;
-	static uint8_t             m_id1;
-	static EActivityType       m_activity1;
-	static  EFLCO                 m_flco2;
-	static uint8_t             m_id2;
-	static EActivityType       m_activity2;
+	static  EFLCO          m_flco1;
+	static uint8_t         m_id1;
+	static EActivityType   m_activity1;
+	static  EFLCO          m_flco2;
+	static uint8_t         m_id2;
+	static EActivityType   m_activity2;
 
 	void logGPSPosition(const uint8_t *data);
 

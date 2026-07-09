@@ -45,9 +45,9 @@ public:
 #endif
 
 protected:
-	std::string    m_device;
-	speed_t   m_speed;
-	bool           m_assertRTS;
-	int            m_fd;
+	std::string  m_device;
+	speed_t      m_speed;
+	bool         m_assertRTS;
+	int          m_fd;
 	bool canWrite();
 };

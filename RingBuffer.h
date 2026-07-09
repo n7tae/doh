@@ -145,9 +145,9 @@ public:
 	}
 
 private:
-	unsigned m_length;
-	const char * m_name;
+	unsigned     m_length;
+	const char  *m_name;
 	T*           m_buffer;
-	unsigned m_iPtr;
-	unsigned m_oPtr;
+	unsigned     m_iPtr;
+	unsigned     m_oPtr;
 };

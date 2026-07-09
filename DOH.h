@@ -39,27 +39,27 @@ public:
 	int run();
 
 private:
-	CConf           m_conf;
-	CModem         *m_modem;
-	CDMRControl    *m_dmr;
-	IDMRNetwork    *m_dmrNetwork;
-	CDashDB         m_dashDB;
-	uint8_t         m_mode;
-	unsigned    m_dmrRFModeHang;
-	unsigned    m_dmrNetModeHang;
-	CTimer          m_modeTimer;
-	CTimer          m_dmrTXTimer;
-	CTimer          m_cwIdTimer;
-	bool            m_duplex;
-	unsigned    m_timeout;
-	unsigned    m_cwIdTime;
-	CDMRLookup     *m_dmrLookup;
-	std::string     m_callsign;
-	unsigned    m_id;
-	std::string     m_cwCallsign;
-	bool            m_lockFileEnabled;
-	std::string     m_lockFileName;
-	bool            m_fixedMode;
+	CConf        m_conf;
+	CModem      *m_modem;
+	CDMRControl *m_dmr;
+	IDMRNetwork *m_dmrNetwork;
+	CDashDB      m_dashDB;
+	uint8_t      m_mode;
+	unsigned     m_dmrRFModeHang;
+	unsigned     m_dmrNetModeHang;
+	CTimer       m_modeTimer;
+	CTimer       m_dmrTXTimer;
+	CTimer       m_cwIdTimer;
+	bool         m_duplex;
+	unsigned     m_timeout;
+	unsigned     m_cwIdTime;
+	CDMRLookup  *m_dmrLookup;
+	std::string  m_callsign;
+	unsigned     m_id;
+	std::string  m_cwCallsign;
+	bool         m_lockFileEnabled;
+	std::string  m_lockFileName;
+	bool         m_fixedMode;
 
 	void readParams();
 	bool createModem();

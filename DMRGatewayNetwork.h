@@ -61,27 +61,27 @@ public:
 private:
 	std::string      m_addressStr;
 	sockaddr_storage m_addr;
-	unsigned     m_addrLen;
-	unsigned     m_port;
-	uint8_t *        m_id;
+	unsigned         m_addrLen;
+	unsigned         m_port;
+	uint8_t         *m_id;
 	bool             m_duplex;
-	const char *     m_version;
+	const char      *m_version;
 	bool             m_debug;
 	CUDPSocket       m_socket;
 	bool             m_enabled;
 	bool             m_slot1;
 	bool             m_slot2;
-	EHardwareType          m_hwType;
-	uint8_t *  m_buffer;
+	EHardwareType    m_hwType;
+	uint8_t         *m_buffer;
 	uint32_t*        m_streamId;
 	CRingBuffer<uint8_t> m_rxData;
 	bool             m_beacon;
 	std::mt19937     m_random;
 	std::string      m_callsign;
-	unsigned     m_rxFrequency;
-	unsigned     m_txFrequency;
-	unsigned     m_power;
-	unsigned     m_colorCode;
+	unsigned         m_rxFrequency;
+	unsigned         m_txFrequency;
+	unsigned         m_power;
+	unsigned         m_colorCode;
 	CTimer           m_pingTimer;
 
 	bool writeConfig();

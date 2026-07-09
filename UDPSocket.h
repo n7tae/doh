@@ -64,11 +64,11 @@ public:
 	static bool isNone(const sockaddr_storage& addr);
 
 private:
-	std::string    m_address_save;
-	unsigned short m_port_save;
-	std::string    m_address[UDP_SOCKET_MAX];
-	unsigned short m_port[UDP_SOCKET_MAX];
-	unsigned   m_af[UDP_SOCKET_MAX];
-	int            m_fd[UDP_SOCKET_MAX];
-	unsigned   m_counter;
+	std::string  m_address_save;
+	uint16_t     m_port_save;
+	std::string  m_address[UDP_SOCKET_MAX];
+	uint16_t     m_port[UDP_SOCKET_MAX];
+	unsigned     m_af[UDP_SOCKET_MAX];
+	int          m_fd[UDP_SOCKET_MAX];
+	unsigned     m_counter;
 };

@@ -29,7 +29,7 @@ public:
 	unsigned long long time() const;
 
 	unsigned long long start();
-	unsigned       elapsed();
+	unsigned           elapsed();
 
 private:
 	unsigned long long m_startMS;
