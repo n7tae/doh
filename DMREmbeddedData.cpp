@@ -69,7 +69,7 @@ bool CDMREmbeddedData::addData(const uint8_t *data, uint8_t lcss)
 	}
 
 	// Is this the 2nd block of a 4 block embedded LC ?
-	if (lcss == 3U && m_state == LCS_FIRST)
+	if (lcss == 3U and m_state == LCS_FIRST)
 	{
 		for (unsigned a = 0U; a < 32U; a++)
 			m_raw[a + 32U] = rawData[a + 4U];
@@ -81,7 +81,7 @@ bool CDMREmbeddedData::addData(const uint8_t *data, uint8_t lcss)
 	}
 
 	// Is this the 3rd block of a 4 block embedded LC ?
-	if (lcss == 3U && m_state == LCS_SECOND)
+	if (lcss == 3U and m_state == LCS_SECOND)
 	{
 		for (unsigned a = 0U; a < 32U; a++)
 			m_raw[a + 64U] = rawData[a + 4U];
@@ -93,7 +93,7 @@ bool CDMREmbeddedData::addData(const uint8_t *data, uint8_t lcss)
 	}
 
 	// Is this the final block of a 4 block embedded LC ?
-	if (lcss == 2U && m_state == LCS_THIRD)
+	if (lcss == 2U and m_state == LCS_THIRD)
 	{
 		for (unsigned a = 0U; a < 32U; a++)
 			m_raw[a + 96U] = rawData[a + 4U];
@@ -175,7 +175,7 @@ uint8_t CDMREmbeddedData::getData(uint8_t *data, uint8_t n) const
 {
 	assert(data != NULL);
 
-	if (n >= 1U && n < 5U)
+	if (n >= 1U and n < 5U)
 	{
 		n--;
 
@@ -291,7 +291,7 @@ CDMRLC* CDMREmbeddedData::getLC() const
 	if (!m_valid)
 		return NULL;
 
-	if (m_FLCO != FLCO_GROUP && m_FLCO != FLCO_USER_USER)
+	if (m_FLCO != FLCO_GROUP and m_FLCO != FLCO_USER_USER)
 		return NULL;
 
 	return new CDMRLC(m_data);

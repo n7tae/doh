@@ -156,7 +156,7 @@ bool CCRC::checkCCITT162(const uint8_t *in, unsigned length)
 
 	crc16 = ~crc16;
 
-	return crc8[0U] == in[length - 1U] && crc8[1U] == in[length - 2U];
+	return crc8[0U] == in[length - 1U] and crc8[1U] == in[length - 2U];
 }
 
 uint8_t CCRC::crc8(const uint8_t *in, unsigned length)

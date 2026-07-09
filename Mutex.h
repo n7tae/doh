@@ -16,14 +16,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(MUTEX_H)
-#define	MUTEX_H
+#pragma once
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#else
 #include <pthread.h>
-#endif
 
 class CMutex
 {
@@ -35,11 +30,6 @@ public:
 	void unlock();
 
 private:
-#if defined(_WIN32) || defined(_WIN64)
-	HANDLE          m_handle;
-#else
 	pthread_mutex_t m_mutex;
-#endif
 };
 
-#endif

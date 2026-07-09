@@ -30,11 +30,7 @@
 #include <cstdint>
 #include <ctime>
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <Windows.h>
-#else
 #include <unistd.h>
-#endif
 
 const uint8_t MMDVM_FRAME_START = 0xE0U;
 
@@ -427,7 +423,7 @@ void CModem::clock(unsigned ms)
 	if (!m_playoutTimer.hasExpired())
 		return;
 
-	if (m_dmrSpace1 > 1U && !m_txDMRData1.isEmpty())
+	if (m_dmrSpace1 > 1U and !m_txDMRData1.isEmpty())
 	{
 		uint8_t len = 0U;
 		m_txDMRData1.getData(&len, 1U);
@@ -445,7 +441,7 @@ void CModem::clock(unsigned ms)
 		m_dmrSpace1--;
 	}
 
-	if (m_dmrSpace2 > 1U && !m_txDMRData2.isEmpty())
+	if (m_dmrSpace2 > 1U and !m_txDMRData2.isEmpty())
 	{
 		uint8_t len = 0U;
 		m_txDMRData2.getData(&len, 1U);
@@ -520,7 +516,7 @@ bool CModem::writeDMRData1(const uint8_t *data, unsigned length)
 	assert(data != NULL);
 	assert(length > 0U);
 
-	if (data[0U] != TAG_DATA && data[0U] != TAG_EOT)
+	if (data[0U] != TAG_DATA and data[0U] != TAG_EOT)
 		return false;
 
 	uint8_t buffer[40U];
@@ -543,7 +539,7 @@ bool CModem::writeDMRData2(const uint8_t *data, unsigned length)
 	assert(data != NULL);
 	assert(length > 0U);
 
-	if (data[0U] != TAG_DATA && data[0U] != TAG_EOT)
+	if (data[0U] != TAG_DATA and data[0U] != TAG_EOT)
 		return false;
 
 	uint8_t buffer[40U];
@@ -654,7 +650,7 @@ bool CModem::readVersion()
 		{
 			CThread::sleep(10U);
 			RESP_TYPE_MMDVM resp = getResponse();
-			if (resp == RTM_OK && m_buffer[2U] == MMDVM_GET_VERSION)
+			if (resp == RTM_OK and m_buffer[2U] == MMDVM_GET_VERSION)
 			{
 				if (::memcmp(m_buffer + 4U, "MMDVM ", 6U) == 0)
 					m_hwType = HWT_MMDVM;
@@ -789,7 +785,7 @@ bool CModem::setConfig()
 		CThread::sleep(10U);
 
 		resp = getResponse();
-		if (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK)
+		if (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK)
 		{
 			count++;
 			if (count >= MAX_RESPONSES)
@@ -799,11 +795,11 @@ bool CModem::setConfig()
 			}
 		}
 	}
-	while (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK);
+	while (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK);
 
 	// CUtils::dump(1U, "Response", m_buffer, m_length);
 
-	if (resp == RTM_OK && m_buffer[2U] == MMDVM_NAK)
+	if (resp == RTM_OK and m_buffer[2U] == MMDVM_NAK)
 	{
 		LogError("Received a NAK to the SET_CONFIG command from the modem");
 		return false;
@@ -867,7 +863,7 @@ bool CModem::setFrequency()
 		CThread::sleep(10U);
 
 		resp = getResponse();
-		if (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK)
+		if (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK)
 		{
 			count++;
 			if (count >= MAX_RESPONSES)
@@ -877,11 +873,11 @@ bool CModem::setFrequency()
 			}
 		}
 	}
-	while (resp == RTM_OK && m_buffer[2U] != MMDVM_ACK && m_buffer[2U] != MMDVM_NAK);
+	while (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK);
 
 	// CUtils::dump(1U, "Response", m_buffer, m_length);
 
-	if (resp == RTM_OK && m_buffer[2U] == MMDVM_NAK)
+	if (resp == RTM_OK and m_buffer[2U] == MMDVM_NAK)
 	{
 		LogError("Received a NAK to the SET_FREQ command from the modem");
 		return false;
@@ -1052,9 +1048,9 @@ bool CModem::writeDMRStart(bool tx)
 {
 	assert(m_serial != NULL);
 
-	if (tx && m_tx)
+	if (tx and m_tx)
 		return true;
-	if (!tx && !m_tx)
+	if (!tx and !m_tx)
 		return true;
 
 	uint8_t buffer[4U];

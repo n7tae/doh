@@ -50,7 +50,7 @@ void Log(unsigned level, const char *fmt, ...)
 
 	va_end(vl);
 
-	if (level >= m_level && m_level != 0U)
+	if (level >= m_level and m_level != 0U)
 	{
 		auto f = (level > 4) ? stderr : stdout;
 		::fprintf(f, "%s\n", buffer);

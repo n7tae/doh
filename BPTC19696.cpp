@@ -175,7 +175,7 @@ void CBPTC19696::decodeErrorCheck()
 
 		count++;
 	}
-	while (fixing && count < 5U);
+	while (fixing and count < 5U);
 }
 
 // Extract the 96 bits of payload

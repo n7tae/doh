@@ -37,19 +37,6 @@
 #include <net/if.h>
 #include <net/route.h>
 #endif
-#elif defined(_WIN32) || defined(_WIN64)
-#include <ws2tcpip.h>
-#include <iphlpapi.h>
-#pragma comment(lib, "iphlpapi.lib")
-#ifndef NO_ERROR
-#define NO_ERROR 0
-#endif
-#ifndef ERROR_BUFFER_OVERFLOW
-#define ERROR_BUFFER_OVERFLOW 111
-#endif
-#ifndef ERROR_INSUFFICIENT_BUFFER
-#define ERROR_INSUFFICIENT_BUFFER 122
-#endif
 #endif
 
 CNetworkInfo::CNetworkInfo()
@@ -83,7 +70,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 		char *p1 = strtok(line, " \t");
 		char *p2 = strtok(NULL, " \t");
 
-		if (p1 != NULL && p2 != NULL)
+		if (p1 != NULL and p2 != NULL)
 		{
 			if (::strcmp(p2, "00000000") == 0)
 			{
@@ -217,92 +204,6 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 	}
 
 	LogInfo("    IP to show: %s", info);
-#elif defined(_WIN32) || defined(_WIN64)
-	PMIB_IPFORWARDTABLE pIpForwardTable = (MIB_IPFORWARDTABLE *)::malloc(sizeof(MIB_IPFORWARDTABLE));
-	if (pIpForwardTable == NULL)
-	{
-		LogError("Error allocating memory");
-		return;
-	}
 
-	DWORD dwSize = 0U;
-	if (::GetIpForwardTable(pIpForwardTable, &dwSize, 0) == ERROR_INSUFFICIENT_BUFFER)
-	{
-		::free(pIpForwardTable);
-		pIpForwardTable = (MIB_IPFORWARDTABLE *)::malloc(dwSize);
-		if (pIpForwardTable == NULL)
-		{
-			LogError("Error allocating memory");
-			return;
-		}
-	}
-
-	DWORD ret = ::GetIpForwardTable(pIpForwardTable, &dwSize, 0);
-	if (ret != NO_ERROR)
-	{
-		::free(pIpForwardTable);
-		LogError("GetIpForwardTable failed.");
-		return;
-	}
-
-	DWORD found = 999U;
-	for (DWORD i = 0U; i < pIpForwardTable->dwNumEntries; i++)
-	{
-		if (pIpForwardTable->table[i].dwForwardDest == 0U)
-		{
-			found = i;
-			break;
-		}
-	}
-
-	if (found == 999U)
-	{
-		::free(pIpForwardTable);
-		LogError("Unable to find the default destination in the routing table.");
-		return;
-	}
-
-	DWORD ifnr = pIpForwardTable->table[found].dwForwardIfIndex;
-	::free(pIpForwardTable);
-
-	PIP_ADAPTER_INFO pAdapterInfo = (IP_ADAPTER_INFO *)::malloc(sizeof(IP_ADAPTER_INFO));
-	if (pAdapterInfo == NULL)
-	{
-		LogError("Error allocating memory");
-		return;
-	}
-
-	ULONG buflen = sizeof(IP_ADAPTER_INFO);
-	if (::GetAdaptersInfo(pAdapterInfo, &buflen) == ERROR_BUFFER_OVERFLOW)
-	{
-		::free(pAdapterInfo);
-		pAdapterInfo = (IP_ADAPTER_INFO *)::malloc(buflen);
-		if (pAdapterInfo == NULL)
-		{
-			LogError("Error allocating memory");
-			return;
-		}
-	}
-
-	if (::GetAdaptersInfo(pAdapterInfo, &buflen) != NO_ERROR)
-	{
-		::free(pAdapterInfo);
-		LogError("Call to GetAdaptersInfo failed.");
-		return;
-	}
-
-	PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
-	while (pAdapter != NULL)
-	{
-		LogInfo("    IP  : %s", pAdapter->IpAddressList.IpAddress.String);
-		if (pAdapter->Index == ifnr)
-			::strcpy((char*)info, pAdapter->IpAddressList.IpAddress.String);
-
-		pAdapter = pAdapter->Next;
-	}
-
-	::free(pAdapterInfo);
-
-	LogInfo("    IP to show: %s", info);
 #endif
 }

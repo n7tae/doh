@@ -77,7 +77,7 @@ public:
 
 	void clock(unsigned ticks = 1U)
 	{
-		if (m_timer > 0U && m_timeout > 0U)
+		if (m_timer > 0U and m_timeout > 0U)
 			m_timer += ticks;
 	}
 

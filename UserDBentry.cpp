@@ -41,7 +41,7 @@ bool CUserDBentry::isValidKey(const std::string key)
 
 void CUserDBentry::set(const std::string key, const std::string value)
 {
-	if (!value.empty() && isValidKey(key))
+	if (!value.empty() and isValidKey(key))
 		m_db[key] = value;
 }
 

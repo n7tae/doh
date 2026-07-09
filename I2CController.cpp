@@ -25,47 +25,13 @@
 
 #include <sys/types.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-
-#include <setupapi.h>
-#include <winioctl.h>
-
-CI2CController::CI2CController(const std::string &device, SERIAL_SPEED speed, unsigned address, bool assertRTS) :
-	CSerialController(device, speed, assertRTS),
-	m_address(address)
-{
-}
-
-CI2CController::~CI2CController()
-{
-}
-
-bool CI2CController::open()
-{
-	return CSerialController::open();
-}
-
-int CI2CController::read(uint8_t *buffer, unsigned length)
-{
-	return CSerialController::read(buffer, length);
-}
-
-int CI2CController::write(const uint8_t *buffer, unsigned length)
-{
-	return CSerialController::write(buffer, length);
-}
-
-#else
-
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <cerrno>
 #include <fcntl.h>
 #include <unistd.h>
 #include <termios.h>
-#if defined(__linux__)
 #include <linux/i2c-dev.h>
-#endif
 
 CI2CController::CI2CController(const std::string &device, SERIAL_SPEED speed, unsigned address, bool assertRTS) :
 	CSerialController(device, speed, assertRTS),
@@ -80,8 +46,6 @@ CI2CController::~CI2CController()
 bool CI2CController::open()
 {
 	assert(m_fd == -1);
-
-#if defined(__linux__)
 	m_fd = ::open(m_device.c_str(), O_RDWR);
 	if (m_fd < 0)
 	{
@@ -102,10 +66,6 @@ bool CI2CController::open()
 		::close(m_fd);
 		return false;
 	}
-#else
-#warning "I2C controller supports Linux only"
-#endif
-
 	return true;
 }
 
@@ -121,7 +81,6 @@ int CI2CController::read(uint8_t *buffer, unsigned length)
 
 	while (offset < length)
 	{
-#if defined(__linux__)
 		ssize_t n = ::read(m_fd, buffer + offset, 1U);
 		if (n < 0)
 		{
@@ -134,7 +93,6 @@ int CI2CController::read(uint8_t *buffer, unsigned length)
 
 		if (n > 0)
 			offset += n;
-#endif
 	}
 
 	return length;
@@ -152,9 +110,7 @@ int CI2CController::write(const uint8_t *buffer, unsigned length)
 	while (ptr < length)
 	{
 		ssize_t n = 0U;
-#if defined(__linux__)
 		n = ::write(m_fd, buffer + ptr, 1U);
-#endif
 		if (n < 0)
 		{
 			if (errno != EAGAIN)
@@ -170,5 +126,3 @@ int CI2CController::write(const uint8_t *buffer, unsigned length)
 
 	return length;
 }
-
-#endif

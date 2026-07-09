@@ -125,11 +125,11 @@ void CDMRTrellis::deinterleave(const uint8_t *data, signed char *dibits) const
 		bool b2 = READ_BIT(data, n) != 0x00U;
 
 		signed char dibit;
-		if (!b1 && b2)
+		if (!b1 and b2)
 			dibit = +3;
-		else if (!b1 && !b2)
+		else if (!b1 and !b2)
 			dibit = +1;
-		else if (b1 && !b2)
+		else if (b1 and !b2)
 			dibit = -1;
 		else
 			dibit = -3;
@@ -180,37 +180,37 @@ void CDMRTrellis::dibitsToPoints(const signed char *dibits, uint8_t *points) con
 {
 	for (unsigned i = 0U; i < 49U; i++)
 	{
-		if (dibits[i * 2U + 0U] == +1 && dibits[i * 2U + 1U] == -1)
+		if (dibits[i * 2U + 0U] == +1 and dibits[i * 2U + 1U] == -1)
 			points[i] = 0U;
-		else if (dibits[i * 2U + 0U] == -1 && dibits[i * 2U + 1U] == -1)
+		else if (dibits[i * 2U + 0U] == -1 and dibits[i * 2U + 1U] == -1)
 			points[i] = 1U;
-		else if (dibits[i * 2U + 0U] == +3 && dibits[i * 2U + 1U] == -3)
+		else if (dibits[i * 2U + 0U] == +3 and dibits[i * 2U + 1U] == -3)
 			points[i] = 2U;
-		else if (dibits[i * 2U + 0U] == -3 && dibits[i * 2U + 1U] == -3)
+		else if (dibits[i * 2U + 0U] == -3 and dibits[i * 2U + 1U] == -3)
 			points[i] = 3U;
-		else if (dibits[i * 2U + 0U] == -3 && dibits[i * 2U + 1U] == -1)
+		else if (dibits[i * 2U + 0U] == -3 and dibits[i * 2U + 1U] == -1)
 			points[i] = 4U;
-		else if (dibits[i * 2U + 0U] == +3 && dibits[i * 2U + 1U] == -1)
+		else if (dibits[i * 2U + 0U] == +3 and dibits[i * 2U + 1U] == -1)
 			points[i] = 5U;
-		else if (dibits[i * 2U + 0U] == -1 && dibits[i * 2U + 1U] == -3)
+		else if (dibits[i * 2U + 0U] == -1 and dibits[i * 2U + 1U] == -3)
 			points[i] = 6U;
-		else if (dibits[i * 2U + 0U] == +1 && dibits[i * 2U + 1U] == -3)
+		else if (dibits[i * 2U + 0U] == +1 and dibits[i * 2U + 1U] == -3)
 			points[i] = 7U;
-		else if (dibits[i * 2U + 0U] == -3 && dibits[i * 2U + 1U] == +3)
+		else if (dibits[i * 2U + 0U] == -3 and dibits[i * 2U + 1U] == +3)
 			points[i] = 8U;
-		else if (dibits[i * 2U + 0U] == +3 && dibits[i * 2U + 1U] == +3)
+		else if (dibits[i * 2U + 0U] == +3 and dibits[i * 2U + 1U] == +3)
 			points[i] = 9U;
-		else if (dibits[i * 2U + 0U] == -1 && dibits[i * 2U + 1U] == +1)
+		else if (dibits[i * 2U + 0U] == -1 and dibits[i * 2U + 1U] == +1)
 			points[i] = 10U;
-		else if (dibits[i * 2U + 0U] == +1 && dibits[i * 2U + 1U] == +1)
+		else if (dibits[i * 2U + 0U] == +1 and dibits[i * 2U + 1U] == +1)
 			points[i] = 11U;
-		else if (dibits[i * 2U + 0U] == +1 && dibits[i * 2U + 1U] == +3)
+		else if (dibits[i * 2U + 0U] == +1 and dibits[i * 2U + 1U] == +3)
 			points[i] = 12U;
-		else if (dibits[i * 2U + 0U] == -1 && dibits[i * 2U + 1U] == +3)
+		else if (dibits[i * 2U + 0U] == -1 and dibits[i * 2U + 1U] == +3)
 			points[i] = 13U;
-		else if (dibits[i * 2U + 0U] == +3 && dibits[i * 2U + 1U] == +1)
+		else if (dibits[i * 2U + 0U] == +3 and dibits[i * 2U + 1U] == +1)
 			points[i] = 14U;
-		else if (dibits[i * 2U + 0U] == -3 && dibits[i * 2U + 1U] == +1)
+		else if (dibits[i * 2U + 0U] == -3 and dibits[i * 2U + 1U] == +1)
 			points[i] = 15U;
 	}
 }

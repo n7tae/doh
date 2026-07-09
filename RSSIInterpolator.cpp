@@ -53,7 +53,7 @@ bool CRSSIInterpolator::load(const std::string &filename)
 		char *p1 = ::strtok(buffer, " \t\r\n");
 		char *p2 = ::strtok(NULL,   " \t\r\n");
 
-		if (p1 != NULL && p2 != NULL)
+		if (p1 != NULL and p2 != NULL)
 		{
 			uint16_t raw = uint16_t(::atoi(p1));
 			int     rssi = ::atoi(p2);

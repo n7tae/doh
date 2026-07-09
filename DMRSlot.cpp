@@ -141,7 +141,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 	if (!m_enabled)
 		return false;
 
-	if (data[0U] == TAG_LOST && m_rfState == RS_RF_AUDIO)
+	if (data[0U] == TAG_LOST and m_rfState == RS_RF_AUDIO)
 	{
 		std::string src = m_lookup->find(m_rfLC->getSrcId());
 		std::string dst = m_lookup->find(m_rfLC->getDstId());
@@ -163,7 +163,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 		}
 	}
 
-	if (data[0U] == TAG_LOST && m_rfState == RS_RF_DATA)
+	if (data[0U] == TAG_LOST and m_rfState == RS_RF_DATA)
 	{
 		std::string src = m_lookup->find(m_rfLC->getSrcId());
 		std::string dst = m_lookup->find(m_rfLC->getDstId());
@@ -539,7 +539,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 			}
 
 			// If data preamble, signal its existence
-			if (m_netState == RS_NET_IDLE && csbko == CSBKO_PRECCSBK && csbk.getDataContent())
+			if (m_netState == RS_NET_IDLE and csbko == CSBKO_PRECCSBK and csbk.getDataContent())
 			{
 				setShortLC(m_slotNo, dstId, gi ? FLCO_GROUP : FLCO_USER_USER, ACTIVITY_DATA);
 			}
@@ -993,7 +993,7 @@ void CDMRSlot::writeEndRF(bool writeEnd)
 
 	if (writeEnd)
 	{
-		if (m_netState == RS_NET_IDLE && m_duplex && !m_rfTimeout)
+		if (m_netState == RS_NET_IDLE and m_duplex and !m_rfTimeout)
 		{
 			// Create a dummy start end frame
 			uint8_t data[DMR_FRAME_LENGTH_BYTES + 2U];
@@ -1038,7 +1038,7 @@ void CDMRSlot::writeEndNet(bool writeEnd)
 
 	m_lastFrameValid = false;
 
-	if (writeEnd && !m_netTimeout)
+	if (writeEnd and !m_netTimeout)
 	{
 		// Create a dummy start end frame
 		uint8_t data[DMR_FRAME_LENGTH_BYTES + 2U];
@@ -1094,7 +1094,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 	if (!m_enabled)
 		return;
 
-	if (m_rfState != RS_RF_LISTENING && m_netState == RS_NET_IDLE)
+	if (m_rfState != RS_RF_LISTENING and m_netState == RS_NET_IDLE)
 		return;
 
 	m_networkWatchdog.start();
@@ -1729,7 +1729,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 		data[0U] = TAG_DATA;
 		data[1U] = 0x00U;
 
-		if (csbko == CSBKO_PRECCSBK && csbk.getDataContent())
+		if (csbko == CSBKO_PRECCSBK and csbk.getDataContent())
 		{
 			unsigned cbf = NO_PREAMBLE_CSBK + csbk.getCBF() - 1U;
 			for (unsigned i = 0U; i < NO_PREAMBLE_CSBK; i++, cbf--)
@@ -1790,7 +1790,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 		}
 
 		// If data preamble, signal its existence
-		if (csbko == CSBKO_PRECCSBK && csbk.getDataContent())
+		if (csbko == CSBKO_PRECCSBK and csbk.getDataContent())
 		{
 			setShortLC(m_slotNo, dstId, gi ? FLCO_GROUP : FLCO_USER_USER, ACTIVITY_DATA);
 		}
@@ -1913,7 +1913,7 @@ void CDMRSlot::clock()
 	m_interval.start();
 
 	m_rfTimeoutTimer.clock(ms);
-	if (m_rfTimeoutTimer.isRunning() && m_rfTimeoutTimer.hasExpired())
+	if (m_rfTimeoutTimer.isRunning() and m_rfTimeoutTimer.hasExpired())
 	{
 		if (!m_rfTimeout)
 		{
@@ -1923,7 +1923,7 @@ void CDMRSlot::clock()
 	}
 
 	m_netTimeoutTimer.clock(ms);
-	if (m_netTimeoutTimer.isRunning() && m_netTimeoutTimer.hasExpired())
+	if (m_netTimeoutTimer.isRunning() and m_netTimeoutTimer.hasExpired())
 	{
 		if (!m_netTimeout)
 		{
@@ -1963,7 +1963,7 @@ void CDMRSlot::clock()
 	{
 		m_packetTimer.clock(ms);
 
-		if (m_packetTimer.isRunning() && m_packetTimer.hasExpired())
+		if (m_packetTimer.isRunning() and m_packetTimer.hasExpired())
 		{
 			unsigned elapsed = m_elapsed.elapsed();
 			if (elapsed >= m_jitterTime)
@@ -2123,7 +2123,7 @@ void CDMRSlot::setShortLC(unsigned slotNo, unsigned id, FLCO flco, ACTIVITY_TYPE
 	}
 
 	// If we have no activity to report, let the modem send the null Short LC when it's ready
-	if (m_id1 == 0U && m_id2 == 0U)
+	if (m_id1 == 0U and m_id2 == 0U)
 		return;
 
 	uint8_t lc[5U];
@@ -2135,42 +2135,42 @@ void CDMRSlot::setShortLC(unsigned slotNo, unsigned id, FLCO flco, ACTIVITY_TYPE
 	if (m_id1 != 0U)
 	{
 		lc[2U] = m_id1;
-		if (m_activity1 == ACTIVITY_VOICE && m_flco1 == FLCO_GROUP)
+		if (m_activity1 == ACTIVITY_VOICE and m_flco1 == FLCO_GROUP)
 			lc[1U] |= 0x08U;
-		else if (m_activity1 == ACTIVITY_VOICE && m_flco1 == FLCO_USER_USER)
+		else if (m_activity1 == ACTIVITY_VOICE and m_flco1 == FLCO_USER_USER)
 			lc[1U] |= 0x09U;
-		else if (m_activity1 == ACTIVITY_DATA && m_flco1 == FLCO_GROUP)
+		else if (m_activity1 == ACTIVITY_DATA and m_flco1 == FLCO_GROUP)
 			lc[1U] |= 0x0BU;
-		else if (m_activity1 == ACTIVITY_DATA && m_flco1 == FLCO_USER_USER)
+		else if (m_activity1 == ACTIVITY_DATA and m_flco1 == FLCO_USER_USER)
 			lc[1U] |= 0x0AU;
-		else if (m_activity1 == ACTIVITY_CSBK && m_flco1 == FLCO_GROUP)
+		else if (m_activity1 == ACTIVITY_CSBK and m_flco1 == FLCO_GROUP)
 			lc[1U] |= 0x02U;
-		else if (m_activity1 == ACTIVITY_CSBK && m_flco1 == FLCO_USER_USER)
+		else if (m_activity1 == ACTIVITY_CSBK and m_flco1 == FLCO_USER_USER)
 			lc[1U] |= 0x03U;
-		else if (m_activity1 == ACTIVITY_EMERG && m_flco1 == FLCO_GROUP)
+		else if (m_activity1 == ACTIVITY_EMERG and m_flco1 == FLCO_GROUP)
 			lc[1U] |= 0x0CU;
-		else if (m_activity1 == ACTIVITY_EMERG && m_flco1 == FLCO_USER_USER)
+		else if (m_activity1 == ACTIVITY_EMERG and m_flco1 == FLCO_USER_USER)
 			lc[1U] |= 0x0DU;
 	}
 
 	if (m_id2 != 0U)
 	{
 		lc[3U] = m_id2;
-		if (m_activity2 == ACTIVITY_VOICE && m_flco2 == FLCO_GROUP)
+		if (m_activity2 == ACTIVITY_VOICE and m_flco2 == FLCO_GROUP)
 			lc[1U] |= 0x80U;
-		else if (m_activity2 == ACTIVITY_VOICE && m_flco2 == FLCO_USER_USER)
+		else if (m_activity2 == ACTIVITY_VOICE and m_flco2 == FLCO_USER_USER)
 			lc[1U] |= 0x90U;
-		else if (m_activity2 == ACTIVITY_DATA && m_flco2 == FLCO_GROUP)
+		else if (m_activity2 == ACTIVITY_DATA and m_flco2 == FLCO_GROUP)
 			lc[1U] |= 0xB0U;
-		else if (m_activity2 == ACTIVITY_DATA && m_flco2 == FLCO_USER_USER)
+		else if (m_activity2 == ACTIVITY_DATA and m_flco2 == FLCO_USER_USER)
 			lc[1U] |= 0xA0U;
-		else if (m_activity2 == ACTIVITY_CSBK && m_flco2 == FLCO_GROUP)
+		else if (m_activity2 == ACTIVITY_CSBK and m_flco2 == FLCO_GROUP)
 			lc[1U] |= 0x20U;
-		else if (m_activity2 == ACTIVITY_CSBK && m_flco2 == FLCO_USER_USER)
+		else if (m_activity2 == ACTIVITY_CSBK and m_flco2 == FLCO_USER_USER)
 			lc[1U] |= 0x30U;
-		else if (m_activity2 == ACTIVITY_EMERG && m_flco2 == FLCO_GROUP)
+		else if (m_activity2 == ACTIVITY_EMERG and m_flco2 == FLCO_GROUP)
 			lc[1U] |= 0xC0U;
-		else if (m_activity2 == ACTIVITY_EMERG && m_flco2 == FLCO_USER_USER)
+		else if (m_activity2 == ACTIVITY_EMERG and m_flco2 == FLCO_USER_USER)
 			lc[1U] |= 0xD0U;
 	}
 
@@ -2320,7 +2320,7 @@ bool CDMRSlot::isBusy() const
 
 void CDMRSlot::enable(bool enabled)
 {
-	if (!enabled && m_enabled)
+	if (!enabled and m_enabled)
 	{
 		m_queue.clear();
 

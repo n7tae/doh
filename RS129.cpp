@@ -130,6 +130,6 @@ bool CRS129::check(const uint8_t *in)
 	uint8_t parity[4U];
 	encode(in, 9U, parity);
 
-	return in[9U] == parity[2U] && in[10U] == parity[1U] && in[11U] == parity[0U];
+	return in[9U] == parity[2U] and in[10U] == parity[1U] and in[11U] == parity[0U];
 }
 

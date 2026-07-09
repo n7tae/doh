@@ -319,21 +319,21 @@ int CDOH::run()
 		bool lockout1 = m_modem->hasLockout();
 		bool lockout2 = false;
 
-		if ((lockout1 || lockout2) && m_mode != MODE_LOCKOUT)
+		if ((lockout1 || lockout2) and m_mode != MODE_LOCKOUT)
 			setMode(MODE_LOCKOUT);
-		else if ((!lockout1 && !lockout2) && m_mode == MODE_LOCKOUT)
+		else if ((!lockout1 and !lockout2) and m_mode == MODE_LOCKOUT)
 			setMode(MODE_IDLE);
 
 		bool error = m_modem->hasError();
-		if (error && m_mode != MODE_ERROR)
+		if (error and m_mode != MODE_ERROR)
 			setMode(MODE_ERROR);
-		else if (!error && m_mode == MODE_ERROR)
+		else if (!error and m_mode == MODE_ERROR)
 			setMode(MODE_IDLE);
 
 		uint8_t mode = m_modem->getMode();
-		if (mode == MODE_FM && m_mode != MODE_FM)
+		if (mode == MODE_FM and m_mode != MODE_FM)
 			setMode(mode);
-		else if (mode != MODE_FM && m_mode == MODE_FM)
+		else if (mode != MODE_FM and m_mode == MODE_FM)
 			setMode(mode);
 
 		uint8_t data[MODEM_DATA_LEN];
@@ -341,7 +341,7 @@ int CDOH::run()
 		bool ret;
 
 		len = m_modem->readDMRData1(data);
-		if (m_dmr != NULL && len > 0U)
+		if (m_dmr != NULL and len > 0U)
 		{
 			if (m_mode == MODE_IDLE)
 			{
@@ -365,7 +365,7 @@ int CDOH::run()
 			}
 			else if (m_mode == MODE_DMR)
 			{
-				if (m_duplex && !m_modem->hasTX())
+				if (m_duplex and !m_modem->hasTX())
 				{
 					bool ret = m_dmr->processWakeup(data);
 					if (ret)
@@ -393,7 +393,7 @@ int CDOH::run()
 		}
 
 		len = m_modem->readDMRData2(data);
-		if (m_dmr != NULL && len > 0U)
+		if (m_dmr != NULL and len > 0U)
 		{
 			if (m_mode == MODE_IDLE)
 			{
@@ -417,7 +417,7 @@ int CDOH::run()
 			}
 			else if (m_mode == MODE_DMR)
 			{
-				if (m_duplex && !m_modem->hasTX())
+				if (m_duplex and !m_modem->hasTX())
 				{
 					bool ret = m_dmr->processWakeup(data);
 					if (ret)
@@ -446,7 +446,7 @@ int CDOH::run()
 
 		if (!m_fixedMode)
 		{
-			if (m_modeTimer.isRunning() && m_modeTimer.hasExpired())
+			if (m_modeTimer.isRunning() and m_modeTimer.hasExpired())
 				setMode(MODE_IDLE);
 		}
 
@@ -532,7 +532,7 @@ int CDOH::run()
 			m_dmrNetwork->clock(ms);
 
 		m_cwIdTimer.clock(ms);
-		if (m_cwIdTimer.isRunning() && m_cwIdTimer.hasExpired())
+		if (m_cwIdTimer.isRunning() and m_cwIdTimer.hasExpired())
 		{
 			if (!m_modem->hasTX())
 			{
@@ -548,11 +548,11 @@ int CDOH::run()
 		{
 		case DMR_BEACONS_TIMED:
 			dmrBeaconIntervalTimer.clock(ms);
-			if (dmrBeaconIntervalTimer.isRunning() && dmrBeaconIntervalTimer.hasExpired())
+			if (dmrBeaconIntervalTimer.isRunning() and dmrBeaconIntervalTimer.hasExpired())
 			{
-				if ((m_mode == MODE_IDLE || m_mode == MODE_DMR) && !m_modem->hasTX())
+				if ((m_mode == MODE_IDLE || m_mode == MODE_DMR) and !m_modem->hasTX())
 				{
-					if (!m_fixedMode && m_mode == MODE_IDLE)
+					if (!m_fixedMode and m_mode == MODE_IDLE)
 						setMode(MODE_DMR);
 					dmrBeaconIntervalTimer.start();
 					dmrBeaconDurationTimer.start();
@@ -565,9 +565,9 @@ int CDOH::run()
 				bool beacon = m_dmrNetwork->wantsBeacon();
 				if (beacon)
 				{
-					if ((m_mode == MODE_IDLE || m_mode == MODE_DMR) && !m_modem->hasTX())
+					if ((m_mode == MODE_IDLE || m_mode == MODE_DMR) and !m_modem->hasTX())
 					{
-						if (!m_fixedMode && m_mode == MODE_IDLE)
+						if (!m_fixedMode and m_mode == MODE_IDLE)
 							setMode(MODE_DMR);
 						dmrBeaconDurationTimer.start();
 					}
@@ -579,7 +579,7 @@ int CDOH::run()
 		}
 
 		dmrBeaconDurationTimer.clock(ms);
-		if (dmrBeaconDurationTimer.isRunning() && dmrBeaconDurationTimer.hasExpired())
+		if (dmrBeaconDurationTimer.isRunning() and dmrBeaconDurationTimer.hasExpired())
 		{
 			if (!m_fixedMode)
 				setMode(MODE_IDLE);
@@ -587,7 +587,7 @@ int CDOH::run()
 		}
 
 		m_dmrTXTimer.clock(ms);
-		if (m_dmrTXTimer.isRunning() && m_dmrTXTimer.hasExpired())
+		if (m_dmrTXTimer.isRunning() and m_dmrTXTimer.hasExpired())
 		{
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();
@@ -812,7 +812,7 @@ void CDOH::setMode(uint8_t mode)
 			m_dmrNetwork->enable(false);
 		if (m_dmr != NULL)
 			m_dmr->enable(false);
-		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
+		if (m_mode == MODE_DMR and m_duplex and m_modem->hasTX())
 		{
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();
@@ -830,7 +830,7 @@ void CDOH::setMode(uint8_t mode)
 			m_dmrNetwork->enable(false);
 		if (m_dmr != NULL)
 			m_dmr->enable(false);
-		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
+		if (m_mode == MODE_DMR and m_duplex and m_modem->hasTX())
 		{
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();
@@ -846,7 +846,7 @@ void CDOH::setMode(uint8_t mode)
 			m_dmrNetwork->enable(true);
 		if (m_dmr != NULL)
 			m_dmr->enable(true);
-		if (m_mode == MODE_DMR && m_duplex && m_modem->hasTX())
+		if (m_mode == MODE_DMR and m_duplex and m_modem->hasTX())
 		{
 			m_modem->writeDMRStart(false);
 			m_dmrTXTimer.stop();

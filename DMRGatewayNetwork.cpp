@@ -122,7 +122,7 @@ bool CDMRGatewayNetwork::open()
 
 void CDMRGatewayNetwork::enable(bool enabled)
 {
-	if (!enabled && m_enabled)
+	if (!enabled and m_enabled)
 		m_rxData.clear();
 
 	m_enabled = enabled;
@@ -150,13 +150,13 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 	unsigned slotNo = (m_buffer[15U] & 0x80U) == 0x80U ? 2U : 1U;
 
 	// DMO mode slot disabling
-	if (slotNo == 1U && !m_duplex)
+	if (slotNo == 1U and !m_duplex)
 		return false;
 
 	// Individual slot disabling
-	if (slotNo == 1U && !m_slot1)
+	if (slotNo == 1U and !m_slot1)
 		return false;
-	if (slotNo == 2U && !m_slot2)
+	if (slotNo == 2U and !m_slot2)
 		return false;
 
 	FLCO flco = (m_buffer[15U] & 0x40U) == 0x40U ? FLCO_USER_USER : FLCO_GROUP;
@@ -219,9 +219,9 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 	unsigned slotNo = data.getSlotNo();
 
 	// Individual slot disabling
-	if (slotNo == 1U && !m_slot1)
+	if (slotNo == 1U and !m_slot1)
 		return false;
-	if (slotNo == 2U && !m_slot2)
+	if (slotNo == 2U and !m_slot2)
 		return false;
 
 	buffer[15U] = slotNo == 1U ? 0x00U : 0x80U;
@@ -309,7 +309,7 @@ void CDMRGatewayNetwork::close()
 void CDMRGatewayNetwork::clock(unsigned ms)
 {
 	m_pingTimer.clock(ms);
-	if (m_pingTimer.isRunning() && m_pingTimer.hasExpired())
+	if (m_pingTimer.isRunning() and m_pingTimer.hasExpired())
 	{
 		writeConfig();
 		m_pingTimer.start();
@@ -359,11 +359,11 @@ bool CDMRGatewayNetwork::writeConfig()
 	char slots = '0';
 	if (m_duplex)
 	{
-		if (m_slot1 && m_slot2)
+		if (m_slot1 and m_slot2)
 			slots = '3';
-		else if (m_slot1 && !m_slot2)
+		else if (m_slot1 and !m_slot2)
 			slots = '1';
-		else if (!m_slot1 && m_slot2)
+		else if (!m_slot1 and m_slot2)
 			slots = '2';
 
 		switch (m_hwType)

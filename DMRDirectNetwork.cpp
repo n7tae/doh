@@ -137,7 +137,7 @@ bool CDMRDirectNetwork::open()
 
 void CDMRDirectNetwork::enable(bool enabled)
 {
-	if (!enabled && m_enabled)
+	if (!enabled and m_enabled)
 		m_rxData.clear();
 
 	m_enabled = enabled;
@@ -168,13 +168,13 @@ bool CDMRDirectNetwork::read(CDMRData& data)
 	unsigned slotNo = (m_buffer[15U] & 0x80U) == 0x80U ? 2U : 1U;
 
 	// DMO mode slot disabling
-	if (slotNo == 1U && !m_duplex)
+	if (slotNo == 1U and !m_duplex)
 		return false;
 
 	// Individual slot disabling
-	if (slotNo == 1U && !m_slot1)
+	if (slotNo == 1U and !m_slot1)
 		return false;
-	if (slotNo == 2U && !m_slot2)
+	if (slotNo == 2U and !m_slot2)
 		return false;
 
 	FLCO flco = (m_buffer[15U] & 0x40U) == 0x40U ? FLCO_USER_USER : FLCO_GROUP;
@@ -235,9 +235,9 @@ bool CDMRDirectNetwork::write(const CDMRData& data)
 	unsigned slotNo = data.getSlotNo();
 
 	// Individual slot disabling
-	if (slotNo == 1U && !m_slot1)
+	if (slotNo == 1U and !m_slot1)
 		return false;
-	if (slotNo == 2U && !m_slot2)
+	if (slotNo == 2U and !m_slot2)
 		return false;
 
 	buffer[15U] = slotNo == 1U ? 0x00U : 0x80U;
@@ -336,7 +336,7 @@ void CDMRDirectNetwork::close()
 void CDMRDirectNetwork::clock(unsigned ms)
 {
 	m_retryTimer.clock(ms);
-	if (m_retryTimer.isRunning() && m_retryTimer.hasExpired()) {
+	if (m_retryTimer.isRunning() and m_retryTimer.hasExpired()) {
 		switch (m_status) {
 		case WAITING_CONNECT:
 			if (m_socket.open(m_addr.ss_family)) {
@@ -459,7 +459,7 @@ void CDMRDirectNetwork::clock(unsigned ms)
 	}
 
 	m_timeoutTimer.clock(ms);
-	if (m_timeoutTimer.isRunning() && m_timeoutTimer.hasExpired()) {
+	if (m_timeoutTimer.isRunning() and m_timeoutTimer.hasExpired()) {
 		LogError("DMR, Connection to the master has timed out, retrying connection");
 		close();
 		open();
@@ -513,11 +513,11 @@ bool CDMRDirectNetwork::writeConfig()
 	const char *software;
 	char slots = '0';
 	if (m_duplex) {
-		if (m_slot1 && m_slot2)
+		if (m_slot1 and m_slot2)
 			slots = '3';
-		else if (m_slot1 && !m_slot2)
+		else if (m_slot1 and !m_slot2)
 			slots = '1';
-		else if (!m_slot1 && m_slot2)
+		else if (!m_slot1 and m_slot2)
 			slots = '2';
 
 		switch (m_hwType) {

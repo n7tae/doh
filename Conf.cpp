@@ -163,7 +163,7 @@ bool CConf::Read()
 
 		// Remove quotes from the value
 		size_t len = ::strlen(value);
-		if (len > 1U && *value == '"' && value[len - 1U] == '"')
+		if (len > 1U and *value == '"' and value[len - 1U] == '"')
 		{
 			value[len - 1U] = '\0';
 			value++;
@@ -178,7 +178,7 @@ bool CConf::Read()
 
 			// remove trailing tab/space
 			for (p = value + strlen(value) - 1;
-					p >= value && (*p == '\t' || *p == ' '); p--)
+					p >= value and (*p == '\t' || *p == ' '); p--)
 				*p = '\0';
 		}
 
@@ -317,7 +317,7 @@ bool CConf::Read()
 				while (p != NULL)
 				{
 					unsigned prefix = (unsigned)::atoi(p);
-					if (prefix > 0U && prefix <= 999U)
+					if (prefix > 0U and prefix <= 999U)
 						m_dmrPrefixes.push_back(prefix);
 					p = ::strtok(NULL, ",\r\n");
 				}
