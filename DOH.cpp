@@ -319,7 +319,7 @@ int CDOH::run()
 		bool lockout1 = m_modem->hasLockout();
 		bool lockout2 = false;
 
-		if ((lockout1 || lockout2) and m_mode != MODE_LOCKOUT)
+		if ((lockout1 or lockout2) and m_mode != MODE_LOCKOUT)
 			setMode(MODE_LOCKOUT);
 		else if ((!lockout1 and !lockout2) and m_mode == MODE_LOCKOUT)
 			setMode(MODE_IDLE);
@@ -550,7 +550,7 @@ int CDOH::run()
 			dmrBeaconIntervalTimer.clock(ms);
 			if (dmrBeaconIntervalTimer.isRunning() and dmrBeaconIntervalTimer.hasExpired())
 			{
-				if ((m_mode == MODE_IDLE || m_mode == MODE_DMR) and !m_modem->hasTX())
+				if ((m_mode == MODE_IDLE or m_mode == MODE_DMR) and !m_modem->hasTX())
 				{
 					if (!m_fixedMode and m_mode == MODE_IDLE)
 						setMode(MODE_DMR);
@@ -565,7 +565,7 @@ int CDOH::run()
 				bool beacon = m_dmrNetwork->wantsBeacon();
 				if (beacon)
 				{
-					if ((m_mode == MODE_IDLE || m_mode == MODE_DMR) and !m_modem->hasTX())
+					if ((m_mode == MODE_IDLE or m_mode == MODE_DMR) and !m_modem->hasTX())
 					{
 						if (!m_fixedMode and m_mode == MODE_IDLE)
 							setMode(MODE_DMR);

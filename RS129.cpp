@@ -89,7 +89,7 @@ const uint8_t LOG_TABLE[] =
 /* multiplication using logarithms */
 static uint8_t gmult(uint8_t a, uint8_t b)
 {
-	if (a == 0U || b == 0U)
+	if (a == 0U or b == 0U)
 		return 0U;
 
 	unsigned i = LOG_TABLE[a];

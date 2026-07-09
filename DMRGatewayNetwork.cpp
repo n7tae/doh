@@ -246,7 +246,7 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 		if (dataType == DT_VOICE_LC_HEADER)
 			m_streamId[slotIndex] = dist(m_random);
 
-		if (dataType == DT_CSBK || dataType == DT_DATA_HEADER)
+		if (dataType == DT_CSBK or dataType == DT_DATA_HEADER)
 			m_streamId[slotIndex] = dist(m_random);
 
 		buffer[15U] |= (0x20U | dataType);

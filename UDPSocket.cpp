@@ -287,7 +287,7 @@ bool CUDPSocket::write(const uint8_t *buffer, unsigned length, const sockaddr_st
 
 	for (int i = 0; i < UDP_SOCKET_MAX; i++)
 	{
-		if (m_fd[i] < 0 || m_af[i] != address.ss_family)
+		if (m_fd[i] < 0 or m_af[i] != address.ss_family)
 			continue;
 
 		ssize_t ret = ::sendto(m_fd[i], (char *)buffer, length, 0, (sockaddr *)&address, address_length);

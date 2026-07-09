@@ -84,7 +84,7 @@ unsigned CDMRData::getSlotNo() const
 
 void CDMRData::setSlotNo(unsigned slotNo)
 {
-	assert(slotNo == 1U || slotNo == 2U);
+	assert(slotNo == 1U or slotNo == 2U);
 
 	m_slotNo = slotNo;
 }

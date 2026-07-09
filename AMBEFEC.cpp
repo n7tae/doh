@@ -625,7 +625,7 @@ unsigned CAMBEFEC::regenerateDMR(unsigned& a, unsigned& b, unsigned& c) const
 		errsB++;
 	}
 
-	if (errsA >= 4U || ((errsA + errsB) >= 6U and errsA >= 2U))
+	if (errsA >= 4U or ((errsA + errsB) >= 6U and errsA >= 2U))
 	{
 		a = 0xF00292U;
 		b = 0x0E0B20U;

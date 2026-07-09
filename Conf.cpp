@@ -178,7 +178,7 @@ bool CConf::Read()
 
 			// remove trailing tab/space
 			for (p = value + strlen(value) - 1;
-					p >= value and (*p == '\t' || *p == ' '); p--)
+					p >= value and (*p == '\t' or *p == ' '); p--)
 				*p = '\0';
 		}
 

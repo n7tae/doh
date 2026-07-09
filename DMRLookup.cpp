@@ -69,7 +69,7 @@ void CDMRLookup::entry()
 		sleep(1000U);
 
 		timer.clock();
-		if (timer.hasExpired() || m_reload)
+		if (timer.hasExpired() or m_reload)
 		{
 			m_table.load(m_filename);
 			timer.start();

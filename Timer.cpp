@@ -28,7 +28,7 @@ CTimer::CTimer(unsigned ticksPerSec, unsigned secs, unsigned msecs) :
 {
 	assert(ticksPerSec > 0U);
 
-	if (secs > 0U || msecs > 0U)
+	if (secs > 0U or msecs > 0U)
 	{
 		// m_timeout = ((secs * 1000U + msecs) * m_ticksPerSec) / 1000U + 1U;
 		unsigned long long temp = (secs * 1000ULL + msecs) * m_ticksPerSec;
@@ -42,7 +42,7 @@ CTimer::~CTimer()
 
 void CTimer::setTimeout(unsigned secs, unsigned msecs)
 {
-	if (secs > 0U || msecs > 0U)
+	if (secs > 0U or msecs > 0U)
 	{
 		// m_timeout = ((secs * 1000U + msecs) * m_ticksPerSec) / 1000U + 1U;
 		unsigned long long temp = (secs * 1000ULL + msecs) * m_ticksPerSec;

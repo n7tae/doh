@@ -244,7 +244,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 				return false;
 			}
 
-			lc->setOVCM(m_ovcm == DMR_OVCM_TX_ON || m_ovcm == DMR_OVCM_ON);
+			lc->setOVCM(m_ovcm == DMR_OVCM_TX_ON or m_ovcm == DMR_OVCM_ON);
 			m_rfLC = lc;
 
 			// The standby LC data
@@ -472,13 +472,13 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 				return false;
 
 			// set the OVCM bit for the supported csbk
-			csbk.setOVCM(m_ovcm == DMR_OVCM_TX_ON || m_ovcm == DMR_OVCM_ON);
+			csbk.setOVCM(m_ovcm == DMR_OVCM_TX_ON or m_ovcm == DMR_OVCM_ON);
 
 			bool gi = csbk.getGI();
 			unsigned srcId = csbk.getSrcId();
 			unsigned dstId = csbk.getDstId();
 
-			if (srcId != 0U || dstId != 0U)
+			if (srcId != 0U or dstId != 0U)
 			{
 				if (!CDMRAccessControl::validateSrcId(srcId))
 				{
@@ -546,9 +546,9 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 
 			return true;
 		}
-		else if (dataType == DT_RATE_12_DATA || dataType == DT_RATE_34_DATA || dataType == DT_RATE_1_DATA)
+		else if (dataType == DT_RATE_12_DATA or dataType == DT_RATE_34_DATA or dataType == DT_RATE_1_DATA)
 		{
-			if (m_rfState != RS_RF_DATA || m_rfFrames == 0U)
+			if (m_rfState != RS_RF_DATA or m_rfFrames == 0U)
 				return false;
 
 			// Regenerate the rate 1/2 payload
@@ -610,7 +610,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 
 			unsigned errors = 0U;
 			uint8_t fid = m_rfLC->getFID();
-			if (fid == FID_ETSI || fid == FID_DMRA)
+			if (fid == FID_ETSI or fid == FID_DMRA)
 			{
 				errors = m_fec.regenerateDMR(data + 2U);
 				LogDebug("DMR Slot %u, audio sequence no. 0, errs: %u/141 (%.1f%%)", m_slotNo, errors, float(errors) / 1.41F);
@@ -662,7 +662,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 
 			unsigned errors = 0U;
 			uint8_t fid = m_rfLC->getFID();
-			if (fid == FID_ETSI || fid == FID_DMRA)
+			if (fid == FID_ETSI or fid == FID_DMRA)
 			{
 				errors = m_fec.regenerateDMR(data + 2U);
 				LogDebug("DMR Slot %u, audio sequence no. %u, errs: %u/141 (%.1f%%)", m_slotNo, m_rfN, errors, float(errors) / 1.41F);
@@ -862,7 +862,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 					return false;
 				}
 
-				lc->setOVCM(m_ovcm == DMR_OVCM_TX_ON || m_ovcm == DMR_OVCM_ON);
+				lc->setOVCM(m_ovcm == DMR_OVCM_TX_ON or m_ovcm == DMR_OVCM_ON);
 				m_rfLC = lc;
 
 				// The standby LC data
@@ -927,7 +927,7 @@ bool CDMRSlot::writeModem(uint8_t *data, unsigned len)
 				// Send the original audio frame out
 				unsigned errors = 0U;
 				uint8_t fid = m_rfLC->getFID();
-				if (fid == FID_ETSI || fid == FID_DMRA)
+				if (fid == FID_ETSI or fid == FID_DMRA)
 				{
 					errors = m_fec.regenerateDMR(data + 2U);
 					LogDebug("DMR Slot %u, audio sequence no. %u, errs: %u/141 (%.1f%%)", m_slotNo, m_rfN, errors, float(errors) / 1.41F);
@@ -1121,12 +1121,12 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 		unsigned srcId = lc->getSrcId();
 		FLCO flco          = lc->getFLCO();
 
-		if (dstId != dmrData.getDstId() || srcId != dmrData.getSrcId() || flco != dmrData.getFLCO())
+		if (dstId != dmrData.getDstId() or srcId != dmrData.getSrcId() or flco != dmrData.getFLCO())
 			LogWarning("DMR Slot %u, DMRD header doesn't match the DMR RF header: %u->%s%u %u->%s%u", m_slotNo,
 					   dmrData.getSrcId(), dmrData.getFLCO() == FLCO_GROUP ? "TG" : "", dmrData.getDstId(),
 					   srcId, flco == FLCO_GROUP ? "TG" : "", dstId);
 
-		lc->setOVCM(m_ovcm == DMR_OVCM_RX_ON || m_ovcm == DMR_OVCM_ON);
+		lc->setOVCM(m_ovcm == DMR_OVCM_RX_ON or m_ovcm == DMR_OVCM_ON);
 		m_netLC = lc;
 
 		// The standby LC data
@@ -1208,7 +1208,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			unsigned dstId = lc->getDstId();
 			unsigned srcId = lc->getSrcId();
 
-			lc->setOVCM(m_ovcm == DMR_OVCM_RX_ON || m_ovcm == DMR_OVCM_ON);
+			lc->setOVCM(m_ovcm == DMR_OVCM_RX_ON or m_ovcm == DMR_OVCM_ON);
 			m_netLC = lc;
 
 			m_lastFrameValid = false;
@@ -1412,7 +1412,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			unsigned dstId = lc->getDstId();
 			unsigned srcId = lc->getSrcId();
 
-			lc->setOVCM(m_ovcm == DMR_OVCM_RX_ON || m_ovcm == DMR_OVCM_ON);
+			lc->setOVCM(m_ovcm == DMR_OVCM_RX_ON or m_ovcm == DMR_OVCM_ON);
 			m_netLC = lc;
 
 			// The standby LC data
@@ -1490,7 +1490,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 		if (m_netState == RS_NET_AUDIO)
 		{
 			uint8_t fid = m_netLC->getFID();
-			if (fid == FID_ETSI || fid == FID_DMRA)
+			if (fid == FID_ETSI or fid == FID_DMRA)
 				m_netErrs += m_fec.regenerateDMR(data + 2U);
 			m_netBits += 141U;
 
@@ -1539,7 +1539,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			return;
 
 		uint8_t fid = m_netLC->getFID();
-		if (fid == FID_ETSI || fid == FID_DMRA)
+		if (fid == FID_ETSI or fid == FID_DMRA)
 			m_netErrs += m_fec.regenerateDMR(data + 2U);
 		m_netBits += 141U;
 
@@ -1708,7 +1708,7 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			return;
 
 		// set the OVCM bit for the supported csbk
-		csbk.setOVCM(m_ovcm == DMR_OVCM_RX_ON || m_ovcm == DMR_OVCM_ON);
+		csbk.setOVCM(m_ovcm == DMR_OVCM_RX_ON or m_ovcm == DMR_OVCM_ON);
 
 		bool gi = csbk.getGI();
 		unsigned srcId = csbk.getSrcId();
@@ -1795,9 +1795,9 @@ void CDMRSlot::writeNetwork(const CDMRData& dmrData)
 			setShortLC(m_slotNo, dstId, gi ? FLCO_GROUP : FLCO_USER_USER, ACTIVITY_DATA);
 		}
 	}
-	else if (dataType == DT_RATE_12_DATA || dataType == DT_RATE_34_DATA || dataType == DT_RATE_1_DATA)
+	else if (dataType == DT_RATE_12_DATA or dataType == DT_RATE_34_DATA or dataType == DT_RATE_1_DATA)
 	{
-		if (m_netState != RS_NET_DATA || m_netFrames == 0U)
+		if (m_netState != RS_NET_DATA or m_netFrames == 0U)
 		{
 			writeEndNet();
 			return;
@@ -1932,7 +1932,7 @@ void CDMRSlot::clock()
 		}
 	}
 
-	if (m_netState == RS_NET_AUDIO || m_netState == RS_NET_DATA)
+	if (m_netState == RS_NET_AUDIO or m_netState == RS_NET_DATA)
 	{
 		m_networkWatchdog.clock(ms);
 
@@ -2282,7 +2282,7 @@ void CDMRSlot::insertSilence(unsigned count)
 	for (unsigned i = 0U; i < count; i++)
 	{
 		// Only use our silence frame if its AMBE audio data
-		if (fid == FID_ETSI || fid == FID_DMRA)
+		if (fid == FID_ETSI or fid == FID_DMRA)
 		{
 			if (i > 0U)
 			{
@@ -2315,7 +2315,7 @@ void CDMRSlot::insertSilence(unsigned count)
 
 bool CDMRSlot::isBusy() const
 {
-	return m_rfState != RS_RF_LISTENING || m_netState != RS_NET_IDLE;
+	return m_rfState != RS_RF_LISTENING or m_netState != RS_NET_IDLE;
 }
 
 void CDMRSlot::enable(bool enabled)

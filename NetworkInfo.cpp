@@ -26,13 +26,13 @@
 #include <clocale>
 
 #include <sys/types.h>
-#if defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(__linux__) or defined(__OpenBSD__) or defined(__NetBSD__) or defined(__FreeBSD__) or defined(__APPLE__)
 #include <ifaddrs.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(__OpenBSD__) or defined(__NetBSD__) or defined(__FreeBSD__) or defined(__APPLE__)
 #include <sys/sysctl.h>
 #include <net/if.h>
 #include <net/route.h>
@@ -53,7 +53,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 
 	::strcpy((char*)info, "(address unknown)");
 
-#if defined(__linux__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(__linux__) or defined(__NetBSD__) or defined(__OpenBSD__) or defined(__FreeBSD__) or defined(__APPLE__)
 	char *dflt = NULL;
 
 #if defined(__linux__)
@@ -82,7 +82,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 
 	::fclose(fp);
 
-#elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(__OpenBSD__) or defined(__NetBSD__) or defined(__FreeBSD__) or defined(__APPLE__)
 	int mib[] =
 	{
 		CTL_NET,
@@ -91,7 +91,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 		AF_INET,	// IPv4 routing
 		NET_RT_DUMP,
 		0,		// show all routes
-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined(__OpenBSD__) or defined(__FreeBSD__)
 		0,		// table id
 #endif
 	};
@@ -99,7 +99,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 	size_t size;
 	char ifname[IF_NAMESIZE] = {};
 
-	if (::sysctl(mib, cnt, NULL, &size, NULL, 0) == -1 || size <= 0)
+	if (::sysctl(mib, cnt, NULL, &size, NULL, 0) == -1 or size <= 0)
 	{
 		LogError("Unable to estimate routing table size");
 		return;
@@ -121,7 +121,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 			continue;
 #if defined(__OpenBSD__)
 		struct sockaddr_in *sa = (struct sockaddr_in *)(p + rtm->rtm_hdrlen);
-#elif defined(__NetBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(__NetBSD__) or defined(__FreeBSD__) or defined(__APPLE__)
 		struct sockaddr_in *sa = (struct sockaddr_in *)(rtm + 1);
 #endif
 		if (sa->sin_addr.s_addr == INADDR_ANY)
@@ -160,7 +160,7 @@ void CNetworkInfo::getNetworkInterface(uint8_t *info)
 			continue;
 
 		int family = ifa->ifa_addr->sa_family;
-		if (family == AF_INET || family == AF_INET6)
+		if (family == AF_INET or family == AF_INET6)
 		{
 			char host[NI_MAXHOST];
 			int s = ::getnameinfo(ifa->ifa_addr, family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);

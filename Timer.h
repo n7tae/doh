@@ -32,7 +32,7 @@ public:
 
 	unsigned getRemaining()
 	{
-		if (m_timeout == 0U || m_timer == 0U)
+		if (m_timeout == 0U or m_timer == 0U)
 			return 0U;
 
 		if (m_timer >= m_timeout)
@@ -66,7 +66,7 @@ public:
 
 	bool hasExpired()
 	{
-		if (m_timeout == 0U || m_timer == 0U)
+		if (m_timeout == 0U or m_timer == 0U)
 			return false;
 
 		if (m_timer >= m_timeout)

@@ -62,7 +62,7 @@ bool CDMRAccessControl::validateSrcId(unsigned id)
 		return false;
 
 	unsigned prefix = id / 10000U;
-	if (prefix == 0U || prefix > 999U)
+	if (prefix == 0U or prefix > 999U)
 		return false;
 
 	if (!m_prefixes.empty())
