@@ -23,7 +23,7 @@
 #include <cstdio>
 #include <cassert>
 
-CDMRLC::CDMRLC(FLCO flco, unsigned srcId, unsigned dstId) :
+CDMRLC::CDMRLC( EFLCO  flco, unsigned srcId, unsigned dstId) :
 	m_PF(false),
 	m_R(false),
 	m_FLCO(flco),
@@ -37,7 +37,7 @@ CDMRLC::CDMRLC(FLCO flco, unsigned srcId, unsigned dstId) :
 CDMRLC::CDMRLC(const uint8_t *bytes) :
 	m_PF(false),
 	m_R(false),
-	m_FLCO(FLCO_GROUP),
+	m_FLCO( EFLCO::group),
 	m_FID(0U),
 	m_options(0U),
 	m_srcId(0U),
@@ -48,7 +48,7 @@ CDMRLC::CDMRLC(const uint8_t *bytes) :
 	m_PF = (bytes[0U] & 0x80U) == 0x80U;
 	m_R  = (bytes[0U] & 0x40U) == 0x40U;
 
-	m_FLCO = FLCO(bytes[0U] & 0x3FU);
+	m_FLCO =  EFLCO (bytes[0U] & 0x3FU);
 
 	m_FID = bytes[1U];
 
@@ -61,7 +61,7 @@ CDMRLC::CDMRLC(const uint8_t *bytes) :
 CDMRLC::CDMRLC(const bool *bits) :
 	m_PF(false),
 	m_R(false),
-	m_FLCO(FLCO_GROUP),
+	m_FLCO( EFLCO::group),
 	m_FID(0U),
 	m_options(0U),
 	m_srcId(0U),
@@ -74,7 +74,7 @@ CDMRLC::CDMRLC(const bool *bits) :
 
 	uint8_t temp1, temp2, temp3;
 	CUtils::bitsToByteBE(bits + 0U, temp1);
-	m_FLCO = FLCO(temp1 & 0x3FU);
+	m_FLCO =  EFLCO (temp1 & 0x3FU);
 
 	CUtils::bitsToByteBE(bits + 8U, temp2);
 	m_FID = temp2;
@@ -99,7 +99,7 @@ CDMRLC::CDMRLC(const bool *bits) :
 CDMRLC::CDMRLC() :
 	m_PF(false),
 	m_R(false),
-	m_FLCO(FLCO_GROUP),
+	m_FLCO( EFLCO::group),
 	m_FID(0U),
 	m_options(0U),
 	m_srcId(0U),
@@ -164,12 +164,12 @@ void CDMRLC::setPF(bool pf)
 	m_PF = pf;
 }
 
-FLCO CDMRLC::getFLCO() const
+ EFLCO  CDMRLC::getFLCO() const
 {
 	return m_FLCO;
 }
 
-void CDMRLC::setFLCO(FLCO flco)
+void CDMRLC::setFLCO( EFLCO  flco)
 {
 	m_FLCO = flco;
 }

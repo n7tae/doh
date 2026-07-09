@@ -27,12 +27,7 @@
 
 #include <string>
 
-enum RESP_TYPE_MMDVM
-{
-	RTM_OK,
-	RTM_TIMEOUT,
-	RTM_ERROR
-};
+enum class ERespType { ok, timeout, error };
 
 class CModem
 {
@@ -76,7 +71,7 @@ public:
 
 	bool sendCWId(const std::string &callsign);
 
-	HW_TYPE getHWType() const;
+	EHardwareType getHWType() const;
 
 	void clock(unsigned ms);
 
@@ -130,7 +125,7 @@ private:
 	bool                 m_lockout;
 	bool                 m_error;
 	uint8_t              m_mode;
-	HW_TYPE              m_hwType;
+	EHardwareType              m_hwType;
 
 
 	bool readVersion();
@@ -140,5 +135,5 @@ private:
 
 	void printDebug();
 
-	RESP_TYPE_MMDVM getResponse();
+	ERespType getResponse();
 };

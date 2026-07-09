@@ -21,7 +21,7 @@
 #include <cassert>
 #include <algorithm>
 
-CDMRControl::CDMRControl(unsigned id, unsigned colorCode, unsigned callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned>& prefixes, const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, unsigned timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB) :
+CDMRControl::CDMRControl(unsigned id, unsigned colorCode, unsigned callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned>& prefixes, const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, unsigned timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned jitter, EOVCMType ovcm, CDashDB *dashDB) :
 	m_colorCode(colorCode),
 	m_modem(modem),
 	m_network(network),
@@ -57,8 +57,8 @@ bool CDMRControl::processWakeup(const uint8_t *data)
 	if (!valid)
 		return false;
 
-	CSBKO csbko = csbk.getCSBKO();
-	if (csbko != CSBKO_BSDWNACT)
+	ECSBKO csbko = csbk.getCSBKO();
+	if (csbko != ECSBKO::bsdwnact)
 		return false;
 
 	unsigned srcId = csbk.getSrcId();

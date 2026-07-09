@@ -24,7 +24,7 @@
 class CDMRLC
 {
 public:
-	CDMRLC(FLCO flco, unsigned srcId, unsigned dstId);
+	CDMRLC( EFLCO  flco, unsigned srcId, unsigned dstId);
 	CDMRLC(const uint8_t *bytes);
 	CDMRLC(const bool *bits);
 	CDMRLC();
@@ -36,8 +36,8 @@ public:
 	bool getPF() const;
 	void setPF(bool pf);
 
-	FLCO getFLCO() const;
-	void setFLCO(FLCO flco);
+	 EFLCO  getFLCO() const;
+	void setFLCO( EFLCO  flco);
 
 	bool getOVCM() const;
 	void setOVCM(bool ovcm);
@@ -54,7 +54,7 @@ public:
 private:
 	bool          m_PF;
 	bool          m_R;
-	FLCO          m_FLCO;
+	 EFLCO           m_FLCO;
 	uint8_t       m_FID;
 	uint8_t       m_options;
 	unsigned  m_srcId;

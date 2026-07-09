@@ -37,14 +37,7 @@
 #include "Modem.h"
 #include "DMRLC.h"
 
-enum ACTIVITY_TYPE
-{
-	ACTIVITY_NONE,
-	ACTIVITY_VOICE,
-	ACTIVITY_DATA,
-	ACTIVITY_CSBK,
-	ACTIVITY_EMERG
-};
+enum class EActivityType { none, voice, data, csbk, emerg };
 
 class CDMRSlot
 {
@@ -64,13 +57,13 @@ public:
 
 	void enable(bool enabled);
 
-	static void init(unsigned colorCode, bool embeddedLCOnly, bool dumpTAData, unsigned callHang, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssiMapper, unsigned jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB);
+	static void init(unsigned colorCode, bool embeddedLCOnly, bool dumpTAData, unsigned callHang, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssiMapper, unsigned jitter, EOVCMType ovcm, CDashDB *dashDB);
 
 private:
 	unsigned               m_slotNo;
 	CRingBuffer<uint8_t>       m_queue;
-	RPT_RF_STATE               m_rfState;
-	RPT_NET_STATE              m_netState;
+	ERFState               m_rfState;
+	ENetState              m_netState;
 	CDMREmbeddedData           m_rfEmbeddedLC;
 	CDMREmbeddedData*          m_rfEmbeddedData;
 	unsigned               m_rfEmbeddedReadN;
@@ -126,7 +119,7 @@ private:
 	static bool                m_duplex;
 	static CDMRLookup         *m_lookup;
 	static unsigned        m_hangCount;
-	static DMR_OVCM_TYPES      m_ovcm;
+	static EOVCMType      m_ovcm;
 
 	static CRSSIInterpolator  *m_rssiMapper;
 
@@ -135,19 +128,19 @@ private:
 
 	static uint8_t            *m_idle;
 
-	static FLCO                m_flco1;
+	static  EFLCO                 m_flco1;
 	static uint8_t             m_id1;
-	static ACTIVITY_TYPE       m_activity1;
-	static FLCO                m_flco2;
+	static EActivityType       m_activity1;
+	static  EFLCO                 m_flco2;
 	static uint8_t             m_id2;
-	static ACTIVITY_TYPE       m_activity2;
+	static EActivityType       m_activity2;
 
 	void logGPSPosition(const uint8_t *data);
 
 	void writeQueueRF(const uint8_t *data);
 	void writeQueueNet(const uint8_t *data);
 	void writeNetworkRF(const uint8_t *data, uint8_t dataType, uint8_t errors = 0U);
-	void writeNetworkRF(const uint8_t *data, uint8_t dataType, FLCO flco, unsigned srcId, unsigned dstId, uint8_t errors = 0U);
+	void writeNetworkRF(const uint8_t *data, uint8_t dataType,  EFLCO  flco, unsigned srcId, unsigned dstId, uint8_t errors = 0U);
 
 	void writeEndRF(bool writeEnd = false);
 	void writeEndNet(bool writeEnd = false);
@@ -159,5 +152,5 @@ private:
 	bool insertSilence(const uint8_t *data, uint8_t seqNo);
 	void insertSilence(unsigned count);
 
-	static void setShortLC(unsigned slotNo, unsigned id, FLCO flco = FLCO_GROUP, ACTIVITY_TYPE type = ACTIVITY_NONE);
+	static void setShortLC(unsigned slotNo, unsigned id,  EFLCO  flco =  EFLCO::group, EActivityType type = EActivityType::none);
 };

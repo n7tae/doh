@@ -33,7 +33,7 @@
 class CDMRControl
 {
 public:
-	CDMRControl(unsigned id, unsigned colorCode, unsigned callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned>& prefixes, const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, unsigned timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned jitter, DMR_OVCM_TYPES ovcm, CDashDB *dashDB);
+	CDMRControl(unsigned id, unsigned colorCode, unsigned callHang, bool selfOnly, bool embeddedLCOnly, bool dumpTAData, const std::vector<unsigned>& prefixes, const std::vector<unsigned>& blacklist, const std::vector<unsigned>& whitelist, const std::vector<unsigned>& slot1TGWhitelist, const std::vector<unsigned>& slot2TGWhitelist, unsigned timeout, CModem* modem, IDMRNetwork* network, bool duplex, CDMRLookup* lookup, CRSSIInterpolator* rssi, unsigned jitter, EOVCMType ovcm, CDashDB *dashDB);
 	~CDMRControl();
 
 	bool processWakeup(const uint8_t *data);

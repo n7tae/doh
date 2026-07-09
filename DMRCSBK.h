@@ -23,17 +23,17 @@
 
 #include "DMRDefines.h"
 
-enum CSBKO
+enum class ECSBKO
 {
-	CSBKO_NONE           = 0x00,
-	CSBKO_UUVREQ         = 0x04,
-	CSBKO_UUANSRSP       = 0x05,
-	CSBKO_CTCSBK         = 0x07,
-	CSBKO_CALL_ALERT     = 0x1F,
-	CSBKO_CALL_ALERT_ACK = 0x20,
-	CSBKO_NACKRSP        = 0x26,
-	CSBKO_BSDWNACT       = 0x38,
-	CSBKO_PRECCSBK       = 0x3D
+	none           = 0x00,
+	uuvreq         = 0x04,
+	uuansrsp       = 0x05,
+	ctcsbk         = 0x07,
+	call_alert     = 0x1F,
+	call_alert_ack = 0x20,
+	nackrsp        = 0x26,
+	bsdwnact       = 0x38,
+	preccsbk       = 0x3D
 };
 
 class CDMRCSBK
@@ -47,7 +47,7 @@ public:
 	void get(uint8_t *bytes) const;
 
 	// Generic fields
-	CSBKO   getCSBKO() const;
+	ECSBKO   getCSBKO() const;
 	uint8_t getFID() const;
 
 	// Set/Get the OVCM bit in the supported CSBKs
@@ -70,7 +70,7 @@ public:
 
 private:
 	uint8_t       *m_data;
-	CSBKO          m_CSBKO;
+	ECSBKO          m_CSBKO;
 	uint8_t        m_FID;
 	bool           m_GI;
 	unsigned   m_bsId;

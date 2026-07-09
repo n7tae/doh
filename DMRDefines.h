@@ -113,13 +113,4 @@ const uint8_t DPF_PROPRIETARY      = 0x0FU;
 const uint8_t FID_ETSI = 0U;
 const uint8_t FID_DMRA = 16U;
 
-enum FLCO
-{
-	FLCO_GROUP               = 0,
-	FLCO_USER_USER           = 3,
-	FLCO_TALKER_ALIAS_HEADER = 4,
-	FLCO_TALKER_ALIAS_BLOCK1 = 5,
-	FLCO_TALKER_ALIAS_BLOCK2 = 6,
-	FLCO_TALKER_ALIAS_BLOCK3 = 7,
-	FLCO_GPS_INFO            = 8
-};
+enum class EFLCO { group = 0, user = 3, header = 4, block1 = 5, block2 = 6, block3 = 7, gps = 8 };

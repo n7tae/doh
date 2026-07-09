@@ -27,18 +27,7 @@
 
 const int BUFFER_SIZE = 500;
 
-enum SECTION
-{
-	SECTION_NONE,
-	SECTION_GENERAL,
-	SECTION_INFO,
-	SECTION_LOG,
-	SECTION_CWID,
-	SECTION_DMRID_LOOKUP,
-	SECTION_MODEM,
-	SECTION_DMR,
-	SECTION_DMR_NETWORK
-};
+enum class ESection { none, general, info, log, cwid, lookup, modem, dmr, network };
 
 CConf::CConf(const std::string &file) :
 	m_file(file),
@@ -81,7 +70,7 @@ CConf::CConf(const std::string &file) :
 	m_modemUseCOSAsLockout(false),
 	m_modemTrace(false),
 	m_modemDebug(false),
-	m_dmrBeacons(DMR_BEACONS_OFF),
+	m_dmrBeacons(EBeacons::off),
 	m_dmrBeaconInterval(60U),
 	m_dmrBeaconDuration(3U),
 	m_dmrId(0U),
@@ -97,7 +86,7 @@ CConf::CConf(const std::string &file) :
 	m_dmrCallHang(10U),
 	m_dmrTXHang(4U),
 	m_dmrModeHang(10U),
-	m_dmrOVCM(DMR_OVCM_OFF),
+	m_dmrOVCM(EOVCMType::off),
 	m_dmrNetworkType("Gateway"),
 	m_dmrNetworkAddress(),
 	m_dmrNetworkPort(0U),
@@ -121,7 +110,7 @@ bool CConf::Read()
 		return false;
 	}
 
-	SECTION section = SECTION_NONE;
+	ESection section = ESection::none;
 
 	char buffer[BUFFER_SIZE];
 	while (::fgets(buffer, BUFFER_SIZE, fp) != NULL)
@@ -132,23 +121,23 @@ bool CConf::Read()
 		if (buffer[0U] == '[')
 		{
 			if (::strncmp(buffer, "[General]", 9U) == 0)
-				section = SECTION_GENERAL;
+				section = ESection::general;
 			else if (::strncmp(buffer, "[Info]", 6U) == 0)
-				section = SECTION_INFO;
+				section = ESection::info;
 			else if (::strncmp(buffer, "[Log]", 5U) == 0)
-				section = SECTION_LOG;
+				section = ESection::log;
 			else if (::strncmp(buffer, "[CW Id]", 7U) == 0)
-				section = SECTION_CWID;
+				section = ESection::cwid;
 			else if (::strncmp(buffer, "[DMR Id Lookup]", 15U) == 0)
-				section = SECTION_DMRID_LOOKUP;
+				section = ESection::lookup;
 			else if (::strncmp(buffer, "[Modem]", 7U) == 0)
-				section = SECTION_MODEM;
+				section = ESection::modem;
 			else if (::strncmp(buffer, "[DMR]", 5U) == 0)
-				section = SECTION_DMR;
+				section = ESection::dmr;
 			else if (::strncmp(buffer, "[DMR Network]", 13U) == 0)
-				section = SECTION_DMR_NETWORK;
+				section = ESection::network;
 			else
-				section = SECTION_NONE;
+				section = ESection::none;
 
 			continue;
 		}
@@ -182,7 +171,7 @@ bool CConf::Read()
 				*p = '\0';
 		}
 
-		if (section == SECTION_GENERAL)
+		if (section == ESection::general)
 		{
 			if (::strcmp(key, "Callsign") == 0)
 			{
@@ -198,7 +187,7 @@ bool CConf::Read()
 			else if (::strcmp(key, "Duplex") == 0)
 				m_duplex = ::atoi(value) == 1;
 		}
-		else if (section == SECTION_INFO)
+		else if (section == ESection::info)
 		{
 			if (::strcmp(key, "TXFrequency") == 0)
 				m_txFrequency = (unsigned)::atoi(value);
@@ -219,12 +208,12 @@ bool CConf::Read()
 			else if (::strcmp(key, "URL") == 0)
 				m_url = value;
 		}
-		else if (section == SECTION_LOG)
+		else if (section == ESection::log)
 		{
 			if (::strcmp(key, "LogLevel") == 0)
 				m_logLevel = ::atoi(value);
 		}
-		else if (section == SECTION_CWID)
+		else if (section == ESection::cwid)
 		{
 			if (::strcmp(key, "Enable") == 0)
 				m_cwIdEnabled = ::atoi(value) == 1;
@@ -238,14 +227,14 @@ bool CConf::Read()
 				m_cwIdCallsign = value;
 			}
 		}
-		else if (section == SECTION_DMRID_LOOKUP)
+		else if (section == ESection::lookup)
 		{
 			if (::strcmp(key, "File") == 0)
 				m_dmrIdLookupFile = value;
 			else if (::strcmp(key, "Time") == 0)
 				m_dmrIdLookupTime = (unsigned)::atoi(value);
 		}
-		else if (section == SECTION_MODEM)
+		else if (section == ESection::modem)
 		{
 			if (::strcmp(key, "Port") == 0)
 				m_modemPort = value;
@@ -290,13 +279,13 @@ bool CConf::Read()
 			else if (::strcmp(key, "Debug") == 0)
 				m_modemDebug = ::atoi(value) == 1;
 		}
-		else if (section == SECTION_DMR)
+		else if (section == ESection::dmr)
 		{
 			if (::strcmp(key, "Beacons") == 0)
-				m_dmrBeacons = ::atoi(value) == 1 ? DMR_BEACONS_NETWORK : DMR_BEACONS_OFF;
+				m_dmrBeacons = ::atoi(value) == 1 ? EBeacons::network : EBeacons::off;
 			else if (::strcmp(key, "BeaconInterval") == 0)
 			{
-				m_dmrBeacons = m_dmrBeacons != DMR_BEACONS_OFF ? DMR_BEACONS_TIMED : DMR_BEACONS_OFF;
+				m_dmrBeacons = m_dmrBeacons != EBeacons::off ? EBeacons::timed : EBeacons::off;
 				m_dmrBeaconInterval = (unsigned)::atoi(value);
 			}
 			else if (::strcmp(key, "BeaconDuration") == 0)
@@ -376,20 +365,20 @@ bool CConf::Read()
 				switch(::atoi(value))
 				{
 				case 1:
-					m_dmrOVCM = DMR_OVCM_RX_ON;
+					m_dmrOVCM = EOVCMType::rx;
 					break;
 				case 2:
-					m_dmrOVCM = DMR_OVCM_TX_ON;
+					m_dmrOVCM = EOVCMType::tx;
 					break;
 				case 3:
-					m_dmrOVCM = DMR_OVCM_ON;
+					m_dmrOVCM = EOVCMType::on;
 					break;
 				default:
-					m_dmrOVCM = DMR_OVCM_OFF;
+					m_dmrOVCM = EOVCMType::off;
 					break;
 				}
 		}
-		else if (section == SECTION_DMR_NETWORK)
+		else if (section == ESection::network)
 		{
 			if (::strcmp(key, "Type") == 0)
 				m_dmrNetworkType = value;
@@ -616,7 +605,7 @@ bool CConf::getModemDebug() const
 	return m_modemDebug;
 }
 
-DMR_BEACONS CConf::getDMRBeacons() const
+EBeacons CConf::getDMRBeacons() const
 {
 	return m_dmrBeacons;
 }
@@ -696,7 +685,7 @@ unsigned CConf::getDMRModeHang() const
 	return m_dmrModeHang;
 }
 
-DMR_OVCM_TYPES CConf::getDMROVCM() const
+EOVCMType CConf::getDMROVCM() const
 {
 	return m_dmrOVCM;
 }

@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include <termios.h>
 
-CSerialController::CSerialController(const std::string &device, SERIAL_SPEED speed, bool assertRTS) :
+CSerialController::CSerialController(const std::string &device, speed_t speed, bool assertRTS) :
 	m_device(device),
 	m_speed(speed),
 	m_assertRTS(assertRTS),
@@ -88,35 +88,35 @@ bool CSerialController::open()
 
 		switch (m_speed)
 		{
-		case SERIAL_1200:
+		case B1200:
 			::cfsetospeed(&termios, B1200);
 			::cfsetispeed(&termios, B1200);
 			break;
-		case SERIAL_2400:
+		case B2400:
 			::cfsetospeed(&termios, B2400);
 			::cfsetispeed(&termios, B2400);
 			break;
-		case SERIAL_4800:
+		case B4800:
 			::cfsetospeed(&termios, B4800);
 			::cfsetispeed(&termios, B4800);
 			break;
-		case SERIAL_9600:
+		case B9600:
 			::cfsetospeed(&termios, B9600);
 			::cfsetispeed(&termios, B9600);
 			break;
-		case SERIAL_19200:
+		case B19200:
 			::cfsetospeed(&termios, B19200);
 			::cfsetispeed(&termios, B19200);
 			break;
-		case SERIAL_38400:
+		case B38400:
 			::cfsetospeed(&termios, B38400);
 			::cfsetispeed(&termios, B38400);
 			break;
-		case SERIAL_115200:
+		case B115200:
 			::cfsetospeed(&termios, B115200);
 			::cfsetispeed(&termios, B115200);
 			break;
-		case SERIAL_230400:
+		case B230400:
 			::cfsetospeed(&termios, B230400);
 			::cfsetispeed(&termios, B230400);
 			break;

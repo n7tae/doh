@@ -24,13 +24,7 @@
 #include "DMRDefines.h"
 #include "DMRLC.h"
 
-enum LC_STATE
-{
-	LCS_NONE,
-	LCS_FIRST,
-	LCS_SECOND,
-	LCS_THIRD
-};
+enum class ELCState { none, first, second, third };
 
 class CDMREmbeddedData
 {
@@ -48,15 +42,15 @@ public:
 	bool getRawData(uint8_t *data) const;
 
 	bool isValid() const;
-	FLCO getFLCO() const;
+	 EFLCO  getFLCO() const;
 
 	void reset();
 
 private:
 	bool *       m_raw;
-	LC_STATE     m_state;
+	ELCState     m_state;
 	bool *       m_data;
-	FLCO         m_FLCO;
+	 EFLCO          m_FLCO;
 	bool         m_valid;
 
 	void decodeEmbeddedData();

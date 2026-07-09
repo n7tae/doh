@@ -138,7 +138,7 @@ CModem::CModem(const std::string &port, bool duplex, bool rxInvert, bool txInver
 	m_lockout(false),
 	m_error(false),
 	m_mode(MODE_IDLE),
-	m_hwType(HWT_UNKNOWN)
+	m_hwType(EHardwareType::unknown)
 {
 	m_buffer = new uint8_t[BUFFER_LENGTH];
 
@@ -155,9 +155,9 @@ void CModem::setSerialParams(const std::string &protocol, unsigned address)
 {
 	// Create the serial controller instance according the protocol specified in conf.
 	if (protocol == "i2c")
-		m_serial = new CI2CController(m_port, SERIAL_115200, address, true);
+		m_serial = new CI2CController(m_port, B115200, address, true);
 	else
-		m_serial = new CSerialController(m_port, SERIAL_115200, true);
+		m_serial = new CSerialController(m_port, B115200, true);
 }
 
 void CModem::setRFParams(unsigned rxFrequency, int rxOffset, unsigned txFrequency, int txOffset, int txDCOffset, int rxDCOffset, float rfLevel, unsigned pocsagFrequency)
@@ -262,19 +262,19 @@ void CModem::clock(unsigned ms)
 			CThread::sleep(5000U);	// 5s
 	}
 
-	RESP_TYPE_MMDVM type = getResponse();
+	ERespType type = getResponse();
 
-	if (type == RTM_TIMEOUT)
+	if (type == ERespType::timeout)
 	{
 		// Nothing to do
 	}
-	else if (type == RTM_ERROR)
+	else if (type == ERespType::error)
 	{
 		// Nothing to do
 	}
 	else
 	{
-		// type == RTM_OK
+		// type == ERespType::ok
 		switch (m_buffer[2U])
 		{
 		case MMDVM_DSTAR_HEADER:
@@ -649,31 +649,31 @@ bool CModem::readVersion()
 		for (unsigned count = 0U; count < MAX_RESPONSES; count++)
 		{
 			CThread::sleep(10U);
-			RESP_TYPE_MMDVM resp = getResponse();
-			if (resp == RTM_OK and m_buffer[2U] == MMDVM_GET_VERSION)
+			ERespType resp = getResponse();
+			if (resp == ERespType::ok and m_buffer[2U] == MMDVM_GET_VERSION)
 			{
 				if (::memcmp(m_buffer + 4U, "MMDVM ", 6U) == 0)
-					m_hwType = HWT_MMDVM;
+					m_hwType = EHardwareType::mmdvm;
 				else if (::memcmp(m_buffer + 4U, "DVMEGA", 6U) == 0)
-					m_hwType = HWT_DVMEGA;
+					m_hwType = EHardwareType::dvmega;
 				else if (::memcmp(m_buffer + 4U, "ZUMspot", 7U) == 0)
-					m_hwType = HWT_MMDVM_ZUMSPOT;
+					m_hwType = EHardwareType::zumspot;
 				else if (::memcmp(m_buffer + 4U, "MMDVM_HS_Hat", 12U) == 0)
-					m_hwType = HWT_MMDVM_HS_HAT;
+					m_hwType = EHardwareType::hs_hat;
 				else if (::memcmp(m_buffer + 4U, "MMDVM_HS_Dual_Hat", 17U) == 0)
-					m_hwType = HWT_MMDVM_HS_DUAL_HAT;
+					m_hwType = EHardwareType::hs_dual_hat;
 				else if (::memcmp(m_buffer + 4U, "Nano_hotSPOT", 12U) == 0)
-					m_hwType = HWT_NANO_HOTSPOT;
+					m_hwType = EHardwareType::nano_hs;
 				else if (::memcmp(m_buffer + 4U, "Nano_DV", 7U) == 0)
-					m_hwType = HWT_NANO_DV;
+					m_hwType = EHardwareType::nano_dv;
 				else if (::memcmp(m_buffer + 4U, "D2RG_MMDVM_HS", 13U) == 0)
-					m_hwType = HWT_D2RG_MMDVM_HS;
+					m_hwType = EHardwareType::d2rg;
 				else if (::memcmp(m_buffer + 4U, "MMDVM_HS-", 9U) == 0)
-					m_hwType = HWT_MMDVM_HS;
+					m_hwType = EHardwareType::mmdvm_hs;
 				else if (::memcmp(m_buffer + 4U, "OpenGD77_HS", 11U) == 0)
-					m_hwType = HWT_OPENGD77_HS;
+					m_hwType = EHardwareType::opengd77;
 				else if (::memcmp(m_buffer + 4U, "SkyBridge", 9U) == 0)
-					m_hwType = HWT_SKYBRIDGE;
+					m_hwType = EHardwareType::skybridge;
 
 				LogInfo("MMDVM protocol version: %u, description: %.*s", m_buffer[3U], m_length - 4U, m_buffer + 4U);
 				return true;
@@ -779,13 +779,13 @@ bool CModem::setConfig()
 		return false;
 
 	unsigned count = 0U;
-	RESP_TYPE_MMDVM resp;
+	ERespType resp;
 	do
 	{
 		CThread::sleep(10U);
 
 		resp = getResponse();
-		if (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK)
+		if (resp == ERespType::ok and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK)
 		{
 			count++;
 			if (count >= MAX_RESPONSES)
@@ -795,11 +795,11 @@ bool CModem::setConfig()
 			}
 		}
 	}
-	while (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK);
+	while (resp == ERespType::ok and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK);
 
 	// CUtils::dump(1U, "Response", m_buffer, m_length);
 
-	if (resp == RTM_OK and m_buffer[2U] == MMDVM_NAK)
+	if (resp == ERespType::ok and m_buffer[2U] == MMDVM_NAK)
 	{
 		LogError("Received a NAK to the SET_CONFIG command from the modem");
 		return false;
@@ -818,7 +818,7 @@ bool CModem::setFrequency()
 	uint8_t len;
 	unsigned  pocsagFrequency = 433000000U;
 
-	if (m_hwType == HWT_DVMEGA)
+	if (m_hwType == EHardwareType::dvmega)
 		len = 12U;
 	else
 	{
@@ -857,13 +857,13 @@ bool CModem::setFrequency()
 		return false;
 
 	unsigned count = 0U;
-	RESP_TYPE_MMDVM resp;
+	ERespType resp;
 	do
 	{
 		CThread::sleep(10U);
 
 		resp = getResponse();
-		if (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK)
+		if (resp == ERespType::ok and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK)
 		{
 			count++;
 			if (count >= MAX_RESPONSES)
@@ -873,11 +873,11 @@ bool CModem::setFrequency()
 			}
 		}
 	}
-	while (resp == RTM_OK and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK);
+	while (resp == ERespType::ok and m_buffer[2U] != MMDVM_ACK and m_buffer[2U] != MMDVM_NAK);
 
 	// CUtils::dump(1U, "Response", m_buffer, m_length);
 
-	if (resp == RTM_OK and m_buffer[2U] == MMDVM_NAK)
+	if (resp == ERespType::ok and m_buffer[2U] == MMDVM_NAK)
 	{
 		LogError("Received a NAK to the SET_FREQ command from the modem");
 		return false;
@@ -886,7 +886,7 @@ bool CModem::setFrequency()
 	return true;
 }
 
-RESP_TYPE_MMDVM CModem::getResponse()
+ERespType CModem::getResponse()
 {
 	assert(m_serial != NULL);
 
@@ -897,14 +897,14 @@ RESP_TYPE_MMDVM CModem::getResponse()
 		if (ret < 0)
 		{
 			LogError("Error when reading from the modem");
-			return RTM_ERROR;
+			return ERespType::error;
 		}
 
 		if (ret == 0)
-			return RTM_TIMEOUT;
+			return ERespType::timeout;
 
 		if (m_buffer[0U] != MMDVM_FRAME_START)
-			return RTM_TIMEOUT;
+			return ERespType::timeout;
 
 		m_offset = 1U;
 	}
@@ -917,17 +917,17 @@ RESP_TYPE_MMDVM CModem::getResponse()
 		{
 			LogError("Error when reading from the modem");
 			m_offset = 0U;
-			return RTM_ERROR;
+			return ERespType::error;
 		}
 
 		if (ret == 0)
-			return RTM_TIMEOUT;
+			return ERespType::timeout;
 
 		if (m_buffer[1U] >= 250U)
 		{
 			LogError("Invalid length received from the modem - %u", m_buffer[1U]);
 			m_offset = 0U;
-			return RTM_ERROR;
+			return ERespType::error;
 		}
 
 		m_length = m_buffer[1U];
@@ -942,11 +942,11 @@ RESP_TYPE_MMDVM CModem::getResponse()
 		{
 			LogError("Error when reading from the modem");
 			m_offset = 0U;
-			return RTM_ERROR;
+			return ERespType::error;
 		}
 
 		if (ret == 0)
-			return RTM_TIMEOUT;
+			return ERespType::timeout;
 
 		m_offset = 3U;
 	}
@@ -961,11 +961,11 @@ RESP_TYPE_MMDVM CModem::getResponse()
 			{
 				LogError("Error when reading from the modem");
 				m_offset = 0U;
-				return RTM_ERROR;
+				return ERespType::error;
 			}
 
 			if (ret == 0)
-				return RTM_TIMEOUT;
+				return ERespType::timeout;
 
 			m_length = (m_buffer[3U] << 8) | m_buffer[4U];
 			m_offset = 5U;
@@ -978,11 +978,11 @@ RESP_TYPE_MMDVM CModem::getResponse()
 			{
 				LogError("Error when reading from the modem");
 				m_offset = 0U;
-				return RTM_ERROR;
+				return ERespType::error;
 			}
 
 			if (ret == 0)
-				return RTM_TIMEOUT;
+				return ERespType::timeout;
 
 			if (ret > 0)
 				m_offset += ret;
@@ -993,10 +993,10 @@ RESP_TYPE_MMDVM CModem::getResponse()
 
 	// CUtils::dump(1U, "Received", m_buffer, m_length);
 
-	return RTM_OK;
+	return ERespType::ok;
 }
 
-HW_TYPE CModem::getHWType() const
+EHardwareType CModem::getHWType() const
 {
 	return m_hwType;
 }

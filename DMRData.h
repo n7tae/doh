@@ -36,8 +36,8 @@ public:
 	unsigned getDstId() const;
 	void setDstId(unsigned id);
 
-	FLCO getFLCO() const;
-	void setFLCO(FLCO flco);
+	 EFLCO  getFLCO() const;
+	void setFLCO( EFLCO  flco);
 
 	uint8_t getN() const;
 	void setN(uint8_t n);
@@ -62,7 +62,7 @@ private:
 	uint8_t *m_data;
 	unsigned   m_srcId;
 	unsigned   m_dstId;
-	FLCO           m_flco;
+	 EFLCO            m_flco;
 	uint8_t  m_dataType;
 	uint8_t  m_seqNo;
 	uint8_t  m_n;

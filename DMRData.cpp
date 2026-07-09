@@ -42,7 +42,7 @@ CDMRData::CDMRData() :
 	m_data(NULL),
 	m_srcId(0U),
 	m_dstId(0U),
-	m_flco(FLCO_GROUP),
+	m_flco( EFLCO::group),
 	m_dataType(0U),
 	m_seqNo(0U),
 	m_n(0U),
@@ -119,12 +119,12 @@ void CDMRData::setDstId(unsigned id)
 	m_dstId = id;
 }
 
-FLCO CDMRData::getFLCO() const
+ EFLCO  CDMRData::getFLCO() const
 {
 	return m_flco;
 }
 
-void CDMRData::setFLCO(FLCO flco)
+void CDMRData::setFLCO( EFLCO  flco)
 {
 	m_flco = flco;
 }

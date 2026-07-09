@@ -32,7 +32,7 @@
 class CDMRDirectNetwork : public IDMRNetwork
 {
 public:
-	CDMRDirectNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, const std::string &password, bool duplex, const char *version, bool slot1, bool slot2, HW_TYPE hwType, bool debug);
+	CDMRDirectNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, const std::string &password, bool duplex, const char *version, bool slot1, bool slot2, EHardwareType hwType, bool debug);
 	virtual ~CDMRDirectNetwork();
 
 	virtual void setOptions(const std::string &options);
@@ -59,30 +59,23 @@ public:
 
 private:
 	std::string      m_address;
-	unsigned     m_port;
+	unsigned         m_port;
 	sockaddr_storage m_addr;
-	unsigned     m_addrLen;
-	uint8_t *        m_id;
+	unsigned         m_addrLen;
+	uint8_t         *m_id;
 	std::string      m_password;
 	bool             m_duplex;
-	const char *     m_version;
+	const char      *m_version;
 	bool             m_debug;
 	CUDPSocket       m_socket;
 	bool             m_enabled;
 	bool             m_slot1;
 	bool             m_slot2;
-	HW_TYPE          m_hwType;
+	EHardwareType    m_hwType;
 
-	enum STATUS {
-		WAITING_CONNECT,
-		WAITING_LOGIN,
-		WAITING_AUTHORISATION,
-		WAITING_CONFIG,
-		WAITING_OPTIONS,
-		RUNNING
-	};
+	enum class EStatus { connect, login, authorization, config, options, running };
 
-	STATUS         m_status;
+	EStatus        m_status;
 	CTimer         m_retryTimer;
 	CTimer         m_timeoutTimer;
 	uint8_t       *m_buffer;
@@ -95,10 +88,10 @@ private:
 
 	std::mt19937   m_random;
 	std::string    m_callsign;
-	unsigned   m_rxFrequency;
-	unsigned   m_txFrequency;
-	unsigned   m_power;
-	unsigned   m_colorCode;
+	unsigned       m_rxFrequency;
+	unsigned       m_txFrequency;
+	unsigned       m_power;
+	unsigned       m_colorCode;
 	float          m_latitude;
 	float          m_longitude;
 	int            m_height;

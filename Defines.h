@@ -43,50 +43,12 @@ const uint8_t TAG_EOT    = 0x03U;
 
 const unsigned  MODEM_DATA_LEN = 220U;
 
-enum HW_TYPE
-{
-	HWT_MMDVM,
-	HWT_DVMEGA,
-	HWT_MMDVM_ZUMSPOT,
-	HWT_MMDVM_HS_HAT,
-	HWT_MMDVM_HS_DUAL_HAT,
-	HWT_NANO_HOTSPOT,
-	HWT_NANO_DV,
-	HWT_D2RG_MMDVM_HS,
-	HWT_MMDVM_HS,
-	HWT_OPENGD77_HS,
-	HWT_SKYBRIDGE,
-	HWT_UNKNOWN
-};
+enum class EHardwareType { mmdvm, dvmega, zumspot, hs_hat, hs_dual_hat, nano_hs, nano_dv, d2rg, mmdvm_hs, opengd77, skybridge, unknown };
 
-enum RPT_RF_STATE
-{
-	RS_RF_LISTENING,
-	RS_RF_LATE_ENTRY,
-	RS_RF_AUDIO,
-	RS_RF_DATA,
-	RS_RF_REJECTED,
-	RS_RF_INVALID
-};
+enum class ERFState { listening, late_entry, audio, data, rejected, invalid };
 
-enum RPT_NET_STATE
-{
-	RS_NET_IDLE,
-	RS_NET_AUDIO,
-	RS_NET_DATA
-};
+enum class ENetState { idle, audio, data };
 
-enum DMR_BEACONS
-{
-	DMR_BEACONS_OFF,
-	DMR_BEACONS_NETWORK,
-	DMR_BEACONS_TIMED
-};
+enum class EBeacons { off, network, timed };
 
-enum DMR_OVCM_TYPES
-{
-	DMR_OVCM_OFF,
-	DMR_OVCM_RX_ON,
-	DMR_OVCM_TX_ON,
-	DMR_OVCM_ON
-};
+enum class EOVCMType { off, rx, tx, on };

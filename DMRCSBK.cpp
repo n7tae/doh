@@ -27,7 +27,7 @@
 
 CDMRCSBK::CDMRCSBK() :
 	m_data(NULL),
-	m_CSBKO(CSBKO_NONE),
+	m_CSBKO(ECSBKO::none),
 	m_FID(0x00U),
 	m_GI(false),
 	m_bsId(0U),
@@ -62,12 +62,12 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 	m_data[10U] ^= CSBK_CRC_MASK[0U];
 	m_data[11U] ^= CSBK_CRC_MASK[1U];
 
-	m_CSBKO = CSBKO(m_data[0U] & 0x3FU);
+	m_CSBKO = ECSBKO(m_data[0U] & 0x3FU);
 	m_FID   = m_data[1U];
 
 	switch (m_CSBKO)
 	{
-	case CSBKO_BSDWNACT:
+	case ECSBKO::bsdwnact:
 		m_GI    = false;
 		m_bsId  = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -76,7 +76,7 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 		CUtils::dump(1U, "Downlink Activate CSBK", m_data, 12U);
 		break;
 
-	case CSBKO_UUVREQ:
+	case ECSBKO::uuvreq:
 		m_GI    = false;
 		m_dstId = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -85,7 +85,7 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 		CUtils::dump(1U, "Unit to Unit Service Request CSBK", m_data, 12U);
 		break;
 
-	case CSBKO_UUANSRSP:
+	case ECSBKO::uuansrsp:
 		m_GI    = false;
 		m_dstId = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -94,7 +94,7 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 		CUtils::dump(1U, "Unit to Unit Service Answer Response CSBK", m_data, 12U);
 		break;
 
-	case CSBKO_PRECCSBK:
+	case ECSBKO::preccsbk:
 		m_GI    = (m_data[2U] & 0x40U) == 0x40U;
 		m_dstId = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -103,7 +103,7 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 		CUtils::dump(1U, "Preamble CSBK", m_data, 12U);
 		break;
 
-	case CSBKO_NACKRSP:
+	case ECSBKO::nackrsp:
 		m_GI    = false;
 		m_srcId = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_dstId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -112,7 +112,7 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 		CUtils::dump(1U, "Negative Acknowledge Response CSBK", m_data, 12U);
 		break;
 
-	case CSBKO_CALL_ALERT:
+	case ECSBKO::call_alert:
 		m_GI    = false;
 		m_dstId = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -121,7 +121,7 @@ bool CDMRCSBK::put(const uint8_t *bytes)
 		CUtils::dump(1U, "Call Alert CSBK", m_data, 12U);
 		break;
 
-	case CSBKO_CALL_ALERT_ACK:
+	case ECSBKO::call_alert_ack:
 		m_GI    = false;
 		m_dstId = m_data[4U] << 16 | m_data[5U] << 8 | m_data[6U];
 		m_srcId = m_data[7U] << 16 | m_data[8U] << 8 | m_data[9U];
@@ -159,7 +159,7 @@ void CDMRCSBK::get(uint8_t *bytes) const
 	bptc.encode(m_data, bytes);
 }
 
-CSBKO CDMRCSBK::getCSBKO() const
+ECSBKO CDMRCSBK::getCSBKO() const
 {
 	return m_CSBKO;
 }
@@ -175,7 +175,7 @@ bool CDMRCSBK::getOVCM() const
 	// Service options informations are only available in
 	// "Unit to Unit Voice Service Request CSBK" and
 	// "Unit to Unit Voice Service Answer Response CSBK"
-	if ((m_CSBKO == CSBKO_UUVREQ) or (m_CSBKO == CSBKO_UUANSRSP))
+	if ((m_CSBKO == ECSBKO::uuvreq) or (m_CSBKO == ECSBKO::uuansrsp))
 		bOVCM = (m_data[2U] & 0x04U) == 0x04U;
 
 	return bOVCM;
@@ -184,7 +184,7 @@ bool CDMRCSBK::getOVCM() const
 void CDMRCSBK::setOVCM(bool ovcm)
 {
 	// Set OVCM only in CSBKs having the service options information
-	if ((m_CSBKO == CSBKO_UUVREQ) or (m_CSBKO == CSBKO_UUANSRSP))
+	if ((m_CSBKO == ECSBKO::uuvreq) or (m_CSBKO == ECSBKO::uuansrsp))
 	{
 		if (ovcm)
 			m_data[2U] |= 0x04U;

@@ -33,7 +33,7 @@
 #include <termios.h>
 #include <linux/i2c-dev.h>
 
-CI2CController::CI2CController(const std::string &device, SERIAL_SPEED speed, unsigned address, bool assertRTS) :
+CI2CController::CI2CController(const std::string &device, speed_t speed, unsigned address, bool assertRTS) :
 	CSerialController(device, speed, assertRTS),
 	m_address(address)
 {

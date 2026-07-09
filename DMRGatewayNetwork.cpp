@@ -32,7 +32,7 @@ const unsigned BUFFER_LENGTH = 500U;
 const unsigned HOMEBREW_DATA_PACKET_LENGTH = 55U;
 
 
-CDMRGatewayNetwork::CDMRGatewayNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, bool duplex, const char *version, bool slot1, bool slot2, HW_TYPE hwType, bool debug) :
+CDMRGatewayNetwork::CDMRGatewayNetwork(const std::string &address, unsigned port, unsigned local, unsigned id, bool duplex, const char *version, bool slot1, bool slot2, EHardwareType hwType, bool debug) :
 	m_addressStr(address),
 	m_addr(),
 	m_addrLen(0U),
@@ -159,7 +159,7 @@ bool CDMRGatewayNetwork::read(CDMRData& data)
 	if (slotNo == 2U and !m_slot2)
 		return false;
 
-	FLCO flco = (m_buffer[15U] & 0x40U) == 0x40U ? FLCO_USER_USER : FLCO_GROUP;
+	 EFLCO  flco = (m_buffer[15U] & 0x40U) == 0x40U ?  EFLCO::user :  EFLCO::group;
 
 	data.setSeqNo(seqNo);
 	data.setSlotNo(slotNo);
@@ -226,8 +226,8 @@ bool CDMRGatewayNetwork::write(const CDMRData& data)
 
 	buffer[15U] = slotNo == 1U ? 0x00U : 0x80U;
 
-	FLCO flco = data.getFLCO();
-	buffer[15U] |= flco == FLCO_GROUP ? 0x00U : 0x40U;
+	 EFLCO  flco = data.getFLCO();
+	buffer[15U] |= flco ==  EFLCO::group ? 0x00U : 0x40U;
 
 	unsigned slotIndex = slotNo - 1U;
 
@@ -368,16 +368,16 @@ bool CDMRGatewayNetwork::writeConfig()
 
 		switch (m_hwType)
 		{
-		case HWT_MMDVM:
+		case EHardwareType::mmdvm:
 			software = "MMDVM";
 			break;
-		case HWT_MMDVM_HS:
+		case EHardwareType::mmdvm_hs:
 			software = "MMDVM_MMDVM_HS";
 			break;
-		case HWT_MMDVM_HS_DUAL_HAT:
+		case EHardwareType::hs_dual_hat:
 			software = "MMDVM_MMDVM_HS_Dual_Hat";
 			break;
-		case HWT_NANO_HOTSPOT:
+		case EHardwareType::nano_hs:
 			software = "MMDVM_Nano_hotSPOT";
 			break;
 		default:
@@ -391,37 +391,37 @@ bool CDMRGatewayNetwork::writeConfig()
 
 		switch (m_hwType)
 		{
-		case HWT_MMDVM:
+		case EHardwareType::mmdvm:
 			software = "MMDVM_DMO";
 			break;
-		case HWT_DVMEGA:
+		case EHardwareType::dvmega:
 			software = "MMDVM_DVMega";
 			break;
-		case HWT_MMDVM_ZUMSPOT:
+		case EHardwareType::zumspot:
 			software = "MMDVM_ZUMspot";
 			break;
-		case HWT_MMDVM_HS_HAT:
+		case EHardwareType::hs_hat:
 			software = "MMDVM_MMDVM_HS_Hat";
 			break;
-		case HWT_MMDVM_HS_DUAL_HAT:
+		case EHardwareType::hs_dual_hat:
 			software = "MMDVM_MMDVM_HS_Dual_Hat";
 			break;
-		case HWT_NANO_HOTSPOT:
+		case EHardwareType::nano_hs:
 			software = "MMDVM_Nano_hotSPOT";
 			break;
-		case HWT_NANO_DV:
+		case EHardwareType::nano_dv:
 			software = "MMDVM_Nano_DV";
 			break;
-		case HWT_D2RG_MMDVM_HS:
+		case EHardwareType::d2rg:
 			software = "MMDVM_D2RG_MMDVM_HS";
 			break;
-		case HWT_MMDVM_HS:
+		case EHardwareType::mmdvm_hs:
 			software = "MMDVM_MMDVM_HS";
 			break;
-		case HWT_OPENGD77_HS:
+		case EHardwareType::opengd77:
 			software = "MMDVM_OpenGD77_HS";
 			break;
-		case HWT_SKYBRIDGE:
+		case EHardwareType::skybridge:
 			software = "MMDVM_SkyBridge";
 			break;
 		default:

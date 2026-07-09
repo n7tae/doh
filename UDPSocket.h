@@ -34,11 +34,7 @@
 #define UDP_SOCKET_MAX	1
 #endif
 
-enum IPMATCHTYPE
-{
-	IMT_ADDRESS_AND_PORT,
-	IMT_ADDRESS_ONLY
-};
+enum class EIPMatchType { address_and_port, address_only };
 
 class CUDPSocket
 {
@@ -63,7 +59,7 @@ public:
 	static int lookup(const std::string &hostName, unsigned port, sockaddr_storage& address, unsigned& address_length);
 	static int lookup(const std::string &hostName, unsigned port, sockaddr_storage& address, unsigned& address_length, struct addrinfo& hints);
 
-	static bool match(const sockaddr_storage& addr1, const sockaddr_storage& addr2, IPMATCHTYPE type = IMT_ADDRESS_AND_PORT);
+	static bool match(const sockaddr_storage& addr1, const sockaddr_storage& addr2, EIPMatchType type = EIPMatchType::address_and_port);
 
 	static bool isNone(const sockaddr_storage& addr);
 

@@ -22,10 +22,10 @@
 
 #include <cstdint>
 
-enum
-{
-	SHA256_DIGEST_SIZE = 256 / 8
-};
+// enum
+// {
+// 	SHA256_DIGEST_SIZE = 256 / 8
+// };
 
 class CSHA256
 {

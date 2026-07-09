@@ -28,9 +28,9 @@
 
 CDMREmbeddedData::CDMREmbeddedData() :
 	m_raw(NULL),
-	m_state(LCS_NONE),
+	m_state(ELCState::none),
 	m_data(NULL),
-	m_FLCO(FLCO_GROUP),
+	m_FLCO( EFLCO::group),
 	m_valid(false)
 {
 	m_raw  = new bool[128U];
@@ -62,44 +62,44 @@ bool CDMREmbeddedData::addData(const uint8_t *data, uint8_t lcss)
 			m_raw[a] = rawData[a + 4U];
 
 		// Show we are ready for the next LC block
-		m_state = LCS_FIRST;
+		m_state = ELCState::first;
 		m_valid = false;
 
 		return false;
 	}
 
 	// Is this the 2nd block of a 4 block embedded LC ?
-	if (lcss == 3U and m_state == LCS_FIRST)
+	if (lcss == 3U and m_state == ELCState::first)
 	{
 		for (unsigned a = 0U; a < 32U; a++)
 			m_raw[a + 32U] = rawData[a + 4U];
 
 		// Show we are ready for the next LC block
-		m_state = LCS_SECOND;
+		m_state = ELCState::second;
 
 		return false;
 	}
 
 	// Is this the 3rd block of a 4 block embedded LC ?
-	if (lcss == 3U and m_state == LCS_SECOND)
+	if (lcss == 3U and m_state == ELCState::second)
 	{
 		for (unsigned a = 0U; a < 32U; a++)
 			m_raw[a + 64U] = rawData[a + 4U];
 
 		// Show we are ready for the final LC block
-		m_state = LCS_THIRD;
+		m_state = ELCState::third;
 
 		return false;
 	}
 
 	// Is this the final block of a 4 block embedded LC ?
-	if (lcss == 2U and m_state == LCS_THIRD)
+	if (lcss == 2U and m_state == ELCState::third)
 	{
 		for (unsigned a = 0U; a < 32U; a++)
 			m_raw[a + 96U] = rawData[a + 4U];
 
 		// Show that we're not ready for any more data
-		m_state = LCS_NONE;
+		m_state = ELCState::none;
 
 		// Process the complete data block
 		decodeEmbeddedData();
@@ -280,10 +280,10 @@ void CDMREmbeddedData::decodeEmbeddedData()
 
 	m_valid = true;
 
-	// Extract the FLCO
+	// Extract the  EFLCO 
 	uint8_t flco;
 	CUtils::bitsToByteBE(m_data + 0U, flco);
-	m_FLCO = FLCO(flco & 0x3FU);
+	m_FLCO =  EFLCO (flco & 0x3FU);
 }
 
 CDMRLC* CDMREmbeddedData::getLC() const
@@ -291,7 +291,7 @@ CDMRLC* CDMREmbeddedData::getLC() const
 	if (!m_valid)
 		return NULL;
 
-	if (m_FLCO != FLCO_GROUP and m_FLCO != FLCO_USER_USER)
+	if (m_FLCO !=  EFLCO::group and m_FLCO !=  EFLCO::user)
 		return NULL;
 
 	return new CDMRLC(m_data);
@@ -302,14 +302,14 @@ bool CDMREmbeddedData::isValid() const
 	return m_valid;
 }
 
-FLCO CDMREmbeddedData::getFLCO() const
+ EFLCO  CDMREmbeddedData::getFLCO() const
 {
 	return m_FLCO;
 }
 
 void CDMREmbeddedData::reset()
 {
-	m_state = LCS_NONE;
+	m_state = ELCState::none;
 	m_valid = false;
 }
 

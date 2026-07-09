@@ -84,7 +84,7 @@ public:
 
 	// The DMR section
 	bool         getDMREnabled() const;
-	DMR_BEACONS  getDMRBeacons() const;
+	EBeacons  getDMRBeacons() const;
 	unsigned getDMRBeaconInterval() const;
 	unsigned getDMRBeaconDuration() const;
 	unsigned getDMRId() const;
@@ -100,7 +100,7 @@ public:
 	unsigned getDMRCallHang() const;
 	unsigned getDMRTXHang() const;
 	unsigned getDMRModeHang() const;
-	DMR_OVCM_TYPES getDMROVCM() const;
+	EOVCMType getDMROVCM() const;
 
 	// The DMR Network section
 	std::string  getDMRNetworkType() const;
@@ -162,7 +162,7 @@ private:
 	bool         m_modemTrace;
 	bool         m_modemDebug;
 
-	DMR_BEACONS  m_dmrBeacons;
+	EBeacons  m_dmrBeacons;
 	unsigned m_dmrBeaconInterval;
 	unsigned m_dmrBeaconDuration;
 	unsigned m_dmrId;
@@ -178,7 +178,7 @@ private:
 	unsigned m_dmrCallHang;
 	unsigned m_dmrTXHang;
 	unsigned m_dmrModeHang;
-	DMR_OVCM_TYPES m_dmrOVCM;
+	EOVCMType m_dmrOVCM;
 
 	std::string  m_dmrNetworkType;
 	std::string  m_dmrNetworkAddress;

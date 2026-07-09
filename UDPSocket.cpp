@@ -101,12 +101,12 @@ int CUDPSocket::lookup(const std::string &hostname, unsigned port, sockaddr_stor
 	return 0;
 }
 
-bool CUDPSocket::match(const sockaddr_storage& addr1, const sockaddr_storage& addr2, IPMATCHTYPE type)
+bool CUDPSocket::match(const sockaddr_storage& addr1, const sockaddr_storage& addr2, EIPMatchType type)
 {
 	if (addr1.ss_family != addr2.ss_family)
 		return false;
 
-	if (type == IMT_ADDRESS_AND_PORT)
+	if (type == EIPMatchType::address_and_port)
 	{
 		switch (addr1.ss_family)
 		{
@@ -124,7 +124,7 @@ bool CUDPSocket::match(const sockaddr_storage& addr1, const sockaddr_storage& ad
 			return false;
 		}
 	}
-	else if (type == IMT_ADDRESS_ONLY)
+	else if (type == EIPMatchType::address_only)
 	{
 		switch (addr1.ss_family)
 		{

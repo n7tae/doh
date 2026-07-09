@@ -203,7 +203,7 @@ int CDOH::run()
 	CStopWatch stopWatch;
 	stopWatch.start();
 
-	DMR_BEACONS dmrBeacons = DMR_BEACONS_OFF;
+	EBeacons dmrBeacons = EBeacons::off;
 	CTimer dmrBeaconIntervalTimer(1000U);
 	CTimer dmrBeaconDurationTimer(1000U);
 
@@ -229,7 +229,7 @@ int CDOH::run()
 		unsigned jitter         = m_conf.getDMRNetworkJitter();
 		m_dmrRFModeHang             = m_conf.getDMRModeHang();
 		dmrBeacons                  = m_conf.getDMRBeacons();
-		DMR_OVCM_TYPES ovcm         = m_conf.getDMROVCM();
+		EOVCMType ovcm         = m_conf.getDMROVCM();
 
 		if (txHang > m_dmrRFModeHang)
 			txHang = m_dmrRFModeHang;
@@ -263,19 +263,19 @@ int CDOH::run()
 		LogInfo("    Call Hang: %us", callHang);
 		LogInfo("    TX Hang: %us", txHang);
 		LogInfo("    Mode Hang: %us", m_dmrRFModeHang);
-		if (ovcm == DMR_OVCM_OFF)
+		if (ovcm == EOVCMType::off)
 			LogInfo("    OVCM: off");
-		else if (ovcm == DMR_OVCM_RX_ON)
+		else if (ovcm == EOVCMType::rx)
 			LogInfo("    OVCM: on(rx only)");
-		else if (ovcm == DMR_OVCM_TX_ON)
+		else if (ovcm == EOVCMType::tx)
 			LogInfo("    OVCM: on(tx only)");
-		else if (ovcm == DMR_OVCM_ON)
+		else if (ovcm == EOVCMType::on)
 			LogInfo("    OVCM: on");
 
 
 		switch (dmrBeacons)
 		{
-		case DMR_BEACONS_NETWORK:
+		case EBeacons::network:
 		{
 			unsigned dmrBeaconDuration = m_conf.getDMRBeaconDuration();
 
@@ -285,7 +285,7 @@ int CDOH::run()
 			dmrBeaconDurationTimer.setTimeout(dmrBeaconDuration);
 		}
 		break;
-		case DMR_BEACONS_TIMED:
+		case EBeacons::timed:
 		{
 			unsigned dmrBeaconInterval = m_conf.getDMRBeaconInterval();
 			unsigned dmrBeaconDuration = m_conf.getDMRBeaconDuration();
@@ -546,7 +546,7 @@ int CDOH::run()
 
 		switch (dmrBeacons)
 		{
-		case DMR_BEACONS_TIMED:
+		case EBeacons::timed:
 			dmrBeaconIntervalTimer.clock(ms);
 			if (dmrBeaconIntervalTimer.isRunning() and dmrBeaconIntervalTimer.hasExpired())
 			{
@@ -559,7 +559,7 @@ int CDOH::run()
 				}
 			}
 			break;
-		case DMR_BEACONS_NETWORK:
+		case EBeacons::network:
 			if (m_dmrNetwork != NULL)
 			{
 				bool beacon = m_dmrNetwork->wantsBeacon();
@@ -691,7 +691,7 @@ bool CDOH::createDMRNetwork()
 	unsigned jitter  = m_conf.getDMRNetworkJitter();
 	bool slot1           = m_conf.getDMRNetworkSlot1();
 	bool slot2           = m_conf.getDMRNetworkSlot2();
-	HW_TYPE hwType       = m_modem->getHWType();
+	EHardwareType hwType       = m_modem->getHWType();
 	m_dmrNetModeHang     = m_conf.getDMRNetworkModeHang();
 	std::string options  = m_conf.getDMRNetworkOptions();
 
