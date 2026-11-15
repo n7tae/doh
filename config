@@ -1114,7 +1114,7 @@ WriteCFGFile() {
 			fi
 		fi
 		if [[ -v TalkerAlias ]]; then
-			Options+='TalkerAlias=1'
+			Options+='TalkerAlias=Y'
 		fi
 	elif [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then
 		if [[ -v PASS ]]; then
