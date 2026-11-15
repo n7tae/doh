@@ -59,7 +59,7 @@ DATABASEURL='https://database.radioid.net/static/user.csv'
 DMRFILEBACKUP=1
 
 # Command line to restart DOH
-RESTARTCOMMAND="systemctl restart doh.service"
+RESTARTCOMMAND="systemctl restart doh"
 
 ###############################################################################
 #

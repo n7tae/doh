@@ -109,8 +109,8 @@ GeneralMenu() {
 		if   [[ "$key" == c* ]]; then
 			if [[ "${value^^}" =~ ^[0-9]?[A-Z]{1,2}[0-9]{1,2}[A-Z]{1,4}$ ]]; then
 				cfgfile[General,Callsign]=${value^^}
-				cfgfile[CW Id,Callsign]=${value^^}
-				inifile[CW Id,Callsign]=${value^^}
+				cfgfile['CW Id,Callsign']=${value^^}
+				inifile['CW Id,Callsign']=${value^^}
 			else
 				echo "$value does not appear to be a valid callsign"
 				read -p "<Enter> to continue: " garbage
@@ -825,14 +825,14 @@ NetworkMenu() {
 			echo Gateway
 			echo
 			echo    "      Choose a DMR Network from the following..."
-			echo    " AM : Select a AmComm Server"
-			echo    " BM : Select a Brandmeister Server"
-			echo    " D2 : Select a DMR+ IPSC2 Server"
-			echo    " D3 : Select a DMR+ IPSC3 Server"
-			echo    " FD : Select a Free DMR Server"
-			echo    " HB : Select a HB Link Server"
-			echo    " TG : Select the TGIF Network"
-			echo    " XL : Select a XLX Reflector"
+			echo    " 2  : Select a DMR+ IPSC2 Server"
+			echo    " 3  : Select a DMR+ IPSC3 Server"
+			echo    " a  : Select a AmComm Server"
+			echo    " b  : Select a Brandmeister Server"
+			echo    " f  : Select a Free DMR Server"
+			echo    " h  : Select a HB Link Server"
+			echo    " t  : Select a TGIF Server"
+			echo    " x  : Select a XLX Reflector"
 		else
 			echo Direct
 		fi
@@ -848,14 +848,14 @@ NetworkMenu() {
 		echo -n " ji : Jitter                     = "; EvalVar  'DMR Network,Jitter'
 		echo -n " db : Debug                      = "; EvalBool 'DMR Network,Debug'
 		EndMenu
-		if   [[ "$key" == D2* ]]; then SelectDMRServer 'DMR+_IPSC2-'
-		elif [[ "$key" == D3* ]]; then SelectDMRServer 'DMR+_IPSC3-'
-		elif [[ "$key" == XL* ]]; then SelectXLXReflector
-		elif [[ "$key" == BM* ]]; then SelectDMRServer 'BM_'
-		elif [[ "$key" == FD* ]]; then SelectDMRServer 'FreeDMR_'
-		elif [[ "$key" == HB* ]]; then SelectDMRServer 'HB_'
-		elif [[ "$key" == TG* ]]; then SelectDMRServer 'TGIF_'
-		elif [[ "$key" == AM* ]]; then SelectDMRServer 'FD_AmComm_'
+		if   [[ "$key" == 2*  ]]; then SelectDMRServer 'DMR+_IPSC2-'
+		elif [[ "$key" == 3*  ]]; then SelectDMRServer 'DMR+_IPSC3-'
+		elif [[ "$key" == a*  ]]; then SelectDMRServer 'FD_AmComm_'
+		elif [[ "$key" == b*  ]]; then SelectDMRServer 'BM_'
+		elif [[ "$key" == f*  ]]; then SelectDMRServer 'FreeDMR_'
+		elif [[ "$key" == h*  ]]; then SelectDMRServer 'HB_'
+		elif [[ "$key" == t*  ]]; then SelectDMRServer 'TGIF_'
+		elif [[ "$key" == x*  ]]; then SelectXLXReflector
 		elif [[ "$key" == be* ]]; then SetBool 'DMR,Beacons'        "$value"
 		elif [[ "$key" == so* ]]; then SetBool 'DMR,SelfOnly'       "$value"
 		elif [[ "$key" == lc* ]]; then SetBool 'DMR,EmbeddedLCOnly' "$value"
@@ -897,19 +897,19 @@ NetworkMenu() {
 			fi
 		elif [[ "$key" == ty* ]]; then
 			if [[ "${cfgfile[DMR Network,Type]}" == Direct ]]; then
-				cfgfile[DMR Network,Type]=Gateway
-				cfgfile[DMR Network,Name]='DMRGateway'
-				cfgfile[DMR Network,Address]='127.0.0.1'
-				cfgfile[DMR Network,Password]=''
-				cfgfile[DMR Network,Port]=62031
-				cfgfile[DMR Network,Local]=62032
+				cfgfile['DMR Network,Type']=Gateway
+				cfgfile['DMR Network,Name']='DMRGateway'
+				cfgfile['DMR Network,Address']='127.0.0.1'
+				cfgfile['DMR Network,Password']=''
+				cfgfile['DMR Network,Port']=62031
+				cfgfile['DMR Network,Local']=62032
 			else
-				cfgfile[DMR Network,Type]=Direct
-				cfgfile[DMR Network,Name]='DMR+_IPSC2-QUADNET'
-				cfgfile[DMR Network,Address]='dmr.openquad.net'
-				cfgfile[DMR Network,Password]=PASSWORD
-				cfgfile[DMR Network,Port]=55555
-				cfgfile[DMR Network,Local]=0
+				cfgfile['DMR Network,Type']=Direct
+				cfgfile['DMR Network,Name']='DMR+_IPSC2-QUADNET'
+				cfgfile['DMR Network,Address']='dmr.openquad.net'
+				cfgfile['DMR Network,Password']=PASSWORD
+				cfgfile['DMR Network,Port']=55555
+				cfgfile['DMR Network,Local']=0
 				SetStartRef 4000
 				RelinkTime=15
 				UserLink=1
@@ -918,28 +918,28 @@ NetworkMenu() {
 			fi
 		elif [[ "$key" == ad* ]]; then
 			if [[ "$value" =~ ^[0-9a-zA-z]\.[0-9a-zA-Z]+$ ]]; then
-				cfgfile[DMR Network,Address]=$value
+				cfgfile['DMR Network,Address']=$value
 			else
 				echo "'$value' is not a valid IP Address"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == pw* ]]; then
 			if [[ "$value" =~ ^[0-9a-zA-Z!\.]*$ ]]; then
-				cfgfile[DMR Network,Password]=$value
+				cfgfile['DMR Network,Password']=$value
 			else
 				echo "'$value' is not a valid Password"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == po* ]]; then
 			if [[ "$value" =~ ^[1-9][0-9]*$ ]]; then
-				cfgfile[DMR Network,Port]=$value
+				cfgfile['DMR Network,Port']=$value
 			else
 				echo "'$value' is not a valid Port"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == lo* ]]; then
 			if [[ "$value" =~ ^[1-9][0-9]*$ ]]; then
-				cfgfile[DMR Network,Local]=$value
+				cfgfile['DMR Network,Local']=$value
 			else
 				echo "'$value' is not a valid Local Port"
 				read -p "<Enter> to continue: " garbage
@@ -948,14 +948,14 @@ NetworkMenu() {
 		elif [[ "$key" == s2* ]]; then SetBool 'DMR Network,Slot2' "$value"
 		elif [[ "$key" == ip* ]]; then
 			if [[ "$value" =~ ^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3,3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]){1,1}$ ]]; then
-				cfgfile[DMR Network,Address]=$value
+				cfgfile['DMR Network,Address']=$value
 			else
 				echo "'$value' must be a dotted number IP Address"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == ji* ]]; then
 			if [[ "$value" =~ ^[0-9]+$ ]]; then
-				cfgfile[DMR Network,Jitter]=$value
+				cfgfile['DMR Network,Jitter']=$value
 			else
 				echo "'$value' is not a valid Jitter"
 				read -p "<Enter> to continue: " garbage
@@ -991,14 +991,14 @@ MiscMenu() {
 	key=''
 	# because I haven't been writing the CW Id section to dmr.cfg, we'll do it here, if it's still unset
 	if [ ! -v 'cfgfile[CW Id,Enable]' ]; then
-		cfgfile[CW Id,Enable]=${inifile[CW Id,Enable]}
-		cfgfile[CW Id,Time]=${inifile[CW Id,Time]}
-		cfgfile[CW Id,Callsign]=${cfgfile[General,Callsign]}
+		cfgfile['CW Id,Enable']=${inifile[CW Id,Enable]}
+		cfgfile['CW Id,Time']=${inifile[CW Id,Time]}
+		cfgfile['CW Id,Callsign']=${cfgfile[General,Callsign]}
 	fi
 	while [[ "$key" != q* ]]; do
 		clear
 		echo
-		echo    "      Miscellanous Menu"
+		echo    "      Miscellaneous Menu"
 		echo
 		echo -n " ll : Log Level (0-6)                      = "; EvalVar  'Log,LogLevel'
 		echo -n " ce : CW ID Enable                         = "; EvalBool 'CW Id,Enable'
@@ -1027,33 +1027,33 @@ MiscMenu() {
 		elif [[ "$key" == ce* ]]; then
 			SetBool 'CW Id,Enable' "$value"
 			if (( 1 == ${cfgfile[CW Id,Enable]} )); then
-				cfgfile[CW Id,Callsign]=${cfgfile[General,Callsign]}
-				inifile[CW Id,Callsign]=${cfgfile[General,Callsign]}
+				cfgfile['CW Id,Callsign']=${cfgfile[General,Callsign]}
+				inifile['CW Id,Callsign']=${cfgfile[General,Callsign]}
 			fi
 		elif [[ "$key" == ct* ]]; then
 			if [[ "$value" =~ ^(0|([1-9][0-9]*))$ ]]; then
-				cfgfile[CW Id,Time]=$value
+				cfgfile['CW Id,Time']=$value
 			else
 				echo "'$value' is not a valid CW Id Time"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == cc* ]]; then
 			if [[ "${value^^}" =~ ^[0-9]?[A-Z]{1,2}[0-9]{1,2}[A-Z]{1,4}$ ]]; then
-				cfgfile[CW Id,Callsign]="${value^^}"
+				cfgfile['CW Id,Callsign']="${value^^}"
 			else
 				echo "'$value' is not a valid CW Id Callsign"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == lf* ]]; then
 			if [[ "$value" =~ ^~?[-_%\./0-9a-zA-Z]+ ]]; then
-				cfgfile[DMR Id Lookup,File]=$value
+				cfgfile['DMR Id Lookup,File']=$value
 			else
 				echo "'$value' is not a valid DMR Id Lookup File"
 				read -p "<Enter> to continue: " garbage
 			fi
 		elif [[ "$key" == lt* ]]; then
 			if [[ "$value" =~ ^[1-9][0-9]*$ ]]; then
-				cfgfile[DMR Id Lookup,Time]=$value
+				cfgfile['DMR Id Lookup,Time']=$value
 			else
 				echo "'$value' is not a valid DMR Id Lookup Time"
 				read -p "<Enter> to continue: " garbage
@@ -1114,7 +1114,7 @@ WriteCFGFile() {
 			fi
 		fi
 		if [[ -v TalkerAlias ]]; then
-			Options+='TalkerAlias=Y'
+			Options+='TalkerAlias=1'
 		fi
 	elif [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then
 		if [[ -v PASS ]]; then
@@ -1277,7 +1277,7 @@ do
 	elif [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then
 		echo " o  : Configure Rysen Options"
 	fi
-	echo " mi : Other - DMR ID File, CW ID, Dashboard"
+	echo " mi : Miscellaneous - DMR ID File, CW ID, Dashboard"
 	echo
 	echo " w  : Write dmr.cfg file (overwrites existing file) and quit."
 	echo " q  : Quit without saving."
