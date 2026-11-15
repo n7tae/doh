@@ -444,9 +444,12 @@ SelectDMRServer() {
 	wget -q -N https://pistar.uk/downloads/DMR_Hosts.txt
 	/bin/rm -f DMR_Hosts.txt.*
 
-	if   [[ "$1" == D* ]]; then
+	if   [[ "$1" == DMR+_IPSC2-* ]]; then
 		DPServers=( `grep ^DMR+_IPSC2- DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 12)}'` )
-		title='DMR+'
+		title='DMR+ IPSC2'
+	elif [[ "$1" == DMR+_IPSC3-* ]]; then
+		DPServers=( `grep ^DMR+_IPSC3- DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 12)}'` )
+		title='DMR+ IPSC3'
 	elif [[ "$1" == B* ]]; then
 		DPServers=( `grep ^BM_         DMR_Hosts.txt | LC_ALL=C sort -u | awk '{print substr($1, 4)}'` )
 		title='BrandMeister'
@@ -600,7 +603,7 @@ SelectDMRPlusReflector() {
 	fi
 }
 
-SetDMRPlusOptions() {
+SetI2Options() {
 	local i tg
 	local mode
 	if (( $StartRef == 4000 )); then
@@ -623,7 +626,7 @@ SetDMRPlusOptions() {
 			echo -n " s2 : Slot Two static groups ="; EchoStatic two
 		else
 			echo    "      Reflector Mode"
-			echo    " sm : Swtich to Static Mode"
+			echo    " sm : Switch to Static Mode"
 			echo    " sr : Select Reflector       = $StartRef - $StartRefName"
 		fi
 		echo
@@ -695,6 +698,101 @@ SetDMRPlusOptions() {
 	done
 }
 
+SetI3Options() {
+	local pattern
+	key=''
+	pattern='^([1-9][0-9]*,)*[1-9][0-9]*$'
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo "      Configure Options for ${cfgfile[DMR Network,Name]}"
+		echo
+		echo "Include and exclude groups should be comma-separated, with no whitespace!"
+		echo -n " ex : ScanExclude="
+		if [[ -v ScanExclude ]]; then
+			echo "$ScanExclude"
+		else
+			echo
+		fi 
+		echo -n " in : ScanInclude="
+		if [[ -v ScanInclude ]]; then
+			echo "$ScanInclude"
+		else
+			echo
+		fi
+		echo -n " ta : TalkerAlias="
+		if [[ -v TalkerAlias ]]; then
+			echo "Y"
+		else
+			echo "N"
+		fi
+		echo
+		echo " q  : Quit and return"
+		echo " u <key> to unset that key"
+		read -p "Input key and optional value: " key value
+
+		if   [[ "$key" == ex* ]]; then
+			if [[ "$value" =~ $pattern ]]; then
+				ScanExclude="$value"
+			else
+				echo "Improperly formed ScanExclude value"
+				read -p "<Enter> to continue:" garbage
+			fi
+		elif [[ "$key" == in* ]]; then
+			if [[ "$value" =~ $pattern ]]; then
+				ScanInclude="$value"
+			else
+				echo "Improperly formed ScanInclude value"
+				read -p "<Enter> to continue:" garbage
+			fi
+		elif [[ "$key" == ta* ]]; then
+			if [[ "$value" == [yY]* ]]; then
+				TalkerAlias=Y
+			else
+				unset TalkerAlias
+			fi
+		elif [[ "$key" == u* ]]; then
+			if   [[ "$value" == ex* ]]; then
+				unset ScanExclude
+			elif [[ "$value" == in* ]]; then
+				unset ScanInclude
+			elif [[ "$value" == ta* ]]; then
+				unset TalkerAlias
+			fi
+		fi
+	done
+}
+
+SetRysenOptions() {
+	local pattern
+	key=''
+	pattern='^([1-9][0-9]*,)*[1-9][0-9]*$'
+	while [[ "$key" != q* ]]; do
+		clear
+		echo
+		echo "      Configure Options for ${cfgfile[DMR Network,Name]}"
+		echo
+		echo -n " pw : Self Care Password="
+		if [[ -v PASS ]]; then
+			echo "$PASS"
+		else
+			echo
+		fi 
+		echo
+		echo " q  : Quit and return"
+		echo " u <key> to unset that key"
+		read -p "Input key and optional value: " key value
+
+		if   [[ "$key" == pw* ]]; then
+			PASS="$value"
+		elif [[ "$key" == u* ]]; then
+			if   [[ "$value" == pw* ]]; then
+				unset PASS
+			fi
+		fi
+	done
+}
+
 NetworkMenu() {
 	key=''
 	while [[ "$key" != q* ]]; do
@@ -729,7 +827,8 @@ NetworkMenu() {
 			echo    "      Choose a DMR Network from the following..."
 			echo    " AM : Select a AmComm Server"
 			echo    " BM : Select a Brandmeister Server"
-			echo    " D+ : Select a DMR+ IPSC2 Server"
+			echo    " D2 : Select a DMR+ IPSC2 Server"
+			echo    " D3 : Select a DMR+ IPSC3 Server"
 			echo    " FD : Select a Free DMR Server"
 			echo    " HB : Select a HB Link Server"
 			echo    " TG : Select the TGIF Network"
@@ -749,7 +848,8 @@ NetworkMenu() {
 		echo -n " ji : Jitter                     = "; EvalVar  'DMR Network,Jitter'
 		echo -n " db : Debug                      = "; EvalBool 'DMR Network,Debug'
 		EndMenu
-		if   [[ "$key" == D+* ]]; then SelectDMRServer 'DMR+_IPSC2-'
+		if   [[ "$key" == D2* ]]; then SelectDMRServer 'DMR+_IPSC2-'
+		elif [[ "$key" == D3* ]]; then SelectDMRServer 'DMR+_IPSC3-'
 		elif [[ "$key" == XL* ]]; then SelectXLXReflector
 		elif [[ "$key" == BM* ]]; then SelectDMRServer 'BM_'
 		elif [[ "$key" == FD* ]]; then SelectDMRServer 'FreeDMR_'
@@ -998,6 +1098,30 @@ WriteCFGFile() {
 	local Options
 	if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
 		Options="StartRef=$StartRef;RelinkTime=$RelinkTime;UserLink=$UserLink;TS1_1=$TS1_1;TS1_2=$TS1_2;TS1_3=$TS1_3;TS1_4=$TS1_4;TS1_5=$TS1_5;TS1_6=$TS1_6;TS1_7=$TS1_7;TS1_8=$TS1_8;TS1_9=$TS1_9;TS2_1=$TS2_1;TS2_2=$TS2_2;TS2_3=$TS2_3;TS2_4=$TS2_4;TS2_5=$TS2_5;TS2_6=$TS2_6;TS2_7=$TS2_7;TS2_8=$TS2_8;TS2_9=$TS2_9;"
+	elif [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC3* ]]; then
+		if [[ -v ScanExclude ]]; then
+			Options="ScanExclude=$ScanExclude"
+			if [[ -v ScanInclude || -v TalkerAlias ]]; then
+				Options+=';'
+			fi
+		else
+			Options=''
+		fi
+		if [ -v ScanInclude ]; then
+			Options+="ScanInclude=$ScanInclude"
+			if [[ -v TalkerAlias ]]; then
+				Options+=';'
+			fi
+		fi
+		if [[ -v TalkerAlias ]]; then
+			Options+='TalkerAlias=Y'
+		fi
+	elif [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then
+		if [[ -v PASS ]]; then
+			Options="PASS=$PASS"
+		else
+			Options=''
+		fi
 	else
 		Options=''
 	fi
@@ -1088,9 +1212,6 @@ exit 0
 
 ZeroStatic
 
-declare -A inifile
-declare -A cfgfile
-
 ReadFile inifile dmr.ini
 
 if [ ! -e dmr.cfg ]; then
@@ -1110,7 +1231,7 @@ do
 	dup=( `EvalBool 'General,Duplex'` )
 	clear
 	echo
-	echo "     DOH Configure V#260622"
+	echo "     DOH Configure V# 2026-11-14"
 	echo
 	echo "     ID      ${cfgfile[General,Callsign]} - ${cfgfile[General,Id]}"
 	echo "     TX(RX)  ${txfreq}(${rxfreq}) MHz"
@@ -1121,9 +1242,9 @@ do
 	else
 		echo "     WARNING: Modem at '${cfgfile[Modem,Port]}' not found. Is it unplugged?"
 	fi
-	if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
+	if   [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
 		echo
-		echo "     DMR+ Options:"
+		echo "     DMR+ IPSC2 Options:"
 		echo "         Start Reflector:      $StartRef - $StartRefName"
 		echo "         Relink Time (min):    $RelinkTime"
 		echo -n "         User can Relink:      "
@@ -1132,27 +1253,47 @@ do
 			echo -n "         Slot 1 Static groups:"; EchoStatic one
 			echo -n "         Slot 2 Static groups:"; EchoStatic two
 		fi
+	elif [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC3* ]]; then
+		echo
+		echo "     DMR+ IPSC3 Options:"
+		echo "         ScanExclude:  $ScanExclude"
+		echo "         ScanInclude:  $ScanInclude"
+		echo -n "        TalkerAlias:  "
+		if [[ -v TalkerAlias ]]; then echo Y; else echo N; fi
+	elif [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then
+		echo
+		echo "     DMR+ IPSC3 Options:"
+		echo "         Password:  $PASS"
 	fi
 	echo
-	echo " g : General"
-	echo " s : Station"
-	echo " m : Modem"
-	echo " n : DMR Network"
-	if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
-		echo " + : Configure DMR+ Options"
+	echo " g  : General"
+	echo " s  : Station"
+	echo " mo : Modem"
+	echo " n  : DMR Network"
+	if   [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then
+		echo " 2  : Configure DMR+ IPSC2 Options"
+	elif [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC3* ]]; then
+		echo " 3  : Configure DMR+ IPSC3 Options"
+	elif [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then
+		echo " o  : Configure Rysen Options"
 	fi
-	echo " o : Other - DMR ID File, CW ID, Dashboard"
+	echo " mi : Other - DMR ID File, CW ID, Dashboard"
 	echo
-	echo " w : Write dmr.cfg file (overwrites exsisting file) and quit."
-	echo " q : Quit without saving."
+	echo " w  : Write dmr.cfg file (overwrites existing file) and quit."
+	echo " q  : Quit without saving."
 	echo
 	read -p "Command: " ans
-	if   [[ "$ans" == g* ]]; then GeneralMenu
-	elif [[ "$ans" == s* ]]; then StationMenu
-	elif [[ "$ans" == m* ]]; then ModemMenu
-	elif [[ "$ans" == n* ]]; then NetworkMenu
-	elif [[ "$ans" == o* ]]; then MiscMenu
-	elif [[ "$ans" == +* ]]; then SetDMRPlusOptions
-	elif [[ "$ans" == w* ]]; then WriteCFGFile
+	if   [[ "$ans" == g*  ]]; then GeneralMenu
+	elif [[ "$ans" == s*  ]]; then StationMenu
+	elif [[ "$ans" == n*  ]]; then NetworkMenu
+	elif [[ "$ans" == mo* ]]; then ModemMenu
+	elif [[ "$ans" == mi* ]]; then MiscMenu
+	elif [[ "$ans" == 2*  ]]; then 
+		if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC2* ]]; then SetI2Options; fi
+	elif [[ "$ans" == 3*  ]]; then 
+		if [[ "${cfgfile[DMR Network,Name]}" == DMR+_IPSC3* ]]; then SetI3Options; fi
+	elif [[ "$ans" == o*  ]]; then 
+		if [[ "${cfgfile[DMR Network,Name]}" == HB_US_Quadnet_* ]]; then SetRysenOptions; fi
+	elif [[ "$ans" == w*  ]]; then WriteCFGFile
 	fi
 done
