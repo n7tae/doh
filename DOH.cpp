@@ -32,7 +32,7 @@
 
 #include <cstdlib>
 
-#define VERSION "20210324"
+#define VERSION "DOH-V#261115"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -66,7 +66,7 @@ const char *HEADER4 = "Copyright(C) 2015-2020 by Jonathan Naylor, G4KLX and othe
 
 int main(int argc, char **argv)
 {
-	printf("DOH version %s\n", VERSION);
+	printf("%s\n", VERSION);
 	if (argc != 2)
 	{
 		fprintf(stderr, "Usage: %s /path/to/config/file\n", argv[0]);
@@ -90,13 +90,13 @@ int main(int argc, char **argv)
 		delete host;
 
 		if (m_signal == 2)
-			::LogInfo("DOH V#%s exited on receipt of SIGINT", VERSION);
+			::LogInfo("%s exited on receipt of SIGINT", VERSION);
 
 		if (m_signal == 15)
-			::LogInfo("DOH V#%s exited on receipt of SIGTERM", VERSION);
+			::LogInfo("%s exited on receipt of SIGTERM", VERSION);
 
 		if (m_signal == 1)
-			::LogInfo("DOH V#%s is restarting on receipt of SIGHUP", VERSION);
+			::LogInfo("%s is restarting on receipt of SIGHUP", VERSION);
 	}
 	while (m_signal == 1);
 
@@ -149,7 +149,7 @@ int CDOH::run()
 	LogInfo(HEADER3);
 	LogInfo(HEADER4);
 
-	LogMessage("DOH V#%s is starting", VERSION);
+	LogMessage("%s is starting", VERSION);
 	LogMessage("Built %s %s", __TIME__, __DATE__);
 
 	readParams();
@@ -312,7 +312,7 @@ int CDOH::run()
 
 	setMode(MODE_IDLE);
 
-	LogMessage("DOH V#%s is running", VERSION);
+	LogMessage("%s is running", VERSION);
 
 	while (!m_killed)
 	{
